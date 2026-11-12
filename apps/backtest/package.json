@@ -2,5 +2,11 @@
   "name": "@upfront/backtest",
   "version": "0.1.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "cohort": "tsx src/cli.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
 }

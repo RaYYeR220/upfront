@@ -1,0 +1,17 @@
+{
+  "id": "A202600123890",
+  "dateparution": "2026-01-20",
+  "typeavis": "annonce",
+  "registre": [
+    "423928118",
+    "423 928 118"
+  ],
+  "tribunal": "Greffe du Tribunal de Commerce de Nice",
+  "jugement": "{\"type\": \"initial\", \"famille\": \"Jugement d'ouverture\", \"nature\": \"Jugement d'ouverture d'une procédure de redressement judiciaire\", \"date\": \"2026-01-08\", \"complementJugement\": \"Jugement prononçant l'ouverture d'une procédure de redressement judiciaire, date de cessation des paiements le 05/01/2026, désignant administrateur SELARL XAVIER HUERTAS & ASSOCIES prise en la personne de Me Xavier HUERTAS CS 81041 1 Rue Lamartine 06050 NICE CEDEX 1, SCP EZAVIN-THOMAS ADMINISTRATEURS JUDICIAIRES représentés par Me Nathalie THOMAS 1 Rue Alexandre Mari 06300 Nice, avec les pouvoirs : D'assister le débiteur pour tous les actes relatifs à la gestion, D'assister le débiteur pour tous les actes relatifs à la gestion, mandataire judiciaire SCP BTSG² PRISE EN LA PERSONNE DE MAÎTRE DENIS GASNIER 51 Rue Maréchal Joffre 06000 Nice, SELARL PELLIER-LES MANDATAIRES REPRÉSENTÉE PAR ME MARIE-SOPHIE PELLIER 23 Boulevard Carabacel 06000 Nice. Les déclarations des créances sont à adresser au mandataire judiciaire judiciaire ou sur le portail électronique prévu par les articles L. 814-2 et L. 814-13 du code de commerce dans les deux mois à compter de la présente publication à l’exception des créanciers admis au plan qui en sont dispensés.\"}",
+  "familleavis_lib": "Procédures collectives",
+  "commercant": "CAVALLARI AUTOMOBILES",
+  "ville": "Mougins",
+  "cp": "06250",
+  "numerodepartement": "06",
+  "listepersonnes": "{\"personne\": {\"typePersonne\": \"pm\", \"numeroImmatriculation\": {\"numeroIdentification\": \"423 928 118\", \"codeRCS\": \"RCS\", \"nomGreffeImmat\": \"Cannes\"}, \"denomination\": \"CAVALLARI AUTOMOBILES\", \"activite\": \"Non communiquée\", \"formeJuridique\": \"Société par actions simplifiée\", \"adresseSiegeSocial\": {\"numeroVoie\": \"351\", \"typeVoie\": \"Route\", \"nomVoie\": \"du Cannet\", \"codePostal\": \"06250\", \"ville\": \"Mougins\"}}}"
+}

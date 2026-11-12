@@ -1,0 +1,17 @@
+{
+  "id": "A202600013118",
+  "dateparution": "2026-01-04",
+  "typeavis": "annonce",
+  "registre": [
+    "818002222",
+    "818 002 222"
+  ],
+  "tribunal": "Greffe du Tribunal de Commerce de Toulouse",
+  "jugement": "{\"type\": \"initial\", \"famille\": \"Jugement d'ouverture\", \"nature\": \"Jugement d'ouverture d'une procédure de sauvegarde\", \"date\": \"2025-12-18\", \"complementJugement\": \"Jugement prononçant l'ouverture d'une procédure de sauvegarde et désignant mandataire judiciaire Selarl Aegis prise en la personne de Me Orlane Gachet 5 Rue Saint-Gilles 31500 toulouse, Administrateur Judiciaire : SCP Cbf associes prise en la personne de Me Luc Fourquie 10 Rue d'Alsace-Lorraine 31000 toulouse. Les déclarations des créances sont à adresser au mandataire judiciaire ou sur le portail électronique prévu par les articles L. 814-2 et L. 814-13 du code de commerce dans les deux mois à compter de la publication au Bodacc.\"}",
+  "familleavis_lib": "Procédures collectives",
+  "commercant": "TSD",
+  "ville": "Toulouse",
+  "cp": "31000",
+  "numerodepartement": "31",
+  "listepersonnes": "{\"personne\": {\"typePersonne\": \"pm\", \"numeroImmatriculation\": {\"numeroIdentification\": \"818 002 222\", \"codeRCS\": \"RCS\", \"nomGreffeImmat\": \"Toulouse\"}, \"denomination\": \"TSD\", \"activite\": \"Missions de conseil et Consulting dans la gestion des entreprises - prise de participations et de tous intérêts sous toutes formes - mise en place de structures de gestion et d'animation.\", \"formeJuridique\": \"Société par actions simplifiée\", \"adresseSiegeSocial\": {\"numeroVoie\": \"42\", \"typeVoie\": \"rue\", \"nomVoie\": \"des Filatiers\", \"codePostal\": \"31000\", \"ville\": \"Toulouse\"}}}"
+}

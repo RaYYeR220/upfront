@@ -1,0 +1,17 @@
+{
+  "id": "A202600631755",
+  "dateparution": "2026-04-01",
+  "typeavis": "annonce",
+  "registre": [
+    "933137606",
+    "933 137 606"
+  ],
+  "tribunal": "Greffe du Tribunal de Commerce de Libourne",
+  "jugement": "{\"type\": \"initial\", \"famille\": \"Jugement d'ouverture\", \"nature\": \"Jugement d'ouverture de liquidation judiciaire\", \"date\": \"2026-03-16\", \"complementJugement\": \"Jugement prononçant la liquidation judiciaire simplifiée, date de cessation des paiements le 1er décembre 2025, désignant liquidateur Selarl Ekip', prise en la personne de Maître Romain Rabusseau 6-7 boulevard Aristide Briand 33500 Libourne. Les déclarations des créances sont à adresser au mandataire judiciaire ou sur le portail électronique prévu par les articles L. 814-2 et L. 814-13 du code de commerce dans les deux mois à compter de la publication au Bodacc.\"}",
+  "familleavis_lib": "Procédures collectives",
+  "commercant": "Amour Cookie",
+  "ville": "Libourne",
+  "cp": "33500",
+  "numerodepartement": "33",
+  "listepersonnes": "{\"personne\": {\"typePersonne\": \"pm\", \"numeroImmatriculation\": {\"numeroIdentification\": \"933 137 606\", \"codeRCS\": \"RCS\", \"nomGreffeImmat\": \"Libourne\"}, \"denomination\": \"Amour Cookie\", \"activite\": \"Service de vente rapide d'aliments et de boissons à consommer sur place ou à emporter, excluant la vente d'alcool.\", \"formeJuridique\": \"Société par actions simplifiée\", \"adresseSiegeSocial\": {\"numeroVoie\": \"36\", \"typeVoie\": \"place\", \"nomVoie\": \"Abel Surchamp\", \"codePostal\": \"33500\", \"ville\": \"Libourne\"}}}"
+}
