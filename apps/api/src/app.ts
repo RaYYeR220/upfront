@@ -28,6 +28,9 @@ const CheckBody = z.object({
   policyVersion: z.number().int().min(1).optional(),
 });
 
+/** Checks of these example companies are shown in the public feed; any other check stays private. */
+export const EXAMPLE_SIRENS = new Set((process.env.EXAMPLE_SIRENS ?? "552032534,841936560").split(",").map((s) => s.trim()));
+
 const PolicyBody = z.object({ name: z.string().trim().min(1).max(80), text: z.string().trim().min(20).max(4000) });
 
 /**
@@ -64,6 +67,7 @@ export function createApp(ctx: AppCtx): Hono {
       policy,
       ip: clientIp((n) => c.req.header(n), ctx.socketIp?.(c) ?? null, ctx.trustProxy),
       unlimited,
+      visibility: EXAMPLE_SIRENS.has(b.query.replace(/[\s.\-]/g, "")) ? "public" : "private",
     });
     if ("error" in r) return c.json(r, r.error === "demo_quota" ? 429 : 503);
     return c.json(r, 202);

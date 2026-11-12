@@ -15,6 +15,10 @@ export const PIEVERSE_FACILITATOR = "https://facilitator.pieverse.io/v2";
 export const CHECK_PRICE = "$0.50";
 /** Free MCP checks per day, shared by all MCP callers; the paid endpoint has no such limit. */
 export const MCP_DAILY_CHECKS = 25;
+/** Paid checks per day across all agents (the house budget and concurrency limits still apply). */
+export const PAID_DAILY_CHECKS = 500;
+/** The paid endpoint covers invoices up to this amount, so the evidence budget ($0.30) stays under the price. */
+export const PAID_MAX_AMOUNT_EUR = 20_000;
 
 export interface AgentRoutesCtx {
   db: Client;
@@ -75,7 +79,7 @@ async function runToEnd(
 
 const PaidQuery = z.object({
   siren: z.string().regex(/^\d{9}$/),
-  amount: z.coerce.number().int().min(1).max(10_000_000),
+  amount: z.coerce.number().int().min(1).max(PAID_MAX_AMOUNT_EUR),
   net_days: z.coerce.number().int().min(0).max(120).optional(),
 });
 
@@ -112,7 +116,14 @@ export function registerAgentRoutes(app: Hono, ctx: AgentRoutesCtx): void {
     );
     app.get("/v1/check", async (c) => {
       const q = PaidQuery.parse(c.req.query());
-      const r = await runToEnd(ctx.checks, ctx.db, { query: q.siren, amountEur: q.amount, netDays: q.net_days, unlimited: true, ip: null });
+      const r = await runToEnd(ctx.checks, ctx.db, {
+        query: q.siren,
+        amountEur: q.amount,
+        netDays: q.net_days,
+        unlimited: false,
+        ip: "x402",
+        quota: PAID_DAILY_CHECKS,
+      });
       if ("error" in r) return c.json({ error: r.error }, 503);
       const row = r.row;
       if (!row || row.status !== "done" || !row.result) {
@@ -123,6 +134,16 @@ export function registerAgentRoutes(app: Hono, ctx: AgentRoutesCtx): void {
     });
   }
 
+  app.all("/mcp", async (c) => {
+    // Stateless: a fresh server and transport per request, so no response can reach another client.
+    const mcp = buildMcp(ctx);
+    const transport = new StreamableHTTPTransport();
+    await mcp.connect(transport);
+    return transport.handleRequest(c);
+  });
+}
+
+function buildMcp(ctx: AgentRoutesCtx): McpServer {
   const mcp = new McpServer({ name: "upfront", version: "0.1.0" });
   mcp.registerTool(
     "check_client",
@@ -160,9 +181,5 @@ export function registerAgentRoutes(app: Hono, ctx: AgentRoutesCtx): void {
       return { content: [{ type: "text", text: JSON.stringify(agentView(row.result, ctx.webUrl), null, 2) }] };
     },
   );
-  const transport = new StreamableHTTPTransport();
-  app.all("/mcp", async (c) => {
-    if (!mcp.isConnected()) await mcp.connect(transport);
-    return transport.handleRequest(c);
-  });
+  return mcp;
 }

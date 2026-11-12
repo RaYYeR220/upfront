@@ -9,12 +9,12 @@ const dayAgo = () => new Date(Date.now() - 86_400_000).toISOString();
 
 export async function insertCheck(
   db: Client,
-  c: { id: string; query: string; amountEur: number; policy: Policy; ipHash: string | null; payer: string },
+  c: { id: string; query: string; amountEur: number; policy: Policy; ipHash: string | null; payer: string; visibility: "public" | "private" },
 ): Promise<void> {
   await db.execute({
-    sql: `INSERT INTO checks (id, created_at, query, amount_eur, policy_id, policy_version, ip_hash, payer, status)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'running')`,
-    args: [c.id, iso(), c.query, c.amountEur, c.policy.id, c.policy.version, c.ipHash, c.payer],
+    sql: `INSERT INTO checks (id, created_at, query, amount_eur, policy_id, policy_version, ip_hash, payer, visibility, status)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'running')`,
+    args: [c.id, iso(), c.query, c.amountEur, c.policy.id, c.policy.version, c.ipHash, c.payer, c.visibility],
   });
 }
 
@@ -103,7 +103,7 @@ export async function getCheck(db: Client, id: string): Promise<CheckRow | null>
 export async function listChecks(db: Client, limit: number): Promise<Omit<CheckRow, "result" | "candidates">[]> {
   const r = await db.execute({
     sql: `SELECT id, created_at, query, amount_eur, status, entity_name, final_mode, evidence_usd, error
-          FROM checks WHERE status = 'done' ORDER BY created_at DESC LIMIT ?`,
+          FROM checks WHERE status = 'done' AND visibility = 'public' ORDER BY created_at DESC LIMIT ?`,
     args: [limit],
   });
   return r.rows.map((x) => {
@@ -112,13 +112,27 @@ export async function listChecks(db: Client, limit: number): Promise<Omit<CheckR
   });
 }
 
+/**
+ * Every lookup we paid for, newest first. Which company a private check was
+ * about is nobody else's business: those URLs come back with the company
+ * number masked; the amount, merchant and transaction stay verifiable.
+ */
 export async function listReceipts(db: Client, limit: number) {
   const r = await db.execute({
-    sql: `SELECT id, check_id, watch_id, merchant, url, amount_usd, tx_hash, network, status, refusal_code, paid_at, payer
-          FROM receipts ORDER BY paid_at DESC LIMIT ?`,
+    sql: `SELECT r.id, r.check_id, r.merchant, r.url, r.amount_usd, r.tx_hash, r.network, r.status, r.refusal_code, r.paid_at, r.payer,
+                 COALESCE(c.visibility, 'private') AS visibility
+          FROM receipts r LEFT JOIN checks c ON c.id = r.check_id
+          ORDER BY r.paid_at DESC LIMIT ?`,
     args: [limit],
   });
-  return r.rows;
+  return r.rows.map((row) => {
+    const isPublic = row.visibility === "public";
+    return {
+      ...row,
+      check_id: isPublic ? row.check_id : null,
+      url: isPublic ? row.url : String(row.url).replace(/\d{9,14}/g, "•••••••••").replace(/([?&](q|depuis)=)[^&]*/g, "$1•••"),
+    };
+  });
 }
 
 export async function checksByIpLastDay(db: Client, ipHash: string): Promise<number> {

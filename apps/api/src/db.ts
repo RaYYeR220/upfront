@@ -10,6 +10,7 @@ const SCHEMA = [
     policy_version INTEGER NOT NULL,
     ip_hash TEXT,
     payer TEXT NOT NULL DEFAULT 'house',
+    visibility TEXT NOT NULL DEFAULT 'private',
     status TEXT NOT NULL,
     entity_id TEXT,
     entity_name TEXT,

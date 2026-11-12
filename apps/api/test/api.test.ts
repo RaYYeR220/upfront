@@ -70,6 +70,22 @@ describe("checks API", () => {
     expect(meta.evidenceUsd).toBeCloseTo(0.035, 6);
   });
 
+  it("keeps checks of non-example companies out of the public feed and masks their receipts", async () => {
+    const OTHER = "123456789";
+    const { app, checks, post } = await setup();
+    const a = (await (await post({ query: S, amountEur: 500 })).json()) as { checkId: string };
+    await checks.wait(a.checkId);
+    const b = (await (await post({ query: OTHER, amountEur: 500 }, "9.8.7.6")).json()) as { checkId: string };
+    await checks.wait(b.checkId);
+    const feed = (await (await app.request("/api/checks")).json()) as { checks: { id: string }[] };
+    expect(feed.checks.map((c) => c.id)).toEqual([a.checkId]);
+    const receipts = (await (await app.request("/api/receipts")).json()) as { receipts: { url: string; check_id: string | null }[] };
+    expect(receipts.receipts.some((r) => r.url.includes(OTHER))).toBe(false);
+    expect(receipts.receipts.filter((r) => r.check_id === b.checkId)).toHaveLength(0);
+    // The owner still reaches it by its unguessable id.
+    expect((await app.request(`/api/checks/${b.checkId}`)).status).toBe(200);
+  });
+
   it("rejects bad input before spending anything", async () => {
     const { post } = await setup();
     expect((await post({ query: "x", amountEur: 100 })).status).toBe(400);

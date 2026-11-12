@@ -53,6 +53,8 @@ export class CheckService {
     unlimited?: boolean;
     /** Daily checks allowed for this caller's bucket; defaults to the per-visitor limit. */
     quota?: number;
+    /** Public checks appear in the recent-checks feed; everything else is reachable only by its unguessable id. */
+    visibility?: "public" | "private";
   }): Promise<StartResult> {
     const { db } = this.ctx;
     // A missing address shares one bucket: no address never means no limit.
@@ -67,7 +69,15 @@ export class CheckService {
         if ((await houseSpentLastDay(db)) + reserved + reserve > this.ctx.limits.houseDailyCapUsd) return { error: "house_budget" };
       }
       const checkId = randomUUID();
-      await insertCheck(db, { id: checkId, query: req.query, amountEur: req.amountEur, policy: req.policy, ipHash: hash, payer: "house" });
+      await insertCheck(db, {
+        id: checkId,
+        query: req.query,
+        amountEur: req.amountEur,
+        policy: req.policy,
+        ipHash: hash,
+        payer: "house",
+        visibility: req.visibility ?? "private",
+      });
       this.reservedUsd.set(checkId, reserve);
       this.running.set(checkId, Promise.resolve());
       return { checkId };

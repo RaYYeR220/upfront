@@ -76,6 +76,8 @@ describe("x402 endpoint", () => {
     const r = await app.request("/v1/check?siren=12&amount=2400");
     expect(r.status).toBe(400);
     expect(r.headers.get("payment-required")).toBeNull();
+    // Above the paid cap the evidence budget would exceed the price: refused before quoting.
+    expect((await app.request(`/v1/check?siren=${S}&amount=50000`)).status).toBe(400);
   });
 });
 
