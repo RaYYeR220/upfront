@@ -1,0 +1,69 @@
+{
+ "siren": "552032534",
+ "nombre_exercices": 9,
+ "exercices": [
+  {
+   "date_cloture": "2017-12-31",
+   "chiffre_affaires": 609000000,
+   "ebe": 609000000,
+   "resultat_net": 176000000,
+   "ratios": {
+    "taux_endettement": 4.982,
+    "autonomie_financiere": 40.738,
+    "marge_ebe": 100
+   },
+   "qualite": {
+    "fiabilite": "a_verifier",
+    "anomalies": [
+     "ebe_non_calculable"
+    ],
+    "champs_douteux": [
+     "couverture_interets",
+     "ebe",
+     "marge_brute",
+     "marge_ebe"
+    ],
+    "champs_non_renseignes": []
+   }
+  }
+ ],
+ "perimetre_comptable": {
+  "perimetre": "social",
+  "double_depot_confirme": true
+ },
+ "controles_coherence": [
+  {
+   "code": "ebe_non_calculable",
+   "portee": "bloquante",
+   "exercices": [
+    "2017-12-31"
+   ]
+  }
+ ],
+ "comptes_consolides": {
+  "perimetre": "consolide",
+  "nombre_exercices": 9,
+  "exercices": [
+   {
+    "date_cloture": "2024-12-31",
+    "chiffre_affaires": 27376000000,
+    "resultat_net": null,
+    "qualite": {
+     "fiabilite": "exploitable",
+     "anomalies": [
+      "chiffre_affaires_identique",
+      "resultat_net_non_calcule",
+      "ratio_non_calcule"
+     ],
+     "champs_douteux": [],
+     "champs_non_renseignes": [
+      "ratio_liquidite",
+      "resultat_net"
+     ]
+    }
+   }
+  ]
+ },
+ "source": "Ratios financiers INPI / Banque de France (comptes annuels déposés) via data.economie.gouv.fr, licence ouverte 2.0",
+ "data_freshness": "jeu ratios_inpi_bce du 2026-09-15"
+}

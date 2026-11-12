@@ -37,7 +37,11 @@ importers:
 
   packages/serv: {}
 
-  packages/sources: {}
+  packages/sources:
+    dependencies:
+      '@upfront/core':
+        specifier: workspace:*
+        version: link:../core
 
 packages:
 

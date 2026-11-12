@@ -1,0 +1,33 @@
+{
+ "siren": "841936560",
+ "denomination": "KD SOCCER CONSULTING",
+ "denomination_source": "sirene",
+ "procedures_collectives": [
+  {
+   "id": "A202601971788",
+   "date_parution": "2026-10-14",
+   "tribunal": "Greffe du Tribunal de Commerce de Meaux",
+   "jugement": {
+    "nature": "Jugement d'ouverture de liquidation judiciaire",
+    "famille": "Jugement d'ouverture",
+    "date": "2026-09-28",
+    "categorie": "ouverture_liquidation",
+    "mandataires": [
+     {
+      "role": "liquidateur",
+      "forme": "personne_morale"
+     }
+    ],
+    "date_cessation_paiements": "2025-03-28"
+   },
+   "libelle_annonce": "KD Soccer Consulting"
+  }
+ ],
+ "total_annonces": 2,
+ "omissions": {
+  "libelle_personne_physique": 0,
+  "libelle_type_indetermine": 0,
+  "denomination_repli": 0,
+  "nature_non_classee": 0
+ }
+}

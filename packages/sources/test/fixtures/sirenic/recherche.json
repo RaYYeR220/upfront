@@ -1,0 +1,21 @@
+{
+ "total_results": 49,
+ "resultats": [
+  {
+   "siren": "552032534",
+   "denomination": "DANONE",
+   "statut_diffusion": "totale",
+   "etat_administratif": "actif",
+   "activite_principale": "70.10Z",
+   "commune_siege": "PARIS",
+   "code_postal_siege": "75009",
+   "score_confiance": 1,
+   "correspondance_nom": "exacte"
+  }
+ ],
+ "tronque": true,
+ "source": "INSEE Sirene (Etalab 2.0) / INPI RNE (conditions propres à la source) via l'API recherche-entreprises",
+ "disclaimer": "Données issues de l'open data, fournies en l'état sans garantie. / Open data, provided as is without warranty.",
+ "etages_abandonnes": [],
+ "data_freshness": "stock Sirene mensuel (2026-09-01), dirigeants temps réel"
+}
