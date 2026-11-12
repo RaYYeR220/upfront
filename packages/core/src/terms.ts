@@ -1,6 +1,7 @@
 import type { Terms, TermsMode } from "./types.ts";
 
-const MODE_RANK: Record<TermsMode, number> = { net: 1, deposit: 2, prepay: 3, decline: 4 };
+export const MODE_ORDER: Record<TermsMode, number> = { net: 1, deposit: 2, prepay: 3, decline: 4 };
+const MODE_RANK = MODE_ORDER;
 
 /**
  * A single number that orders terms from loosest to strictest.
