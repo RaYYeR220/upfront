@@ -31,7 +31,11 @@ export type GapStats = {
   shareAtLegalCap: number | null;
 };
 
-export type SilentGap = GapStats & { byNature: Record<Nature, GapStats> };
+export type SilentGap = GapStats & {
+  byNature: Record<Nature, GapStats>;
+  /** Companies (legal persons) versus sole traders, as stated by the notice itself. */
+  byPersonType: { company: GapStats; soleTrader: GapStats };
+};
 
 /**
  * Percentile of an ascending array, linear interpolation between closest ranks
@@ -114,5 +118,9 @@ export function silentGap(judgments: readonly Judgment[]): SilentGap {
   const byNature = Object.fromEntries(
     NATURES.map((nature) => [nature, stats(judgments.filter((j) => j.nature === nature))]),
   ) as Record<Nature, GapStats>;
-  return { ...stats(judgments), byNature };
+  const byPersonType = {
+    company: stats(judgments.filter((j) => j.personType === "pm")),
+    soleTrader: stats(judgments.filter((j) => j.personType === "pp")),
+  };
+  return { ...stats(judgments), byNature, byPersonType };
 }

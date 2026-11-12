@@ -17,6 +17,8 @@ const { values } = parseArgs({
     to: { type: "string", default: "2026-10-31" },
     n: { type: "string", default: "150" },
     seed: { type: "string", default: "upfront-backtest-2026" },
+    // Recompute only the silent-gap statistics over the window, leaving cohort.json untouched.
+    "gap-only": { type: "boolean", default: false },
   },
 });
 const from = values.from;
@@ -74,7 +76,8 @@ async function main() {
   const gap = silentGap(judgments);
   log(
     `silent gap: n=${gap.nMeasured} median=${gap.medianDays}d p25=${gap.p25Days}d p75=${gap.p75Days}d ` +
-      `>90d=${gap.shareOver90Days} >180d=${gap.shareOver180Days}`,
+      `>90d=${gap.shareOver90Days} >180d=${gap.shareOver180Days}; companies: n=${gap.byPersonType.company.nMeasured} ` +
+      `median=${gap.byPersonType.company.medianDays}d`,
   );
   await writeJson("silent-gap.json", {
     generatedAt: new Date().toISOString(),
@@ -85,6 +88,11 @@ async function main() {
     ...gap,
     quality: dataQuality(judgments, stats),
   });
+
+  if (values["gap-only"]) {
+    log(`http cache: ${cacheStats.hits} hits, ${cacheStats.misses} fetched`);
+    return;
+  }
 
   log(`sampling ${n} failing companies (seed ${seed})`);
   const cohort = await buildCohort(judgments, { n, seed });
