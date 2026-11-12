@@ -14,20 +14,38 @@ export function offlineEngine(): Omit<EngineDeps, "emit"> {
   const dir = join(import.meta.dirname, "../../../packages/sources/test/fixtures/sirenic");
   const fx = (n: string): unknown => JSON.parse(readFileSync(join(dir, `${n}.json`), "utf8"));
   const api = "https://api.sirenic.eu/v1";
-  const company = (siren: string, profile: unknown, alertes: unknown): Record<string, FakeRoute> => ({
-    [`${api}/entreprise/${siren}`]: { status: 200, body: profile, priceUsd: 0.005 },
-    [`${api}/entreprise/${siren}/alertes`]: { status: 200, body: alertes, priceUsd: 0.01 },
-    [`${api}/entreprise/${siren}/documents`]: { status: 200, body: fx("entreprise-siren-documents"), priceUsd: 0.02 },
-    [`${api}/entreprise/${siren}/finances`]: { status: 200, body: fx("entreprise-siren-finances"), priceUsd: 0.01 },
-    [`${api}/entreprise/${siren}/contentieux`]: { status: 200, body: fx("entreprise-siren-contentieux"), priceUsd: 0.01 },
-    [`${api}/entreprise/${siren}/encours?montant=4000&delai_jours=30`]: { status: 200, body: fx("entreprise-siren-encours"), priceUsd: 0.12 },
-  });
-  const danone = fx("entreprise-siren");
-  const kd = { ...(danone as object), siren: "841936560", denomination: "KD SOCCER CONSULTING", date_creation: "2018-07-01" };
-  const kite = new FakeKite({
-    ...company("552032534", danone, { procedures_collectives: [] }),
-    ...company("841936560", kd, fx("entreprise-siren-alertes")),
-  });
+  const danone: Record<string, FakeRoute> = {
+    [`${api}/entreprise/552032534`]: { status: 200, body: fx("entreprise-siren"), priceUsd: 0.005 },
+    [`${api}/entreprise/552032534/alertes`]: { status: 200, body: { procedures_collectives: [] }, priceUsd: 0.01 },
+    [`${api}/entreprise/552032534/documents`]: { status: 200, body: fx("entreprise-siren-documents"), priceUsd: 0.02 },
+    [`${api}/entreprise/552032534/finances`]: { status: 200, body: fx("entreprise-siren-finances"), priceUsd: 0.01 },
+    [`${api}/entreprise/552032534/contentieux`]: { status: 200, body: fx("entreprise-siren-contentieux"), priceUsd: 0.01 },
+  };
+  // KD SOCCER CONSULTING: registry fields from the public register (recherche-entreprises), the
+  // gazette notice from Sirenic's published sample. Filing dates are not recorded offline.
+  const kd: Record<string, FakeRoute> = {
+    [`${api}/entreprise/841936560`]: {
+      status: 200,
+      priceUsd: 0.005,
+      body: {
+        siren: "841936560",
+        denomination: "KD SOCCER CONSULTING",
+        nature_juridique: "5710",
+        activite_principale: "70.22Z",
+        date_creation: "2018-08-01",
+        etat_administratif: "actif",
+        siege: { commune: "BUSSY-SAINT-GEORGES", code_postal: "77600" },
+      },
+    },
+    [`${api}/entreprise/841936560/alertes`]: { status: 200, body: fx("entreprise-siren-alertes"), priceUsd: 0.01 },
+    [`${api}/entreprise/841936560/finances`]: {
+      status: 200,
+      priceUsd: 0.01,
+      body: { siren: "841936560", exercices: [{ date_cloture: "2019-12-31", chiffre_affaires: 0, resultat_net: -226 }] },
+    },
+    [`${api}/entreprise/841936560/contentieux`]: { status: 200, body: { decisions: [] }, priceUsd: 0.01 },
+  };
+  const kite = new FakeKite({ ...danone, ...kd });
   const serv: ServPort = {
     plan: async ({ menu }) => ({
       keys: menu.filter((m) => m.key !== "fr.vendor_limit").map((m) => m.key),
