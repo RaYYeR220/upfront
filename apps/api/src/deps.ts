@@ -30,7 +30,7 @@ export function loadConfig(): Config {
   return {
     port: Number(process.env.PORT ?? 8787),
     databaseUrl: process.env.DATABASE_URL ?? "file:upfront.db",
-    servApiKey: need("SERV_API_KEY"),
+    servApiKey: process.env.UPFRONT_OFFLINE === "1" ? "" : need("SERV_API_KEY"),
     reppoApiKey: process.env.REPPO_API_KEY ?? null,
     kiteHome: process.env.KITE_HOME ?? "/data/kite/house",
     kpassBin: process.env.KPASS_BIN ?? "kpass",

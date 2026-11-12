@@ -6,6 +6,7 @@ import { clientIp, createApp } from "./app.ts";
 import { openDb } from "./db.ts";
 import { engineDeps, loadConfig } from "./deps.ts";
 import { Hub } from "./hub.ts";
+import { offlineEngine } from "./offline.ts";
 import { registerWatchRoutes } from "./routes-watch.ts";
 import { CheckService } from "./service.ts";
 import { telegramNotifier } from "./telegram.ts";
@@ -14,7 +15,8 @@ import { bodaccNoticeText, runWatches, type WatchDeps } from "./watch.ts";
 const cfg = loadConfig();
 const db = await openDb(cfg.databaseUrl);
 const hub = new Hub();
-const engine = engineDeps(cfg);
+const engine = process.env.UPFRONT_OFFLINE === "1" ? offlineEngine() : engineDeps(cfg);
+if (process.env.UPFRONT_OFFLINE === "1") console.warn("OFFLINE MODE: recorded evidence, fixed decisions, nothing is paid");
 const notifier = cfg.telegramToken ? telegramNotifier(cfg.telegramToken) : null;
 const checks = new CheckService({
   db,
