@@ -99,6 +99,7 @@ export type CheckOutcome =
   | { kind: "needs_choice"; candidates: Candidate[]; checkId: string }
   | { kind: "cannot_check_individual"; checkId: string }
   | { kind: "not_found"; checkId: string }
+  | { kind: "unavailable"; checkId: string; reason: string; receipts: Receipt[] }
   | { kind: "unsupported_jurisdiction"; checkId: string };
 
 const REVIEW_TIMEOUT_MS = 180_000;
@@ -115,6 +116,15 @@ function identify(query: string): { siren: string | null; method: string } {
 }
 
 const INDIVIDUAL = /R1|non_diffusible|diffusion_partielle|personne_physique/i;
+
+/** French legal-form codes in the 1000 series are sole traders: people, not companies. */
+function isIndividual(profile: unknown): boolean {
+  const p = (profile && typeof profile === "object" ? profile : {}) as Record<string, unknown>;
+  const form = String(p.nature_juridique ?? "");
+  if (form.startsWith("1")) return true;
+  if (typeof p.statut_diffusion === "string" && p.statut_diffusion !== "totale") return true;
+  return false;
+}
 
 /** Applies an independent review to a finished check. Used inline and when a review lands later. */
 export function applyReview(r: CheckResult, review: ReviewResult): CheckResult {
@@ -201,7 +211,8 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
 
   // 3. buy: the registry profile first (it tells us if we may check this entity at all), then the rest.
   type Bought = { spec: LookupSpec; status: number | null; body: unknown; receipt: Receipt };
-  const bought = await runNode<Bought[] | "individual" | "not_found">(
+  type Gate = "individual" | "not_found" | "unavailable";
+  const bought = await runNode<Bought[] | Gate>(
     { checkId, name: "buy", type: "external", input: { siren, keys: plan.keys } },
     emitNode,
     nodes,
@@ -210,9 +221,18 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
       const profileSpec = specs.find((s) => s.key.endsWith(".profile")) ?? specs[0]!;
       const opts = { amountEur: input.amountEur, netDays: input.netDaysRequested ?? 30 };
       const first = await pay(profileSpec.key, profileSpec.url(siren, opts));
-      if (first.httpStatus === 404) {
-        const verdict = INDIVIDUAL.test(JSON.stringify(first.body ?? "")) ? "individual" : "not_found";
-        return { value: verdict, receiptIds: [first.receipt.id], status: "error", error: verdict };
+      // Fail closed: buy nothing else unless the profile came back and shows a fully public legal person.
+      const ok = first.receipt.status === "settled" && first.httpStatus !== null && first.httpStatus >= 200 && first.httpStatus < 300;
+      if (!ok) {
+        const verdict: Gate = INDIVIDUAL.test(JSON.stringify(first.body ?? ""))
+          ? "individual"
+          : first.httpStatus === 404
+            ? "not_found"
+            : "unavailable";
+        return { value: verdict, receiptIds: [first.receipt.id], status: "error", error: first.receipt.refusalCode ?? verdict };
+      }
+      if (isIndividual(first.body)) {
+        return { value: "individual", receiptIds: [first.receipt.id], status: "error", error: "individual" };
       }
       const out: Bought[] = [{ spec: profileSpec, status: first.httpStatus, body: first.body, receipt: first.receipt }];
       const rest = specs.filter((s) => s !== profileSpec);
@@ -234,6 +254,10 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
   );
   if (bought === "individual") return { kind: "cannot_check_individual", checkId };
   if (bought === "not_found") return { kind: "not_found", checkId };
+  if (bought === "unavailable") {
+    const r = receipts[receipts.length - 1];
+    return { kind: "unavailable", checkId, reason: r?.refusalCode ?? "registry lookup failed", receipts };
+  }
 
   // 4. extract: parse what we paid for, keep only what was public on the reference date, derive.
   const facts = await runNode<Fact[]>(

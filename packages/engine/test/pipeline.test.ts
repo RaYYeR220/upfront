@@ -209,6 +209,34 @@ describe("runCheck", () => {
     expect(kite.calls).toHaveLength(1);
   });
 
+  it("buys nothing else when the registry profile cannot be bought", async () => {
+    const { port } = servStub(netFromFirstFact);
+    const kite = new FakeKite({ ...ROUTES, [`${API}/entreprise/${DANONE}`]: { refuse: "wallet_empty" } });
+    const { d } = deps({ serv: port, kite });
+    const o = await runCheck({ query: DANONE, amountEur: 500, policy, review: "skip" }, d);
+    expect(o).toMatchObject({ kind: "unavailable", reason: "wallet_empty" });
+    expect(kite.calls).toHaveLength(1);
+  });
+
+  it("stops at a sole trader's profile even when it is served", async () => {
+    const { port } = servStub(netFromFirstFact);
+    const kite = new FakeKite({
+      ...ROUTES,
+      [`${API}/entreprise/${DANONE}`]: { status: 200, body: { ...(danoneProfile as object), nature_juridique: "1000" }, priceUsd: 0.005 },
+    });
+    const { d } = deps({ serv: port, kite });
+    expect((await runCheck({ query: DANONE, amountEur: 500, policy, review: "skip" }, d)).kind).toBe("cannot_check_individual");
+    expect(kite.calls).toHaveLength(1);
+  });
+
+  it("stops on a registry server error without buying more", async () => {
+    const { port } = servStub(netFromFirstFact);
+    const kite = new FakeKite({ ...ROUTES, [`${API}/entreprise/${DANONE}`]: { status: 503, body: { erreur: "amont" }, priceUsd: 0.005 } });
+    const { d } = deps({ serv: port, kite });
+    expect((await runCheck({ query: DANONE, amountEur: 500, policy, review: "skip" }, d)).kind).toBe("unavailable");
+    expect(kite.calls).toHaveLength(1);
+  });
+
   it("accepts a VAT number or a SIRET as the client", async () => {
     const { port } = servStub(netFromFirstFact);
     const { d } = deps({ serv: port });

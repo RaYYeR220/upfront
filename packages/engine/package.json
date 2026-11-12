@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
     "@upfront/core": "workspace:*",
     "@upfront/sources": "workspace:*",
     "@upfront/kite": "workspace:*",
     "@upfront/serv": "workspace:*",
-    "@upfront/reppo": "workspace:*"
+    "@upfront/reppo": "workspace:*",
+    "openai": "7.55.0"
   }
 }
