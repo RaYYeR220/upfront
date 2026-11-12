@@ -101,7 +101,7 @@ export function reduce(v: CheckView, e: StreamEvent): CheckView {
 
 /** A stored check (fetched after the fact) as the same view. */
 export function viewFromRow(checkId: string, row: { status: string; result: CheckResult | null; candidates: Candidate[] | null; query: string; amountEur: number }): CheckView {
-  let v = { ...initialView(checkId), query: row.query, amountEur: row.amountEur };
+  let v: CheckView = { ...initialView(checkId), query: row.query, amountEur: row.amountEur };
   if (row.result) v = reduce(v, { event: "outcome", data: { kind: "done", result: row.result } });
   else v = { ...v, status: row.status as CheckStatus, candidates: row.candidates };
   return { ...v, ended: row.status !== "running" };
