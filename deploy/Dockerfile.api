@@ -1,0 +1,27 @@
+FROM node:24-bookworm-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends curl ca-certificates jq tar \
+ && rm -rf /var/lib/apt/lists/*
+
+# Kite Agent Passport CLI: the agent pays for evidence through it.
+ENV KPASS_INSTALL_DIR=/opt/kpass
+RUN curl -fsSL https://cli.gokite.ai/install.sh | bash \
+ && for b in kpass ksearch; do f=$(find /opt/kpass -type f -name "$b" | head -1); ln -sf "$f" "/usr/local/bin/$b"; done \
+ && kpass --version
+
+WORKDIR /app
+RUN corepack enable
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY packages ./packages
+COPY apps/api ./apps/api
+RUN pnpm install --frozen-lockfile --filter "@upfront/api..."
+
+ENV NODE_ENV=production \
+    PORT=8787 \
+    DATABASE_URL=file:/data/upfront.db \
+    KITE_HOME=/data/kite/house \
+    TRUST_PROXY=1
+VOLUME /data
+EXPOSE 8787
+CMD ["pnpm", "--filter", "@upfront/api", "start"]
