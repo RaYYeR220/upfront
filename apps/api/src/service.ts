@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { Client } from "@libsql/client";
 import type { Policy } from "@upfront/core";
+import { evidenceBudgetUsd } from "@upfront/core";
 import { applyReview, type CheckOutcome, type CheckResult, type EngineDeps, REPPO_CREDITS_PER_USD, runCheck } from "@upfront/engine";
 import { awaitReview } from "@upfront/reppo";
 import type { Hub } from "./hub.ts";
@@ -15,14 +16,33 @@ export interface ServiceCtx {
   review: { mode: "async" | "skip"; timeoutMs: number; pollMs: number };
 }
 
-export type StartResult = { checkId: string } | { error: "demo_quota" | "house_budget" };
+export type StartResult = { checkId: string } | { error: "demo_quota" | "house_budget" | "busy" };
 
 export const ipHash = (ip: string | null, salt: string) =>
   ip ? createHash("sha256").update(`${salt}:${ip}`).digest("hex").slice(0, 32) : null;
 
+/** At most this many checks pay for evidence at the same time. */
+const MAX_RUNNING = 4;
+
 export class CheckService {
   private running = new Map<string, Promise<void>>();
+  /** Budget reserved by checks that are still running (their maximum evidence spend). */
+  private reservedUsd = new Map<string, number>();
+  private gate: Promise<void> = Promise.resolve();
   constructor(private ctx: ServiceCtx) {}
+
+  /** Serializes admission so two requests can't both pass the quota and budget checks. */
+  private async admit<T>(fn: () => Promise<T>): Promise<T> {
+    const prev = this.gate;
+    let release!: () => void;
+    this.gate = new Promise((r) => (release = r));
+    await prev;
+    try {
+      return await fn();
+    } finally {
+      release();
+    }
+  }
 
   async start(req: {
     query: string;
@@ -33,15 +53,30 @@ export class CheckService {
     unlimited?: boolean;
   }): Promise<StartResult> {
     const { db } = this.ctx;
-    const hash = ipHash(req.ip, this.ctx.salt);
-    if (!req.unlimited) {
-      if (hash && (await checksByIpLastDay(db, hash)) >= this.ctx.limits.checksPerIpPerDay) return { error: "demo_quota" };
-      if ((await houseSpentLastDay(db)) >= this.ctx.limits.houseDailyCapUsd) return { error: "house_budget" };
-    }
-    const checkId = randomUUID();
-    await insertCheck(db, { id: checkId, query: req.query, amountEur: req.amountEur, policy: req.policy, ipHash: hash, payer: "house" });
+    // A missing address shares one bucket: no address never means no limit.
+    const hash = ipHash(req.ip ?? "unknown", this.ctx.salt);
+    // Worst case for one check: the search, plus the full evidence budget.
+    const reserve = evidenceBudgetUsd(req.amountEur) + 0.01;
+    const admitted = await this.admit(async (): Promise<StartResult> => {
+      if (!req.unlimited) {
+        if (this.running.size >= MAX_RUNNING) return { error: "busy" };
+        if (hash && (await checksByIpLastDay(db, hash)) >= this.ctx.limits.checksPerIpPerDay) return { error: "demo_quota" };
+        const reserved = [...this.reservedUsd.values()].reduce((s, x) => s + x, 0);
+        if ((await houseSpentLastDay(db)) + reserved + reserve > this.ctx.limits.houseDailyCapUsd) return { error: "house_budget" };
+      }
+      const checkId = randomUUID();
+      await insertCheck(db, { id: checkId, query: req.query, amountEur: req.amountEur, policy: req.policy, ipHash: hash, payer: "house" });
+      this.reservedUsd.set(checkId, reserve);
+      this.running.set(checkId, Promise.resolve());
+      return { checkId };
+    });
+    if ("error" in admitted) return admitted;
+    const { checkId } = admitted;
     this.ctx.hub.publish(checkId, { event: "start", data: { checkId, query: req.query, amountEur: req.amountEur, policy: { id: req.policy.id, version: req.policy.version } } });
-    const run = this.run(checkId, req).finally(() => this.running.delete(checkId));
+    const run = this.run(checkId, req).finally(() => {
+      this.running.delete(checkId);
+      this.reservedUsd.delete(checkId);
+    });
     this.running.set(checkId, run);
     return { checkId };
   }
@@ -74,9 +109,10 @@ export class CheckService {
         },
       );
     } catch (e) {
+      console.error(`check ${checkId} failed`, e);
       await Promise.allSettled(writes);
-      await finishCheck(db, checkId, { status: "error", error: String(e) });
-      hub.publish(checkId, { event: "outcome", data: { kind: "error", error: String(e) } });
+      await finishCheck(db, checkId, { status: "error", error: "internal_error" });
+      hub.publish(checkId, { event: "outcome", data: { kind: "error", error: "internal_error" } });
       hub.close(checkId);
       return;
     }
@@ -103,12 +139,20 @@ export class CheckService {
 
   private async finishReview(result: CheckResult, evalId: string) {
     const { db, hub } = this.ctx;
-    const review = await awaitReview(this.ctx.engine.reppo!, evalId, { timeoutMs: this.ctx.review.timeoutMs, pollMs: this.ctx.review.pollMs });
-    const updated = applyReview(result, review);
-    updated.costs = { ...updated.costs, reviewUsd: (review.creditsCharged ?? 0) / REPPO_CREDITS_PER_USD };
-    await finishCheck(db, result.checkId, { status: "done", result: updated });
-    hub.publish(result.checkId, { event: "review", data: { review, final: updated.final, finalReasons: updated.finalReasons, reviewed: updated.reviewed } });
-    hub.close(result.checkId);
+    try {
+      const review = await awaitReview(this.ctx.engine.reppo!, evalId, { timeoutMs: this.ctx.review.timeoutMs, pollMs: this.ctx.review.pollMs });
+      const updated = applyReview(result, review);
+      updated.costs = { ...updated.costs, reviewUsd: (review.creditsCharged ?? 0) / REPPO_CREDITS_PER_USD };
+      await finishCheck(db, result.checkId, { status: "done", result: updated });
+      hub.publish(result.checkId, { event: "review", data: { review, final: updated.final, finalReasons: updated.finalReasons, reviewed: updated.reviewed } });
+    } catch (e) {
+      console.error(`review for ${result.checkId} failed`, e);
+      const failed = { ...result, review: { status: "failed" as const, evalId, reason: "review_unavailable" }, reviewed: false };
+      await finishCheck(db, result.checkId, { status: "done", result: failed }).catch(() => {});
+      hub.publish(result.checkId, { event: "review", data: { review: failed.review, final: failed.final, finalReasons: failed.finalReasons, reviewed: false } });
+    } finally {
+      hub.close(result.checkId);
+    }
   }
 
   async get(checkId: string) {

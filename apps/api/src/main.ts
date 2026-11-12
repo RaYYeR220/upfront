@@ -1,14 +1,19 @@
 import { serve } from "@hono/node-server";
+import { getConnInfo } from "@hono/node-server/conninfo";
 import { createApp } from "./app.ts";
 import { openDb } from "./db.ts";
 import { engineDeps, loadConfig } from "./deps.ts";
 import { Hub } from "./hub.ts";
+import { registerWatchRoutes } from "./routes-watch.ts";
 import { CheckService } from "./service.ts";
+import { telegramNotifier } from "./telegram.ts";
+import { bodaccNoticeText, runWatches, type WatchDeps } from "./watch.ts";
 
 const cfg = loadConfig();
 const db = await openDb(cfg.databaseUrl);
 const hub = new Hub();
 const engine = engineDeps(cfg);
+const notifier = cfg.telegramToken ? telegramNotifier(cfg.telegramToken) : null;
 const checks = new CheckService({
   db,
   hub,
@@ -18,7 +23,60 @@ const checks = new CheckService({
   review: { mode: cfg.reviewMode, timeoutMs: 240_000, pollMs: 4_000 },
 });
 
-const app = createApp({ db, hub, checks, adminToken: cfg.adminToken, corsOrigins: cfg.corsOrigins });
+const watchDeps = (): WatchDeps => ({
+  db,
+  kite: engine.kite,
+  payer: engine.payer,
+  notifier,
+  noticeText: bodaccNoticeText(),
+  webUrl: cfg.publicWebUrl,
+  today: new Date().toISOString().slice(0, 10),
+});
+
+const app = createApp({
+  db,
+  hub,
+  checks,
+  adminToken: cfg.adminToken,
+  corsOrigins: cfg.corsOrigins,
+  trustProxy: process.env.TRUST_PROXY === "1",
+  socketIp: (c) => {
+    try {
+      return getConnInfo(c).remote.address ?? null;
+    } catch {
+      return null;
+    }
+  },
+  extraRoutes: (a) =>
+    registerWatchRoutes(a, {
+      db,
+      adminToken: cfg.adminToken,
+      telegramSecret: process.env.TELEGRAM_WEBHOOK_SECRET,
+      telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME,
+      notifier,
+      webUrl: cfg.publicWebUrl,
+      maxActiveWatches: Number(process.env.MAX_ACTIVE_WATCHES ?? 300),
+      watchDeps,
+    }),
+});
+
+// Watches run once a day after 07:00 Paris time.
+let lastWatchRun = "";
+setInterval(async () => {
+  const paris = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Paris", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hourCycle: "h23" })
+    .formatToParts(new Date())
+    .reduce<Record<string, string>>((m, p) => ({ ...m, [p.type]: p.value }), {});
+  const day = `${paris.year}-${paris.month}-${paris.day}`;
+  if (Number(paris.hour) >= 7 && lastWatchRun !== day) {
+    lastWatchRun = day;
+    try {
+      const r = await runWatches(watchDeps());
+      console.log(`watch run ${day}: ${r.checked} checked, ${r.alerts} alerts`);
+    } catch (e) {
+      console.error("watch run failed", e);
+    }
+  }
+}, 10 * 60_000);
 
 serve({ fetch: app.fetch, port: cfg.port }, (info) => {
   console.log(`upfront api listening on :${info.port}`);

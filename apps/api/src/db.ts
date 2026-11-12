@@ -41,6 +41,7 @@ const SCHEMA = [
     name TEXT NOT NULL,
     text TEXT NOT NULL,
     hash TEXT NOT NULL,
+    edit_token_hash TEXT,
     created_at TEXT NOT NULL,
     PRIMARY KEY (id, version)
   )`,

@@ -1,10 +1,10 @@
 import type { Client } from "@libsql/client";
-import { Hono } from "hono";
+import { type Context, Hono } from "hono";
 import { cors } from "hono/cors";
 import { streamSSE } from "hono/streaming";
 import { z } from "zod";
 import type { Hub } from "./hub.ts";
-import { getPolicy, listChecks, listPolicyVersions, listReceipts, meta, savePolicyVersion } from "./repo.ts";
+import { createPolicy, getPolicy, listChecks, listPolicyVersions, listReceipts, meta, policyTokenOk, savePolicyVersion } from "./repo.ts";
 import type { CheckService } from "./service.ts";
 import { PRESETS, loadPolicy } from "@upfront/serv";
 
@@ -14,6 +14,9 @@ export interface AppCtx {
   checks: CheckService;
   adminToken?: string;
   corsOrigins: string[];
+  trustProxy: boolean;
+  /** Socket address of the request, when the server exposes it. */
+  socketIp?: (c: Context) => string | null;
   extraRoutes?: (app: Hono) => void;
 }
 
@@ -27,10 +30,18 @@ const CheckBody = z.object({
 
 const PolicyBody = z.object({ name: z.string().trim().min(1).max(80), text: z.string().trim().min(20).max(4000) });
 
-export function clientIp(h: (name: string) => string | undefined): string | null {
-  const fwd = h("x-forwarded-for");
-  if (fwd) return fwd.split(",")[0]!.trim();
-  return h("x-real-ip") ?? null;
+/**
+ * The client address. Behind our own reverse proxy (TRUST_PROXY), the proxy
+ * appends the address it saw as the LAST hop of X-Forwarded-For; anything to
+ * its left is client-supplied and ignored. Without a trusted proxy, only the
+ * socket address counts.
+ */
+export function clientIp(h: (name: string) => string | undefined, socketIp: string | null, trustProxy: boolean): string | null {
+  if (trustProxy) {
+    const hops = (h("x-forwarded-for") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+    return hops.at(-1) ?? socketIp;
+  }
+  return socketIp;
 }
 
 export function createApp(ctx: AppCtx): Hono {
@@ -51,7 +62,7 @@ export function createApp(ctx: AppCtx): Hono {
       amountEur: b.amountEur,
       netDaysRequested: b.netDaysRequested,
       policy,
-      ip: clientIp((n) => c.req.header(n)),
+      ip: clientIp((n) => c.req.header(n), ctx.socketIp?.(c) ?? null, ctx.trustProxy),
       unlimited,
     });
     if ("error" in r) return c.json(r, r.error === "demo_quota" ? 429 : 503);
@@ -124,8 +135,8 @@ export function createApp(ctx: AppCtx): Hono {
   app.post("/api/policies", async (c) => {
     const parsed = PolicyBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
-    const id = `p_${crypto.randomUUID().slice(0, 8)}`;
-    return c.json(await savePolicyVersion(ctx.db, id, parsed.data.name, parsed.data.text), 201);
+    const { policy, editToken } = await createPolicy(ctx.db, parsed.data.name, parsed.data.text);
+    return c.json({ ...policy, editToken }, 201);
   });
 
   app.post("/api/policies/:id/versions", async (c) => {
@@ -133,6 +144,7 @@ export function createApp(ctx: AppCtx): Hono {
     if ((PRESETS as readonly string[]).includes(id)) return c.json({ error: "presets_are_read_only" }, 400);
     const prev = await getPolicy(ctx.db, id);
     if (!prev) return c.json({ error: "not_found" }, 404);
+    if (!(await policyTokenOk(ctx.db, id, c.req.header("x-policy-token")))) return c.json({ error: "forbidden" }, 403);
     const parsed = PolicyBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
     return c.json(await savePolicyVersion(ctx.db, id, parsed.data.name, parsed.data.text), 201);

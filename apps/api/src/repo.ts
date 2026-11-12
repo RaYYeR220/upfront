@@ -1,3 +1,4 @@
+import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import type { Client } from "@libsql/client";
 import type { Policy, Receipt } from "@upfront/core";
 import type { CheckResult } from "@upfront/engine";
@@ -163,10 +164,34 @@ export async function getPolicy(db: Client, id: string, version?: number): Promi
   return { id: String(row.id), name: String(row.name), version: Number(row.version), text: String(row.text), hash: String(row.hash) };
 }
 
+const sha = (s: string) => createHash("sha256").update(s, "utf8").digest("hex");
+
+/** Creates a custom policy and returns its edit token once. Only the token's hash is stored. */
+export async function createPolicy(db: Client, name: string, text: string): Promise<{ policy: Policy; editToken: string }> {
+  const id = `p_${randomUUID()}`;
+  const editToken = randomBytes(24).toString("base64url");
+  const p = makePolicy(id, name, text, 1);
+  await db.execute({
+    sql: "INSERT INTO policies (id, version, name, text, hash, edit_token_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    args: [p.id, p.version, p.name, p.text, p.hash, sha(editToken), iso()],
+  });
+  return { policy: p, editToken };
+}
+
+export async function policyTokenOk(db: Client, id: string, token: string | undefined): Promise<boolean> {
+  if (!token) return false;
+  const r = await db.execute({ sql: "SELECT edit_token_hash FROM policies WHERE id = ? AND version = 1", args: [id] });
+  const stored = r.rows[0]?.edit_token_hash;
+  if (typeof stored !== "string") return false;
+  const a = Buffer.from(stored, "hex");
+  const b = Buffer.from(sha(token), "hex");
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 export async function savePolicyVersion(db: Client, id: string, name: string, text: string): Promise<Policy> {
   const prev = await getPolicy(db, id);
-  const version = prev && !(PRESETS as readonly string[]).includes(id) ? prev.version + 1 : 1;
-  const p = makePolicy(id, name, text, version);
+  if (!prev || (PRESETS as readonly string[]).includes(id)) throw new Error("not a custom policy");
+  const p = makePolicy(id, name, text, prev.version + 1);
   await db.execute({
     sql: "INSERT INTO policies (id, version, name, text, hash, created_at) VALUES (?, ?, ?, ?, ?, ?)",
     args: [p.id, p.version, p.name, p.text, p.hash, iso()],

@@ -41,7 +41,7 @@ async function setup(opts: { reppo?: ReppoClient | null; capUsd?: number; perIp?
     salt: "s",
     review: { mode: "async", timeoutMs: 2000, pollMs: 5 },
   });
-  const app = createApp({ db, hub, checks, corsOrigins: [] });
+  const app = createApp({ db, hub, checks, corsOrigins: [], trustProxy: true });
   const post = (body: unknown, ip = "1.2.3.4") =>
     app.request("/api/checks", { method: "POST", body: JSON.stringify(body), headers: { "content-type": "application/json", "x-forwarded-for": ip } });
   return { app, checks, post, db };
@@ -88,10 +88,12 @@ describe("checks API", () => {
     expect(fourth.status).toBe(429);
     expect(await fourth.json()).toEqual({ error: "demo_quota" });
     expect((await post({ query: S, amountEur: 500 }, "5.6.7.8")).status).toBe(202);
+    // A spoofed left-hand hop doesn't buy more free checks: the proxy's own hop counts.
+    expect((await post({ query: S, amountEur: 500 }, "9.9.9.9, 1.2.3.4")).status).toBe(429);
   });
 
   it("stops paying for demo checks once the daily house budget is spent", async () => {
-    const { post, checks } = await setup({ capUsd: 0.03, perIp: 100 });
+    const { post, checks } = await setup({ capUsd: 0.09, perIp: 100 });
     const first = await post({ query: S, amountEur: 500 });
     await checks.wait(((await first.json()) as { checkId: string }).checkId);
     const second = await post({ query: S, amountEur: 500 });
@@ -128,13 +130,20 @@ describe("checks API", () => {
     const text = "Default: Net 15 for everyone. Deposit 40% when accounts are late.";
     const created = (await (
       await app.request("/api/policies", { method: "POST", body: JSON.stringify({ name: "Mine", text }), headers: { "content-type": "application/json" } })
-    ).json()) as { id: string; version: number; hash: string };
+    ).json()) as { id: string; version: number; hash: string; editToken: string };
     expect(created.version).toBe(1);
+    const body = JSON.stringify({ name: "Mine", text: `${text} Prepay above 20,000 EUR.` });
+    const denied = await app.request(`/api/policies/${created.id}/versions`, {
+      method: "POST",
+      body,
+      headers: { "content-type": "application/json", "x-policy-token": "wrong" },
+    });
+    expect(denied.status).toBe(403);
     const v2 = (await (
       await app.request(`/api/policies/${created.id}/versions`, {
         method: "POST",
-        body: JSON.stringify({ name: "Mine", text: `${text} Prepay above 20,000 EUR.` }),
-        headers: { "content-type": "application/json" },
+        body,
+        headers: { "content-type": "application/json", "x-policy-token": created.editToken },
       })
     ).json()) as { version: number; hash: string };
     expect(v2.version).toBe(2);
