@@ -7,7 +7,8 @@
     "cohort": "tsx src/cli.ts",
     "gap": "tsx src/cli.ts --gap-only",
     "run": "tsx src/run.ts",
-    "render": "tsx src/render-cli.ts"
+    "render": "tsx src/render-cli.ts",
+    "tune": "tsx src/tune-cli.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.15"
