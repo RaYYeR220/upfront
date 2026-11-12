@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+.kite-passport/
+.playwright-mcp/
+results/raw/
+.vercel/
+.next/
+.DS_Store
