@@ -16,7 +16,7 @@ async function setup(body: unknown) {
   const sent: { chatId: string; text: string }[] = [];
   const kite = new FakeKite({ [URL_SINCE]: { status: 200, body, priceUsd: 0.01 } });
   const w = await createWatch(db, { siren: KD, label: "KD Soccer Consulting", invoiceAmountEur: 6800, since: "2026-09-27" });
-  await linkTelegram(db, w.token, "555");
+  await linkTelegram(db, w.linkToken!, "555");
   const run = () =>
     runWatches({
       db,
@@ -34,7 +34,7 @@ async function setup(body: unknown) {
 describe("runWatches", () => {
   it("alerts once with the amount, the claim deadline and the representative when a client enters liquidation", async () => {
     const { db, sent, kite, w, run } = await setup(fx("entreprise-siren-changements"));
-    expect(await run()).toEqual({ checked: 1, alerts: 1 });
+    expect(await run()).toMatchObject({ checked: 1, alerts: 1, failed: 0 });
     expect(kite.calls).toHaveLength(1);
     expect(sent).toHaveLength(1);
     expect(sent[0]!.chatId).toBe("555");
@@ -50,13 +50,51 @@ describe("runWatches", () => {
 
   it("stays quiet when nothing changed and still records the paid lookup", async () => {
     const { db, sent, kite, w, run } = await setup({ nouveaux_evenements_bodacc: { nombre: 0, annonces: [] } });
-    expect(await run()).toEqual({ checked: 1, alerts: 0 });
+    expect(await run()).toMatchObject({ checked: 1, alerts: 0, failed: 0 });
     expect(sent).toHaveLength(0);
     expect(kite.calls).toHaveLength(1);
     const receipts = await db.execute("SELECT watch_id, amount_usd FROM receipts");
     expect(receipts.rows).toHaveLength(1);
     expect(Number(receipts.rows[0]!.amount_usd)).toBe(0.01);
     expect((await watchEvents(db, w.id))[0]!.kind).toBe("no_change");
+  });
+});
+
+describe("runWatches resilience", () => {
+  it("keeps going when one watch fails and when Telegram is down", async () => {
+    const db = await openDb(":memory:");
+    const good = await createWatch(db, { siren: KD, invoiceAmountEur: 6800, since: "2026-09-27" });
+    await linkTelegram(db, good.linkToken!, "1");
+    await createWatch(db, { siren: "000000000", invoiceAmountEur: 100, since: "2026-09-27" });
+    const kite = new FakeKite({ [URL_SINCE]: { status: 200, body: fx("entreprise-siren-changements"), priceUsd: 0.01 } });
+    const throwingKite = {
+      execute: async (req: { url: string; idempotencyKey: string }, payer: { payer: "house" | "user"; home: string }) => {
+        if (req.url.includes("000000000")) throw new Error("boom");
+        return kite.execute(req, payer);
+      },
+      activity: async () => ({ events: [] }),
+    };
+    const r = await runWatches({
+      db,
+      kite: throwingKite,
+      payer: { payer: "house", home: "/tmp" },
+      notifier: { send: async () => { throw new Error("telegram down"); } },
+      webUrl: "https://upfront.example",
+      today: "2026-11-12",
+    });
+    expect(r).toMatchObject({ checked: 2, alerts: 1, failed: 1 });
+    const kinds = (await watchEvents(db, good.id)).map((e) => e.kind);
+    expect(kinds).toContain("insolvency");
+    expect(kinds).toContain("notify_failed");
+  });
+
+  it("skips paid lookups once the house budget is spent", async () => {
+    const db = await openDb(":memory:");
+    await createWatch(db, { siren: KD, invoiceAmountEur: 6800, since: "2026-09-27" });
+    const kite = new FakeKite({});
+    const r = await runWatches({ db, kite, payer: { payer: "house", home: "/tmp" }, notifier: null, webUrl: "x", today: "2026-11-12", houseDailyCapUsd: 0 });
+    expect(r).toMatchObject({ skipped: 1 });
+    expect(kite.calls).toHaveLength(0);
   });
 });
 
@@ -81,6 +119,9 @@ describe("watch routes", () => {
       notifier: { send: async (_c, t) => void sent.push(t) },
       webUrl: "https://upfront.example",
       maxActiveWatches: 10,
+      maxWatchesPerIp: 5,
+      salt: "s",
+      clientIp: () => "1.2.3.4",
       watchDeps: () => {
         throw new Error("not used");
       },
@@ -92,8 +133,9 @@ describe("watch routes", () => {
     });
     expect(res.status).toBe(201);
     const { token, telegramLink } = (await res.json()) as { token: string; telegramLink: string };
-    expect(telegramLink).toBe(`https://t.me/upfront_watch_bot?start=${token}`);
-    const update = { message: { text: `/start ${token}`, chat: { id: 777 } } };
+    const linkToken = telegramLink.split("start=")[1]!;
+    expect(linkToken).not.toBe(token);
+    const update = { message: { text: `/start ${linkToken}`, chat: { id: 777 } } };
     const forged = await app.request("/api/telegram/webhook", { method: "POST", body: JSON.stringify(update), headers: { "content-type": "application/json" } });
     expect(forged.status).toBe(403);
     await app.request("/api/telegram/webhook", {
@@ -102,9 +144,18 @@ describe("watch routes", () => {
       headers: { "content-type": "application/json", "x-telegram-bot-api-secret-token": "sekret" },
     });
     expect(sent[0]).toMatch(/Watching KD/);
+    // The link is single-use: a second chat can't take the alerts over.
+    await app.request("/api/telegram/webhook", {
+      method: "POST",
+      body: JSON.stringify({ message: { text: `/start ${linkToken}`, chat: { id: 999 } } }),
+      headers: { "content-type": "application/json", "x-telegram-bot-api-secret-token": "sekret" },
+    });
+    expect(sent[1]).toMatch(/already used/);
     const view = (await (await app.request(`/api/watch/${token}`)).json()) as Record<string, unknown>;
     expect(view.telegramLinked).toBe(true);
     expect(JSON.stringify(view)).not.toContain("777");
     expect(view.token).toBeUndefined();
+    expect(view.linkToken).toBeUndefined();
+    expect(JSON.stringify(view)).not.toContain("999");
   });
 });

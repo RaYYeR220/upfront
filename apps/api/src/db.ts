@@ -54,6 +54,8 @@ const SCHEMA = [
     due_on TEXT,
     last_checked_on TEXT NOT NULL,
     token TEXT NOT NULL UNIQUE,
+    link_token TEXT UNIQUE,
+    ip_hash TEXT,
     telegram_chat_id TEXT,
     status TEXT NOT NULL DEFAULT 'active',
     last_check_id TEXT

@@ -1,6 +1,7 @@
 import { serve } from "@hono/node-server";
 import { getConnInfo } from "@hono/node-server/conninfo";
-import { createApp } from "./app.ts";
+import type { Context } from "hono";
+import { clientIp, createApp } from "./app.ts";
 import { openDb } from "./db.ts";
 import { engineDeps, loadConfig } from "./deps.ts";
 import { Hub } from "./hub.ts";
@@ -31,7 +32,17 @@ const watchDeps = (): WatchDeps => ({
   noticeText: bodaccNoticeText(),
   webUrl: cfg.publicWebUrl,
   today: new Date().toISOString().slice(0, 10),
+  houseDailyCapUsd: cfg.houseDailyCapUsd,
 });
+
+const trustProxy = process.env.TRUST_PROXY === "1";
+const socketIp = (c: Context): string | null => {
+  try {
+    return getConnInfo(c).remote.address ?? null;
+  } catch {
+    return null;
+  }
+};
 
 const app = createApp({
   db,
@@ -39,14 +50,8 @@ const app = createApp({
   checks,
   adminToken: cfg.adminToken,
   corsOrigins: cfg.corsOrigins,
-  trustProxy: process.env.TRUST_PROXY === "1",
-  socketIp: (c) => {
-    try {
-      return getConnInfo(c).remote.address ?? null;
-    } catch {
-      return null;
-    }
-  },
+  trustProxy,
+  socketIp,
   extraRoutes: (a) =>
     registerWatchRoutes(a, {
       db,
@@ -56,6 +61,9 @@ const app = createApp({
       notifier,
       webUrl: cfg.publicWebUrl,
       maxActiveWatches: Number(process.env.MAX_ACTIVE_WATCHES ?? 300),
+      maxWatchesPerIp: Number(process.env.MAX_WATCHES_PER_IP ?? 5),
+      salt: cfg.ipSalt,
+      clientIp: (c) => clientIp((n) => c.req.header(n), socketIp(c), trustProxy),
       watchDeps,
     }),
 });

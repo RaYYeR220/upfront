@@ -1,9 +1,10 @@
 import type { Client } from "@libsql/client";
-import type { Hono } from "hono";
+import type { Context, Hono } from "hono";
 import { z } from "zod";
 import { getCheck } from "./repo.ts";
 import { type Notifier, startToken } from "./telegram.ts";
-import { createWatch, linkTelegram, runWatches, type WatchDeps, watchByToken, watchEvents } from "./watch.ts";
+import { ipHash } from "./service.ts";
+import { activeWatchesByIp, createWatch, linkTelegram, runWatches, type WatchDeps, watchByToken, watchEvents } from "./watch.ts";
 
 export interface WatchRoutesCtx {
   db: Client;
@@ -13,6 +14,9 @@ export interface WatchRoutesCtx {
   notifier: Notifier | null;
   webUrl: string;
   maxActiveWatches: number;
+  maxWatchesPerIp: number;
+  salt: string;
+  clientIp: (c: Context) => string | null;
   watchDeps: () => WatchDeps;
 }
 
@@ -30,6 +34,8 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
     if (!parsed.success || (!parsed.data.siren && !parsed.data.checkId)) return c.json({ error: "invalid_request" }, 400);
     const active = await ctx.db.execute("SELECT COUNT(*) AS n FROM watches WHERE status = 'active'");
     if (Number(active.rows[0]?.n ?? 0) >= ctx.maxActiveWatches) return c.json({ error: "watchlist_full" }, 503);
+    const hash = ipHash(ctx.clientIp(c) ?? "unknown", ctx.salt);
+    if (hash && (await activeWatchesByIp(ctx.db, hash)) >= ctx.maxWatchesPerIp) return c.json({ error: "watch_quota" }, 429);
     let siren = parsed.data.siren;
     let label = parsed.data.label;
     if (parsed.data.checkId) {
@@ -46,12 +52,13 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
       dueOn: parsed.data.dueOn,
       since: today,
       lastCheckId: parsed.data.checkId,
+      ipHash: hash,
     });
     return c.json(
       {
         token: w.token,
         watchUrl: `${ctx.webUrl}/watch/${w.token}`,
-        telegramLink: ctx.telegramBotUsername ? `https://t.me/${ctx.telegramBotUsername}?start=${w.token}` : null,
+        telegramLink: ctx.telegramBotUsername ? `https://t.me/${ctx.telegramBotUsername}?start=${w.linkToken}` : null,
       },
       201,
     );
@@ -60,7 +67,7 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
   app.get("/api/watch/:token", async (c) => {
     const w = await watchByToken(ctx.db, c.req.param("token"));
     if (!w) return c.json({ error: "not_found" }, 404);
-    const { token: _t, telegramChatId, ...rest } = w;
+    const { token: _t, linkToken: _l, telegramChatId, ...rest } = w;
     return c.json({ ...rest, telegramLinked: !!telegramChatId, events: await watchEvents(ctx.db, w.id) });
   });
 
@@ -76,7 +83,7 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
           start.chatId,
           w
             ? `Watching ${w.label ?? w.siren} for you. You'll hear from me only if something changes in the official gazette.`
-            : "That link has expired. Add the client again from the check page.",
+            : "That link was already used or has expired. Add the client again from the check page.",
         )
         .catch(() => {});
     }
