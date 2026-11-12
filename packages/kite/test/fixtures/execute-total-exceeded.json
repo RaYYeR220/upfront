@@ -1,0 +1,6 @@
+{
+  "error": "session total exceeded",
+  "error_code": "session_total_exceeded",
+  "hint": "This session has reached its total spending limit.",
+  "details": {}
+}

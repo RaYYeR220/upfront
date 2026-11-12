@@ -1,0 +1,16 @@
+{
+  "session_id": "session_xyz789",
+  "session_status": "active",
+  "usage": { "spent_total": "0.015", "reserved_total": "0.00" },
+  "payment_requirement": { "asset": "USDC", "amount": "0.005" },
+  "x402": {
+    "status_code": 200,
+    "parsed_response_body": { "siren": "552032534", "denomination": "DANONE", "etat_administratif": "actif" },
+    "wallet_address": "0xabc1230000000000000000000000000000000000",
+    "chain_id": 8453
+  },
+  "_version": "1",
+  "status": "success",
+  "hint": "x402 request completed with HTTP 200.",
+  "next_command": ""
+}

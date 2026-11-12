@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "source": "allowance",
+  "allowance_id": "allow_abc",
+  "user_message": "Paid USD 0.01 from your account allowance. Left this week: USD 24.79 of USD 25.00. It resets Tue 17 Nov, 00:00 UTC.",
+  "x402": { "status_code": 200, "parsed_response_body": { "procedures_collectives": [] }, "chain_id": 8453 }
+}

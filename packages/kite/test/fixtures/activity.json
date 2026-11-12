@@ -1,0 +1,22 @@
+{
+  "events": [
+    {
+      "id": "activity_1",
+      "kind": "x402_payment",
+      "status": "completed",
+      "details": {
+        "transaction": {
+          "direction": "debit",
+          "chain_id": 8453,
+          "chain_name": "base",
+          "asset_symbol": "USDC",
+          "amount_raw": "5000",
+          "decimals": 6,
+          "tx_hash": "0x7f3c9a1e2b4d5f60718293a4b5c6d7e8f9012345678901234567890abcdef12",
+          "x402": { "session_id": "session_xyz789", "request_url": "https://api.sirenic.eu/v1/entreprise/552032534", "merchant_host": "api.sirenic.eu" }
+        }
+      },
+      "occurred_at": "2026-11-12T16:02:11Z"
+    }
+  ]
+}
