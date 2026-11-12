@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getCheck } from "./repo.ts";
 import { type Notifier, startToken } from "./telegram.ts";
 import { ipHash } from "./service.ts";
-import { activeWatchesByIp, createWatch, linkTelegram, runWatches, type WatchDeps, watchByToken, watchEvents } from "./watch.ts";
+import { createWatch, linkTelegram, runWatches, type WatchDeps, watchByToken, watchEvents } from "./watch.ts";
 
 export interface WatchRoutesCtx {
   db: Client;
@@ -32,10 +32,7 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
   app.post("/api/watch", async (c) => {
     const parsed = WatchBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success || (!parsed.data.siren && !parsed.data.checkId)) return c.json({ error: "invalid_request" }, 400);
-    const active = await ctx.db.execute("SELECT COUNT(*) AS n FROM watches WHERE status = 'active'");
-    if (Number(active.rows[0]?.n ?? 0) >= ctx.maxActiveWatches) return c.json({ error: "watchlist_full" }, 503);
     const hash = ipHash(ctx.clientIp(c) ?? "unknown", ctx.salt);
-    if (hash && (await activeWatchesByIp(ctx.db, hash)) >= ctx.maxWatchesPerIp) return c.json({ error: "watch_quota" }, 429);
     let siren = parsed.data.siren;
     let label = parsed.data.label;
     if (parsed.data.checkId) {
@@ -53,7 +50,8 @@ export function registerWatchRoutes(app: Hono, ctx: WatchRoutesCtx): void {
       since: today,
       lastCheckId: parsed.data.checkId,
       ipHash: hash,
-    });
+    }, { maxActive: ctx.maxActiveWatches, maxPerIp: ctx.maxWatchesPerIp });
+    if (!w) return c.json({ error: "watch_quota" }, 429);
     return c.json(
       {
         token: w.token,

@@ -15,7 +15,7 @@ async function setup(body: unknown) {
   const db = await openDb(":memory:");
   const sent: { chatId: string; text: string }[] = [];
   const kite = new FakeKite({ [URL_SINCE]: { status: 200, body, priceUsd: 0.01 } });
-  const w = await createWatch(db, { siren: KD, label: "KD Soccer Consulting", invoiceAmountEur: 6800, since: "2026-09-27" });
+  const w = (await createWatch(db, { siren: KD, label: "KD Soccer Consulting", invoiceAmountEur: 6800, since: "2026-09-27" }))!;
   await linkTelegram(db, w.linkToken!, "555");
   const run = () =>
     runWatches({
@@ -63,7 +63,7 @@ describe("runWatches", () => {
 describe("runWatches resilience", () => {
   it("keeps going when one watch fails and when Telegram is down", async () => {
     const db = await openDb(":memory:");
-    const good = await createWatch(db, { siren: KD, invoiceAmountEur: 6800, since: "2026-09-27" });
+    const good = (await createWatch(db, { siren: KD, invoiceAmountEur: 6800, since: "2026-09-27" }))!;
     await linkTelegram(db, good.linkToken!, "1");
     await createWatch(db, { siren: "000000000", invoiceAmountEur: 100, since: "2026-09-27" });
     const kite = new FakeKite({ [URL_SINCE]: { status: 200, body: fx("entreprise-siren-changements"), priceUsd: 0.01 } });
@@ -95,6 +95,17 @@ describe("runWatches resilience", () => {
     const r = await runWatches({ db, kite, payer: { payer: "house", home: "/tmp" }, notifier: null, webUrl: "x", today: "2026-11-12", houseDailyCapUsd: 0 });
     expect(r).toMatchObject({ skipped: 1 });
     expect(kite.calls).toHaveLength(0);
+  });
+});
+
+describe("createWatch caps", () => {
+  it("refuses atomically once a visitor reaches the cap, even with parallel requests", async () => {
+    const db = await openDb(":memory:");
+    const make = () => createWatch(db, { siren: KD, invoiceAmountEur: 100, since: "2026-11-12", ipHash: "ip1" }, { maxActive: 100, maxPerIp: 3 });
+    const results = await Promise.all(Array.from({ length: 8 }, make));
+    expect(results.filter(Boolean)).toHaveLength(3);
+    const r = await db.execute("SELECT COUNT(*) AS n FROM watches WHERE ip_hash = 'ip1'");
+    expect(Number(r.rows[0]!.n)).toBe(3);
   });
 });
 

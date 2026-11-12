@@ -35,15 +35,27 @@ const toWatch = (r: Record<string, unknown>): WatchRow => ({
 export async function createWatch(
   db: Client,
   w: { siren: string; label?: string; invoiceAmountEur: number; dueOn?: string; since: string; lastCheckId?: string; ipHash?: string | null },
-): Promise<WatchRow> {
+  limits?: { maxActive: number; maxPerIp: number },
+): Promise<WatchRow | null> {
   const id = randomUUID();
   const token = randomBytes(18).toString("base64url");
   const linkToken = randomBytes(18).toString("base64url");
-  await db.execute({
-    sql: `INSERT INTO watches (id, created_at, siren, label, invoice_amount_eur, due_on, last_checked_on, token, link_token, ip_hash, last_check_id)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [id, new Date().toISOString(), w.siren, w.label ?? null, w.invoiceAmountEur, w.dueOn ?? null, w.since, token, linkToken, w.ipHash ?? null, w.lastCheckId ?? null],
-  });
+  const values = [id, new Date().toISOString(), w.siren, w.label ?? null, w.invoiceAmountEur, w.dueOn ?? null, w.since, token, linkToken, w.ipHash ?? null, w.lastCheckId ?? null];
+  // One statement: the caps are checked and the row inserted atomically, so parallel requests can't overshoot.
+  const r = limits
+    ? await db.execute({
+        sql: `INSERT INTO watches (id, created_at, siren, label, invoice_amount_eur, due_on, last_checked_on, token, link_token, ip_hash, last_check_id)
+              SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+              WHERE (SELECT COUNT(*) FROM watches WHERE status = 'active') < ?
+                AND (SELECT COUNT(*) FROM watches WHERE status = 'active' AND ip_hash IS ?) < ?`,
+        args: [...values, limits.maxActive, w.ipHash ?? null, limits.maxPerIp],
+      })
+    : await db.execute({
+        sql: `INSERT INTO watches (id, created_at, siren, label, invoice_amount_eur, due_on, last_checked_on, token, link_token, ip_hash, last_check_id)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        args: values,
+      });
+  if (r.rowsAffected !== 1) return null;
   return { id, siren: w.siren, label: w.label ?? null, invoiceAmountEur: w.invoiceAmountEur, dueOn: w.dueOn ?? null, lastCheckedOn: w.since, token, linkToken, telegramChatId: null };
 }
 
