@@ -1,6 +1,6 @@
 // Rewrites every marked number in the docs from results/*.json.
 //   pnpm --filter @upfront/backtest render
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fmt, markersIn, renderNumbers } from "./render.ts";
@@ -41,6 +41,18 @@ if (existsSync(join(RESULTS, "backtest.json"))) {
     values[`bt.${arm}.loss`] = fmt.eur(m.avgLossPerInvoiceEur);
     values[`bt.${arm}.n`] = fmt.int(m.nFailing);
   }
+}
+
+// The web app reads the same results, copied next to it (raw evidence never leaves results/raw).
+const WEB_DATA = join(ROOT, "apps/web/src/data");
+mkdirSync(WEB_DATA, { recursive: true });
+for (const f of ["silent-gap.json", "backtest.json", "tuning.json", "reppo-sample.json"]) {
+  if (!existsSync(join(RESULTS, f))) continue;
+  const data = read(f);
+  // The web needs the numbers, not the per-company rows.
+  if (f === "backtest.json") delete data.rows;
+  if (f === "silent-gap.json") delete data.longest;
+  writeFileSync(join(WEB_DATA, f), `${JSON.stringify(data, null, 2)}\n`);
 }
 
 let changed = 0;

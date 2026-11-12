@@ -9,11 +9,11 @@ const EXAMPLES = [
   { label: "KD SOCCER CONSULTING", query: "841936560", amount: 6800 },
 ];
 
-export function CheckForm({ compact = false }: { compact?: boolean }) {
+export function CheckForm({ compact = false, policyId, policyLabel }: { compact?: boolean; policyId?: string; policyLabel?: string }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [amount, setAmount] = useState("4000");
-  const [policy, setPolicy] = useState("freelancer");
+  const [policy, setPolicy] = useState(policyId ?? "freelancer");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,6 +66,11 @@ export function CheckForm({ compact = false }: { compact?: boolean }) {
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-ink3">
+        {policyId ? (
+          <span>
+            Policy <span className="text-ink2">{policyLabel ?? policyId}</span>
+          </span>
+        ) : (
         <label className="flex items-center gap-2">
           Policy
           <select
@@ -78,6 +83,7 @@ export function CheckForm({ compact = false }: { compact?: boolean }) {
             <option value="wholesaler">Wholesaler shipping on account</option>
           </select>
         </label>
+        )}
         <span>Try:</span>
         {EXAMPLES.map((x) => (
           <button

@@ -1,0 +1,160 @@
+{
+  "generatedAt": "2026-11-12T17:13:58.013Z",
+  "window": {
+    "from": "2026-01-01",
+    "to": "2026-11-12"
+  },
+  "source": "BODACC annonces-commerciales, familleavis=collective, opening judgments (initial notices, one per SIREN)",
+  "definition": "days = BODACC publication date - court-fixed date of cessation of payments",
+  "n": 50457,
+  "nWithCessation": 47181,
+  "excluded": {
+    "negative": 34,
+    "overThreeYears": 74,
+    "total": 108
+  },
+  "nMeasured": 47073,
+  "medianDays": 154,
+  "p25Days": 50,
+  "p75Days": 526,
+  "shareOver90Days": 0.6036,
+  "shareOver180Days": 0.468,
+  "atLegalCap": 10537,
+  "shareAtLegalCap": 0.2238,
+  "byNature": {
+    "liquidation": {
+      "n": 34169,
+      "nWithCessation": 33470,
+      "excluded": {
+        "negative": 20,
+        "overThreeYears": 58,
+        "total": 78
+      },
+      "nMeasured": 33392,
+      "medianDays": 158,
+      "p25Days": 51,
+      "p75Days": 527,
+      "shareOver90Days": 0.6142,
+      "shareOver180Days": 0.4727,
+      "longest": {
+        "siren": "520568593",
+        "days": 1087
+      },
+      "atLegalCap": 7469,
+      "shareAtLegalCap": 0.2237
+    },
+    "redressement": {
+      "n": 15166,
+      "nWithCessation": 13711,
+      "excluded": {
+        "negative": 14,
+        "overThreeYears": 16,
+        "total": 30
+      },
+      "nMeasured": 13681,
+      "medianDays": 140,
+      "p25Days": 46,
+      "p75Days": 525,
+      "shareOver90Days": 0.5779,
+      "shareOver180Days": 0.4566,
+      "longest": {
+        "siren": "819290875",
+        "days": 1069
+      },
+      "atLegalCap": 3068,
+      "shareAtLegalCap": 0.2243
+    },
+    "sauvegarde": {
+      "n": 1122,
+      "nWithCessation": 0,
+      "excluded": {
+        "negative": 0,
+        "overThreeYears": 0,
+        "total": 0
+      },
+      "nMeasured": 0,
+      "medianDays": null,
+      "p25Days": null,
+      "p75Days": null,
+      "shareOver90Days": null,
+      "shareOver180Days": null,
+      "longest": null,
+      "atLegalCap": 0,
+      "shareAtLegalCap": null
+    }
+  },
+  "byPersonType": {
+    "company": {
+      "n": 46609,
+      "nWithCessation": 43527,
+      "excluded": {
+        "negative": 30,
+        "overThreeYears": 59,
+        "total": 89
+      },
+      "nMeasured": 43438,
+      "medianDays": 144,
+      "p25Days": 48,
+      "p75Days": 496,
+      "shareOver90Days": 0.5929,
+      "shareOver180Days": 0.4563,
+      "longest": {
+        "siren": "520568593",
+        "days": 1087
+      },
+      "atLegalCap": 9167,
+      "shareAtLegalCap": 0.211
+    },
+    "soleTrader": {
+      "n": 3848,
+      "nWithCessation": 3654,
+      "excluded": {
+        "negative": 4,
+        "overThreeYears": 15,
+        "total": 19
+      },
+      "nMeasured": 3635,
+      "medianDays": 354,
+      "p25Days": 84,
+      "p75Days": 556,
+      "shareOver90Days": 0.7318,
+      "shareOver180Days": 0.608,
+      "longest": {
+        "siren": "795210939",
+        "days": 1086
+      },
+      "atLegalCap": 1370,
+      "shareAtLegalCap": 0.3769
+    }
+  },
+  "quality": {
+    "notices": {
+      "notices": 64269,
+      "skipped": {
+        "notInitial": 469,
+        "notOpening": 9865,
+        "otherNature": 377,
+        "noSiren": 3032,
+        "badJson": 0
+      },
+      "parsed": 50526,
+      "duplicates": 69,
+      "judgments": 50457
+    },
+    "personType": {
+      "pm": 46609,
+      "pp": 3848,
+      "unknown": 0
+    },
+    "soleTraderShare": 0.0763,
+    "cessationDate": {
+      "liquidationOrRedressement": 49335,
+      "parsed": 47181,
+      "parsedShare": 0.9563,
+      "mentionedButUnparsed": 2,
+      "notStated": 2152
+    },
+    "liquidatorParsedShare": 0.9995,
+    "medianPublicationLagDays": 9
+  }
+}
