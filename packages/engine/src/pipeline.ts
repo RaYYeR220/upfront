@@ -126,6 +126,26 @@ function isIndividual(profile: unknown): boolean {
   return false;
 }
 
+/**
+ * Turns a (validated) model decision and the hard-fact floor into the terms we
+ * actually offer. No decision, or one that failed validation, falls back to the
+ * floor, or to a deposit when there is no floor: the step fails closed.
+ */
+export function settle(proposed: Decision | null, floor: FloorResult): { final: Terms; finalReasons: Reason[] } {
+  if (proposed) return { final: clampToFloor(proposed.terms, floor.floor), finalReasons: proposed.reasons };
+  const hard = floor.because.map((b) => ({ factIds: [b.factId], text: `Hard rule: ${b.rule.replace(/_/g, " ")}.` }));
+  if (floor.floor) {
+    return {
+      final: floorDefault(floor.floor),
+      finalReasons: [...hard, { factIds: [], text: "The reasoning step's answer failed validation against this floor; the floor applies." }],
+    };
+  }
+  return {
+    final: floorDefault("deposit"),
+    finalReasons: [{ factIds: [], text: "The reasoning step failed validation, so the safe default applies." }],
+  };
+}
+
 /** Applies an independent review to a finished check. Used inline and when a review lands later. */
 export function applyReview(r: CheckResult, review: ReviewResult): CheckResult {
   const out = { ...r, review };
@@ -330,17 +350,7 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
 
   let proposed = decided.proposed;
   if (proposed && refused.length && proposed.confidence === "high") proposed = { ...proposed, confidence: "medium" };
-  const fallback = floor.floor ? floorDefault(floor.floor) : floorDefault("deposit");
-  let final: Terms = proposed ? clampToFloor(proposed.terms, floor.floor) : fallback;
-  let finalReasons: Reason[] = proposed
-    ? proposed.reasons
-    : [
-        ...floor.because.map((b) => ({ factIds: [b.factId], text: `Hard rule: ${b.rule.replace(/_/g, " ")}.` })),
-        ...(floor.floor ? [] : [{ factIds: [], text: "The reasoning step failed validation, so the safe default applies." }]),
-      ];
-  if (!proposed && floor.floor) {
-    finalReasons = [...finalReasons, { factIds: [], text: "The reasoning step's answer failed validation against this floor; the floor applies." }];
-  }
+  let { final, finalReasons } = settle(proposed, floor);
 
   const baseResult: CheckResult = {
     checkId,

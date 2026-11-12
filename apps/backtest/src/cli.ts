@@ -14,7 +14,8 @@ const RESULTS_DIR = fileURLToPath(new URL("../results/", import.meta.url));
 const { values } = parseArgs({
   options: {
     from: { type: "string", default: "2026-01-01" },
-    to: { type: "string", default: "2026-10-31" },
+    // Defaults: the cohort window ends 2026-10-31; a gap-only refresh runs up to today.
+    to: { type: "string" },
     n: { type: "string", default: "150" },
     seed: { type: "string", default: "upfront-backtest-2026" },
     // Recompute only the silent-gap statistics over the window, leaving cohort.json untouched.
@@ -22,7 +23,7 @@ const { values } = parseArgs({
   },
 });
 const from = values.from;
-const to = values.to;
+const to = values.to ?? (values["gap-only"] ? new Date().toISOString().slice(0, 10) : "2026-10-31");
 const n = Number(values.n);
 const seed = values.seed;
 

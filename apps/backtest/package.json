@@ -4,9 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "cohort": "tsx src/cli.ts"
+    "cohort": "tsx src/cli.ts",
+    "gap": "tsx src/cli.ts --gap-only",
+    "run": "tsx src/run.ts",
+    "render": "tsx src/render-cli.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.15"
+  },
+  "dependencies": {
+    "@upfront/core": "workspace:*",
+    "@upfront/engine": "workspace:*",
+    "@upfront/kite": "workspace:*",
+    "@upfront/reppo": "workspace:*",
+    "@upfront/serv": "workspace:*",
+    "@upfront/sources": "workspace:*",
+    "openai": "7.55.0"
   }
 }

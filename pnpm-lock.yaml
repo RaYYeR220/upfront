@@ -74,6 +74,28 @@ importers:
         version: 4.23.15
 
   apps/backtest:
+    dependencies:
+      '@upfront/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@upfront/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@upfront/kite':
+        specifier: workspace:*
+        version: link:../../packages/kite
+      '@upfront/reppo':
+        specifier: workspace:*
+        version: link:../../packages/reppo
+      '@upfront/serv':
+        specifier: workspace:*
+        version: link:../../packages/serv
+      '@upfront/sources':
+        specifier: workspace:*
+        version: link:../../packages/sources
+      openai:
+        specifier: 7.55.0
+        version: 7.55.0(ws@8.22.2)(zod@4.6.7)
     devDependencies:
       tsx:
         specifier: ^4.23.15
