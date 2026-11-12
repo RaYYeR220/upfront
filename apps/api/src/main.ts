@@ -1,6 +1,7 @@
 import { serve } from "@hono/node-server";
 import { getConnInfo } from "@hono/node-server/conninfo";
 import type { Context } from "hono";
+import { registerAgentRoutes } from "./agents.ts";
 import { clientIp, createApp } from "./app.ts";
 import { openDb } from "./db.ts";
 import { engineDeps, loadConfig } from "./deps.ts";
@@ -52,7 +53,8 @@ const app = createApp({
   corsOrigins: cfg.corsOrigins,
   trustProxy,
   socketIp,
-  extraRoutes: (a) =>
+  extraRoutes: (a) => {
+    registerAgentRoutes(a, { db, checks, payTo: process.env.X402_PAY_TO ?? null, webUrl: cfg.publicWebUrl });
     registerWatchRoutes(a, {
       db,
       adminToken: cfg.adminToken,
@@ -65,7 +67,8 @@ const app = createApp({
       salt: cfg.ipSalt,
       clientIp: (c) => clientIp((n) => c.req.header(n), socketIp(c), trustProxy),
       watchDeps,
-    }),
+    });
+  },
 });
 
 // Watches run once a day after 07:00 Paris time.

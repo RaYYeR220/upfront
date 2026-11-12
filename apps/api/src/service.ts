@@ -51,6 +51,8 @@ export class CheckService {
     policy: Policy;
     ip: string | null;
     unlimited?: boolean;
+    /** Daily checks allowed for this caller's bucket; defaults to the per-visitor limit. */
+    quota?: number;
   }): Promise<StartResult> {
     const { db } = this.ctx;
     // A missing address shares one bucket: no address never means no limit.
@@ -60,7 +62,7 @@ export class CheckService {
     const admitted = await this.admit(async (): Promise<StartResult> => {
       if (!req.unlimited) {
         if (this.running.size >= MAX_RUNNING) return { error: "busy" };
-        if (hash && (await checksByIpLastDay(db, hash)) >= this.ctx.limits.checksPerIpPerDay) return { error: "demo_quota" };
+        if (hash && (await checksByIpLastDay(db, hash)) >= (req.quota ?? this.ctx.limits.checksPerIpPerDay)) return { error: "demo_quota" };
         const reserved = [...this.reservedUsd.values()].reduce((s, x) => s + x, 0);
         if ((await houseSpentLastDay(db)) + reserved + reserve > this.ctx.limits.houseDailyCapUsd) return { error: "house_budget" };
       }
