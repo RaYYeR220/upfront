@@ -1,0 +1,14 @@
+{
+  "name": "@upfront/engine",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": {
+    "@upfront/core": "workspace:*",
+    "@upfront/sources": "workspace:*",
+    "@upfront/kite": "workspace:*",
+    "@upfront/serv": "workspace:*",
+    "@upfront/reppo": "workspace:*"
+  }
+}

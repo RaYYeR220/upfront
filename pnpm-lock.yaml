@@ -31,6 +31,24 @@ importers:
         specifier: 4.6.7
         version: 4.6.7
 
+  packages/engine:
+    dependencies:
+      '@upfront/core':
+        specifier: workspace:*
+        version: link:../core
+      '@upfront/kite':
+        specifier: workspace:*
+        version: link:../kite
+      '@upfront/reppo':
+        specifier: workspace:*
+        version: link:../reppo
+      '@upfront/serv':
+        specifier: workspace:*
+        version: link:../serv
+      '@upfront/sources':
+        specifier: workspace:*
+        version: link:../sources
+
   packages/kite:
     dependencies:
       '@upfront/core':
