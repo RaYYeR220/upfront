@@ -10,7 +10,11 @@
   "dependencies": {
     "next": "16.4.6",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "@upfront/engine": "workspace:*",
+    "@upfront/core": "workspace:*",
+    "@upfront/reppo": "workspace:*",
+    "@upfront/sources": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",

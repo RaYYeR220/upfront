@@ -103,6 +103,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@upfront/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@upfront/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
+      '@upfront/reppo':
+        specifier: workspace:*
+        version: link:../../packages/reppo
+      '@upfront/sources':
+        specifier: workspace:*
+        version: link:../../packages/sources
       next:
         specifier: 16.4.6
         version: 16.4.6(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
