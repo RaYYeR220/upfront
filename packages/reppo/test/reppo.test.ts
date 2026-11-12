@@ -25,21 +25,50 @@ const decision: Decision = {
 };
 
 describe("buildReviewPacket", () => {
-  const p = buildReviewPacket({ policy, facts, decision, amountEur: 3200 });
+  const leaky: Decision = {
+    ...decision,
+    reasons: [
+      ...decision.reasons,
+      { factIds: ["f_4"], text: "KD Soccer Consulting (SIREN 841 936 560, VAT FR 12 841936560) had a reorganisation." },
+    ],
+  };
+  const withMoney: Fact = {
+    id: "f_6",
+    kind: "finance.year",
+    value: { closingDate: "2024-12-31", revenue: 1_234_567, netIncome: -87_654, equityRatio: 12.345 },
+    observedAt: "2024-12-31",
+    source: "s",
+    receiptId: "r",
+  };
+  const p = buildReviewPacket({
+    policy: { ...policy, text: "Default: Net 30. Never trust KD SOCCER CONSULTING." },
+    facts: [...facts, withMoney],
+    decision: leaky,
+    amountEur: 3200,
+    identifiers: ["841936560"],
+  });
   it("asks for an action review with the policy, facts and decision", () => {
     expect(p.taskType).toBe("action");
     expect(p.input).toContain("Company A");
     expect(p.input).toContain("Default: Net 30.");
-    expect(p.input).toContain("[f_5] accounts.overdue_months: 7 (2026-11-12)");
+    expect(p.input).toContain("[f_5] accounts.overdue_months: 7 (2026-11)");
     expect(p.input).toContain("deposit");
     expect(p.input).toContain("Accounts are 7 months overdue.");
   });
-  it("never leaks the client's identity to the public feed", () => {
-    expect(p.input).not.toContain("KD SOCCER");
+  it("never leaks the client's identity to the public feed, even inside free text", () => {
+    expect(p.input.toLowerCase()).not.toContain("kd soccer");
     expect(p.input).not.toContain("FR12841936560");
-    expect(p.input).not.toMatch(/\b\d{9}\b/);
+    expect(p.input).not.toMatch(/8\D?4\D?1\D?9\D?3\D?6\D?5\D?6\D?0/);
     expect(p.input).not.toContain("A202601971788");
+    expect(p.input).not.toContain("Meaux");
     expect(Buffer.byteLength(p.input)).toBeLessThan(50_000);
+  });
+  it("coarsens quasi-identifiers", () => {
+    expect(p.input).toContain("[f_3] identity.created_on: 2018 (2018-07)");
+    expect(p.input).toContain('"revenue":1200000');
+    expect(p.input).toContain('"netIncome":-88000');
+    expect(p.input).toContain('"equityRatio":12');
+    expect(p.input).not.toContain("1234567");
   });
 });
 

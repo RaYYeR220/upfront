@@ -19,10 +19,12 @@ export function filterAsOf(facts: Fact[], asOf: string): Fact[] {
       .filter((f) => f.kind === "accounts.filed" && f.observedAt <= asOf)
       .map((f) => (f.value as { closingDate: string }).closingDate),
   );
-  return facts.filter((f) => {
-    if (CURRENT_STATE.has(f.kind)) return false;
-    if (f.kind.startsWith("identity.")) return true;
-    if (f.kind === "finance.year") return filedClosings.has((f.value as { closingDate: string }).closingDate);
-    return f.observedAt <= asOf;
-  });
+  return facts
+    .filter((f) => {
+      if (CURRENT_STATE.has(f.kind)) return false;
+      if (f.kind.startsWith("identity.")) return true;
+      if (f.kind === "finance.year") return filedClosings.has((f.value as { closingDate: string }).closingDate);
+      return f.observedAt <= asOf;
+    })
+    .map((f) => (f.observedAt > asOf ? { ...f, observedAt: asOf } : f));
 }
