@@ -10,7 +10,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import type { Fact, FloorResult, Terms } from "@upfront/core";
+import type { Decision, Fact, FloorResult, Terms } from "@upfront/core";
 import { type CheckResult, runCheck, servPort } from "@upfront/engine";
 import { createKpassExecutor } from "@upfront/kite";
 import { baseModel, loadPolicy, MODELS, servClient } from "@upfront/serv";
@@ -45,6 +45,7 @@ interface Saved {
   facts: Fact[];
   floor: FloorResult | null;
   upfront: Terms | null;
+  proposed: Decision | null;
   proposedValid: boolean;
   evidenceUsd: number;
   servUsd: number;
@@ -104,6 +105,7 @@ async function main() {
       facts: r?.facts ?? [],
       floor: r?.floor ?? null,
       upfront: r?.final ?? null,
+      proposed: r?.proposed ?? null,
       proposedValid: !!r?.proposed,
       evidenceUsd: r?.costs.evidenceUsd ?? 0,
       servUsd: r?.costs.servUsd ?? 0,
