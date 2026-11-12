@@ -107,6 +107,17 @@ describe("silentGap", () => {
     });
   });
 
+  it("counts cessation dates pinned at the 18-month backdating limit", () => {
+    const capped = { ...judgment("2026-06-11", "2024-12-01"), judgmentDate: "2026-06-01" };
+    const nearCap = { ...judgment("2026-06-11", "2024-12-03"), judgmentDate: "2026-06-01" };
+    const notCapped = { ...judgment("2026-06-11", "2025-09-01"), judgmentDate: "2026-06-01" };
+    const noJudgmentDate = { ...judgment("2026-06-11", "2024-12-01"), judgmentDate: null };
+    const gap = silentGap([capped, nearCap, notCapped, noJudgmentDate]);
+    expect(gap.atLegalCap).toBe(2);
+    expect(gap.shareAtLegalCap).toBe(0.5);
+    expect(gap.byNature.liquidation.atLegalCap).toBe(2);
+  });
+
   it("handles an empty list", () => {
     const gap = silentGap([]);
     expect(gap.n).toBe(0);

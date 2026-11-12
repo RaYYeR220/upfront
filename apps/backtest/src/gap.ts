@@ -3,6 +3,13 @@ import { addMonths, daysBetween } from "./dates.ts";
 
 /** Gaps beyond this are parse errors or decades-old reopened files, not a silent period. */
 const MAX_GAP_MONTHS = 36;
+/**
+ * A court may backdate the cessation of payments by at most 18 months before the opening
+ * judgment (Code de commerce, L. 631-8). Dates sitting on that limit are a floor on the real
+ * silent period rather than a measurement of it.
+ */
+const LEGAL_BACKDATING_MONTHS = 18;
+const LEGAL_CAP_TOLERANCE_DAYS = 3;
 
 export type GapStats = {
   /** Judgments considered. */
@@ -19,6 +26,9 @@ export type GapStats = {
   shareOver90Days: number | null;
   shareOver180Days: number | null;
   longest: { siren: string; days: number } | null;
+  /** Measured gaps whose cessation date sits on the 18-month backdating limit. */
+  atLegalCap: number;
+  shareAtLegalCap: number | null;
 };
 
 export type SilentGap = GapStats & { byNature: Record<Nature, GapStats> };
@@ -48,10 +58,18 @@ export function gapDays(j: Judgment): number | "negative" | "overThreeYears" | n
   return days;
 }
 
+/** True when the court set the cessation date as far back as the law allows. */
+export function atLegalCap(j: Judgment): boolean {
+  if (!j.cessationDate || !j.judgmentDate) return false;
+  const limit = addMonths(j.judgmentDate, -LEGAL_BACKDATING_MONTHS);
+  return Math.abs(daysBetween(limit, j.cessationDate)) <= LEGAL_CAP_TOLERANCE_DAYS;
+}
+
 function stats(judgments: readonly Judgment[]): GapStats {
   const excluded = { negative: 0, overThreeYears: 0, total: 0 };
   const gaps: Array<{ siren: string; days: number }> = [];
   let nWithCessation = 0;
+  let capped = 0;
   for (const j of judgments) {
     const gap = gapDays(j);
     if (gap === null) continue;
@@ -62,6 +80,7 @@ function stats(judgments: readonly Judgment[]): GapStats {
       continue;
     }
     gaps.push({ siren: j.siren, days: gap });
+    if (atLegalCap(j)) capped++;
   }
   const sorted = gaps.map((g) => g.days).sort((a, b) => a - b);
   const share = (threshold: number) =>
@@ -82,6 +101,8 @@ function stats(judgments: readonly Judgment[]): GapStats {
     shareOver90Days: share(90),
     shareOver180Days: share(180),
     longest,
+    atLegalCap: capped,
+    shareAtLegalCap: sorted.length ? round(capped / sorted.length, 4) : null,
   };
 }
 
