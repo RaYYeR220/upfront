@@ -35,7 +35,7 @@ Every step is recorded with its input, output, model, cost and duration, so you 
 
 | | |
 |---|---|
-| Silent gap, companies, 2026 | median <!-- num:gap.company.median -->144<!-- /num --> days over <!-- num:gap.company.n -->43,438<!-- /num --> liquidations and reorganisations; <!-- num:gap.company.over180 -->47%<!-- /num --> longer than six months |
+| Silent gap, companies, 2026 | median <!-- num:gap.company.median -->144<!-- /num --> days over <!-- num:gap.company.n -->43,438<!-- /num --> liquidations and reorganisations; <!-- num:gap.company.over180 -->46%<!-- /num --> longer than six months |
 | Backtest | see [`apps/backtest`](apps/backtest) and [JUDGES.md](JUDGES.md) |
 
 Numbers in this file are rendered from [`apps/backtest/results`](apps/backtest/results) by `pnpm --filter @upfront/backtest render`. None is typed by hand.
