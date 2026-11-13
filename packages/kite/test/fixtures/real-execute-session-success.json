@@ -1,0 +1,395 @@
+{
+  "_version": "1",
+  "allowance_id": "",
+  "delegation": {
+    "execution_constraints": {
+      "x402": {
+        "allowed_endpoints": [
+          {
+            "host": "api.sirenic.eu",
+            "method": "GET",
+            "path_prefix": "/v1/"
+          }
+        ],
+        "scope_mode": "scoped"
+      }
+    },
+    "payment_policy": {
+      "currency": "USD",
+      "max_amount_per_tx": "0.2",
+      "max_total_amount": "5"
+    },
+    "task": {
+      "summary": "Upfront: buy French company records (registry, gazette, filings, financials, court) for credit checks"
+    }
+  },
+  "hint": "x402 request to https://api.sirenic.eu/v1/entreprise/552032534 completed with HTTP 200.",
+  "next_command": "",
+  "payment": {
+    "amount": "5000",
+    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "network": "eip155:8453",
+    "protocol": "x402",
+    "response_body": "",
+    "status_code": 200,
+    "transaction_hash": "0x7d650588c18da24a768f1b80d25a7b8e13a9ee2996c9d4b1e5fb6c911482fad8"
+  },
+  "payment_requirement": {
+    "amount": "0.005",
+    "amount_onchain": "5000",
+    "asset": "USDC",
+    "decimals": 6
+  },
+  "session_id": "agent_session_01a1d2b2-9cbe-70df-a02a-9bbfecb35327",
+  "session_status": "active",
+  "status": "success",
+  "usage": {
+    "asset_symbol": "USDC",
+    "decimals": 6,
+    "reserved_total": "0",
+    "reserved_total_raw": "0",
+    "spent_total": "0.005",
+    "spent_total_raw": "5000"
+  },
+  "x402": {
+    "chain_id": 2366,
+    "method": "GET",
+    "network": "eip155:8453",
+    "parsed_response_body": {
+      "activite_principale": "70.10Z",
+      "categorie_entreprise": "GE",
+      "certifications_rge": [],
+      "citation": "Sirenic (INSEE Sirene, INPI RNE, Egapro, RGE, GLEIF, Global LEI Index; 2026-10-30/2026-11-12) https://api.sirenic.eu/?utm_source=citation",
+      "conventions_collectives": [
+        "9999"
+      ],
+      "conventions_collectives_notes": [
+        "9999 : code officiel « sans convention collective attribuée » ; l'établissement n'est rattaché à aucune convention collective ; ce n'est pas un numéro de convention à rechercher. / 9999: official code meaning no collective agreement is assigned; the establishment is not covered by any agreement; it is not an agreement number to look up."
+      ],
+      "data_freshness": "stock Sirene mensuel (2026-11-01), dirigeants temps réel",
+      "date_creation": "1955-01-01",
+      "date_fermeture": null,
+      "denomination": "DANONE",
+      "dirigeants": [
+        {
+          "annee_de_naissance": "1964",
+          "fonction": "Directeur Général",
+          "nom": "BERNARD DE SAINT AFFRIQUE",
+          "prenoms": "ANTOINE",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1967",
+          "fonction": "Administrateur",
+          "nom": "BOUTEBBA",
+          "prenoms": "FREDERIC",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1962",
+          "fonction": "Administrateur",
+          "nom": "CHAPOULAUD-FLOQUET",
+          "prenoms": "VALERIE",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1960",
+          "fonction": "Administrateur",
+          "nom": "GHOSTINE",
+          "prenoms": "GILBERT",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1961",
+          "fonction": "Administrateur",
+          "nom": "KINGO",
+          "prenoms": "LISE",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1964",
+          "fonction": "Administrateur",
+          "nom": "LOUVET",
+          "prenoms": "PATRICE",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1960",
+          "fonction": "Administrateur",
+          "nom": "MEHTA",
+          "prenoms": "SANJIV",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1962",
+          "fonction": "Administrateur",
+          "nom": "THEISSIG (MOLITOR)",
+          "prenoms": "BETTINA",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1970",
+          "fonction": "Administrateur",
+          "nom": "PICAUD (ROAUX)",
+          "prenoms": "GÉRALDINE",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1957",
+          "fonction": "Administrateur",
+          "nom": "ROBERTS",
+          "prenoms": "SUSAN-BARBARA",
+          "type": "personne_physique"
+        },
+        {
+          "annee_de_naissance": "1958",
+          "fonction": "Président du conseil d’administration",
+          "nom": "SCHNEPP",
+          "prenoms": "GILLES",
+          "type": "personne_physique"
+        },
+        {
+          "denomination": "ERNST \u0026 YOUNG AUDIT",
+          "fonction": "Commissaire aux comptes titulaire",
+          "siren": "344366315",
+          "type": "personne_morale"
+        },
+        {
+          "denomination": "FORVIS MAZARS SA",
+          "fonction": "Commissaire aux comptes titulaire",
+          "siren": "784824153",
+          "type": "personne_morale"
+        }
+      ],
+      "disclaimer": "Données issues de l'open data, fournies en l'état sans garantie. / Open data, provided as is without warranty.",
+      "etat_administratif": "actif",
+      "groupe_lei": {
+        "absence_mere": {
+          "directe": {
+            "motif": "aucune_mere_connue",
+            "motif_2_source": null,
+            "motif_source": "NO_KNOWN_PERSON"
+          },
+          "ultime": {
+            "motif": "aucune_mere_connue",
+            "motif_2_source": null,
+            "motif_source": "NO_KNOWN_PERSON"
+          }
+        },
+        "declaration": "exception",
+        "filiales_consolidees": {
+          "directement": 27,
+          "en_dernier_ressort": 39
+        },
+        "fonds": {
+          "compartiments": 0,
+          "geres": 0,
+          "nourriciers": 0
+        },
+        "lei": "969500KMUQ2B6CBAF162",
+        "mere_directe": null,
+        "mere_ultime": null,
+        "publication": null,
+        "relations_inactives": 0,
+        "succursales_internationales": 0
+      },
+      "index_egapro": [
+        {
+          "annee": 2025,
+          "note": 86
+        },
+        {
+          "annee": 2024,
+          "note": 89
+        },
+        {
+          "annee": 2023,
+          "note": 82
+        },
+        {
+          "annee": 2022,
+          "note": 89
+        },
+        {
+          "annee": 2021,
+          "note": 79
+        },
+        {
+          "annee": 2020,
+          "note": 84
+        },
+        {
+          "annee": 2019,
+          "note": 78
+        },
+        {
+          "annee": 2018,
+          "note": 80
+        }
+      ],
+      "nature_juridique": "5599",
+      "nombre_etablissements": 19,
+      "nombre_etablissements_ouverts": 3,
+      "provenance": [
+        {
+          "age_jours": 12,
+          "as_of": "2026-11-01",
+          "bloc": "identite",
+          "confiance": "forte",
+          "couverture": {
+            "etat": "complete",
+            "mesure": "diffusion totale au répertoire Sirene / full public disclosure in the Sirene register"
+          },
+          "empreinte_sha256": "5c36dc123f878662bd0c3da2773e9df7e68bd9c856e02e5c7dc61dc382bb9b3e",
+          "etat": "servi",
+          "licence": "etalab-2.0",
+          "mode": "stock",
+          "precision_as_of": "publication_officielle",
+          "registre": "Répertoire Sirene des entreprises et de leurs établissements (INSEE)",
+          "source_code": "insee_sirene",
+          "version": "2026-11-01"
+        },
+        {
+          "as_of": "2026-11-12T03:15:47.863Z",
+          "bloc": "dirigeants",
+          "couverture": {
+            "etat": "complete",
+            "mesure": "diffusion totale au répertoire Sirene / full public disclosure in the Sirene register"
+          },
+          "etat": "servi",
+          "licence": "conditions_source",
+          "mode": "temps_reel",
+          "precision_as_of": "consultation",
+          "registre": "Registre national des entreprises (INPI)",
+          "source_code": "inpi_rne"
+        },
+        {
+          "bloc": "tva_intracommunautaire",
+          "etat": "servi",
+          "mode": "calcul",
+          "registre": "Numéro calculé par Sirenic (clé de contrôle), non vérifié auprès de VIES",
+          "source_code": "calcul_sirenic"
+        },
+        {
+          "age_jours": 14,
+          "as_of": "2026-10-30",
+          "bloc": "index_egapro",
+          "couverture": {
+            "etat": "complete",
+            "mesure": "index Egapro entier ingéré (entreprises de 50 salariés et plus) / full Egapro index ingested (50+ employees)"
+          },
+          "empreinte_sha256": "601106dbcbb62990100d1be1c3f906717daa792b8eb86f39269b2e14346a74e1",
+          "etat": "servi",
+          "licence": "etalab-2.0",
+          "mode": "stock",
+          "precision_as_of": "publication_officielle",
+          "registre": "Index de l'égalité professionnelle femmes-hommes (Egapro)",
+          "source_code": "egapro",
+          "version": "2026-10-30"
+        },
+        {
+          "age_jours": 11,
+          "as_of": "2026-11-02",
+          "bloc": "certifications_rge",
+          "couverture": {
+            "etat": "complete",
+            "mesure": "annuaire RGE entier ingéré / full RGE directory ingested"
+          },
+          "etat": "absence_mesuree",
+          "licence": "etalab-2.0",
+          "mode": "stock",
+          "precision_as_of": "ingestion",
+          "registre": "Annuaire des professionnels RGE (Reconnu Garant de l'Environnement)",
+          "source_code": "rge",
+          "version": "2026-11-02"
+        },
+        {
+          "age_jours": 1,
+          "as_of": "2026-11-12",
+          "bloc": "groupe_lei",
+          "couverture": {
+            "etat": "complete",
+            "mesure": "déclaration de niveau 2 au GLEIF (relation ou exception motivée) / level-2 declaration to GLEIF (relationship or reasoned exception)"
+          },
+          "empreinte_sha256": "3026963954f3aaead67e68416ef0d269d344f2cf20239b0da4ab406b85850248",
+          "etat": "absence_mesuree",
+          "licence": "cc0",
+          "mode": "stock",
+          "precision_as_of": "publication_officielle",
+          "registre": "GLEIF : relations de niveau 2 (Relationship Records, RR-CDF 2.1) et exceptions de déclaration",
+          "source_code": "gleif_rr",
+          "version": "2026-11-12"
+        },
+        {
+          "as_of": "2026-11-12T05:35:28.155Z",
+          "bloc": "groupe_lei.lei",
+          "etat": "servi",
+          "licence": "cc0",
+          "mode": "temps_reel",
+          "precision_as_of": "consultation",
+          "registre": "Global LEI Index (identifiants d'entité juridique)",
+          "source_code": "gleif_lei"
+        }
+      ],
+      "section_activite_principale": "M",
+      "siege": {
+        "adresse": "59 RUE LA FAYETTE 75009 PARIS",
+        "code_postal": "75009",
+        "commune": "PARIS",
+        "siret": "55203253400703"
+      },
+      "sigle": null,
+      "siren": "552032534",
+      "source": "INSEE Sirene (stock mensuel du 2026-11-01) ; TVA et conventions collectives via l'API recherche-entreprises ; sous licence Etalab 2.0 ; dirigeants : INPI RNE (conditions propres à la source) via l'API recherche-entreprises ; index Egapro (ministère du Travail) et annuaire RGE (ADEME), Etalab 2.0",
+      "statut_diffusion": "totale",
+      "tranche_effectif_salarie": "42",
+      "tva_intracommunautaire": "FR27552032534"
+    },
+    "payment_response": {
+      "network": "eip155:8453",
+      "payer": "0x511BF5A78702B396f336aa2f831F7899db19e88B",
+      "success": true,
+      "transaction": "0x7d650588c18da24a768f1b80d25a7b8e13a9ee2996c9d4b1e5fb6c911482fad8"
+    },
+    "response_body": "{\"citation\":\"Sirenic (INSEE Sirene, INPI RNE, Egapro, RGE, GLEIF, Global LEI Index; 2026-10-30/2026-11-12) https://api.sirenic.eu/?utm_source=citation\",\"siren\":\"552032534\",\"denomination\":\"DANONE\",\"sigle\":null,\"statut_diffusion\":\"totale\",\"nature_juridique\":\"5599\",\"activite_principale\":\"70.10Z\",\"section_activite_principale\":\"M\",\"categorie_entreprise\":\"GE\",\"tranche_effectif_salarie\":\"42\",\"date_creation\":\"1955-01-01\",\"date_fermeture\":null,\"etat_administratif\":\"actif\",\"siege\":{\"siret\":\"55203253400703\",\"adresse\":\"59 RUE LA FAYETTE 75009 PARIS\",\"code_postal\":\"75009\",\"commune\":\"PARIS\"},\"dirigeants\":[{\"type\":\"personne_physique\",\"nom\":\"BERNARD DE SAINT AFFRIQUE\",\"prenoms\":\"ANTOINE\",\"fonction\":\"Directeur Général\",\"annee_de_naissance\":\"1964\"},{\"type\":\"personne_physique\",\"nom\":\"BOUTEBBA\",\"prenoms\":\"FREDERIC\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1967\"},{\"type\":\"personne_physique\",\"nom\":\"CHAPOULAUD-FLOQUET\",\"prenoms\":\"VALERIE\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1962\"},{\"type\":\"personne_physique\",\"nom\":\"GHOSTINE\",\"prenoms\":\"GILBERT\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1960\"},{\"type\":\"personne_physique\",\"nom\":\"KINGO\",\"prenoms\":\"LISE\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1961\"},{\"type\":\"personne_physique\",\"nom\":\"LOUVET\",\"prenoms\":\"PATRICE\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1964\"},{\"type\":\"personne_physique\",\"nom\":\"MEHTA\",\"prenoms\":\"SANJIV\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1960\"},{\"type\":\"personne_physique\",\"nom\":\"THEISSIG (MOLITOR)\",\"prenoms\":\"BETTINA\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1962\"},{\"type\":\"personne_physique\",\"nom\":\"PICAUD (ROAUX)\",\"prenoms\":\"GÉRALDINE\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1970\"},{\"type\":\"personne_physique\",\"nom\":\"ROBERTS\",\"prenoms\":\"SUSAN-BARBARA\",\"fonction\":\"Administrateur\",\"annee_de_naissance\":\"1957\"},{\"type\":\"personne_physique\",\"nom\":\"SCHNEPP\",\"prenoms\":\"GILLES\",\"fonction\":\"Président du conseil d’administration\",\"annee_de_naissance\":\"1958\"},{\"type\":\"personne_morale\",\"siren\":\"344366315\",\"denomination\":\"ERNST \u0026 YOUNG AUDIT\",\"fonction\":\"Commissaire aux comptes titulaire\"},{\"type\":\"personne_morale\",\"siren\":\"784824153\",\"denomination\":\"FORVIS MAZARS SA\",\"fonction\":\"Commissaire aux comptes titulaire\"}],\"conventions_collectives\":[\"9999\"],\"conventions_collectives_notes\":[\"9999 : code officiel « sans convention collective attribuée » ; l'établissement n'est rattaché à aucune convention collective ; ce n'est pas un numéro de convention à rechercher. / 9999: official code meaning no collective agreement is assigned; the establishment is not covered by any agreement; it is not an agreement number to look up.\"],\"tva_intracommunautaire\":\"FR27552032534\",\"nombre_etablissements\":19,\"nombre_etablissements_ouverts\":3,\"source\":\"INSEE Sirene (stock mensuel du 2026-11-01) ; TVA et conventions collectives via l'API recherche-entreprises ; sous licence Etalab 2.0 ; dirigeants : INPI RNE (conditions propres à la source) via l'API recherche-entreprises ; index Egapro (ministère du Travail) et annuaire RGE (ADEME), Etalab 2.0\",\"disclaimer\":\"Données issues de l'open data, fournies en l'état sans garantie. / Open data, provided as is without warranty.\",\"index_egapro\":[{\"annee\":2025,\"note\":86},{\"annee\":2024,\"note\":89},{\"annee\":2023,\"note\":82},{\"annee\":2022,\"note\":89},{\"annee\":2021,\"note\":79},{\"annee\":2020,\"note\":84},{\"annee\":2019,\"note\":78},{\"annee\":2018,\"note\":80}],\"certifications_rge\":[],\"data_freshness\":\"stock Sirene mensuel (2026-11-01), dirigeants temps réel\",\"groupe_lei\":{\"lei\":\"969500KMUQ2B6CBAF162\",\"mere_directe\":null,\"mere_ultime\":null,\"absence_mere\":{\"directe\":{\"motif\":\"aucune_mere_connue\",\"motif_source\":\"NO_KNOWN_PERSON\",\"motif_2_source\":null},\"ultime\":{\"motif\":\"aucune_mere_connue\",\"motif_source\":\"NO_KNOWN_PERSON\",\"motif_2_source\":null}},\"declaration\":\"exception\",\"filiales_consolidees\":{\"directement\":27,\"en_dernier_ressort\":39},\"fonds\":{\"geres\":0,\"compartiments\":0,\"nourriciers\":0},\"succursales_internationales\":0,\"relations_inactives\":0,\"publication\":null},\"provenance\":[{\"bloc\":\"identite\",\"source_code\":\"insee_sirene\",\"registre\":\"Répertoire Sirene des entreprises et de leurs établissements (INSEE)\",\"mode\":\"stock\",\"licence\":\"etalab-2.0\",\"version\":\"2026-11-01\",\"empreinte_sha256\":\"5c36dc123f878662bd0c3da2773e9df7e68bd9c856e02e5c7dc61dc382bb9b3e\",\"as_of\":\"2026-11-01\",\"precision_as_of\":\"publication_officielle\",\"age_jours\":12,\"etat\":\"servi\",\"couverture\":{\"etat\":\"complete\",\"mesure\":\"diffusion totale au répertoire Sirene / full public disclosure in the Sirene register\"},\"confiance\":\"forte\"},{\"bloc\":\"dirigeants\",\"source_code\":\"inpi_rne\",\"registre\":\"Registre national des entreprises (INPI)\",\"mode\":\"temps_reel\",\"licence\":\"conditions_source\",\"as_of\":\"2026-11-12T03:15:47.863Z\",\"precision_as_of\":\"consultation\",\"etat\":\"servi\",\"couverture\":{\"etat\":\"complete\",\"mesure\":\"diffusion totale au répertoire Sirene / full public disclosure in the Sirene register\"}},{\"bloc\":\"tva_intracommunautaire\",\"source_code\":\"calcul_sirenic\",\"registre\":\"Numéro calculé par Sirenic (clé de contrôle), non vérifié auprès de VIES\",\"mode\":\"calcul\",\"etat\":\"servi\"},{\"bloc\":\"index_egapro\",\"source_code\":\"egapro\",\"registre\":\"Index de l'égalité professionnelle femmes-hommes (Egapro)\",\"mode\":\"stock\",\"licence\":\"etalab-2.0\",\"version\":\"2026-10-30\",\"empreinte_sha256\":\"601106dbcbb62990100d1be1c3f906717daa792b8eb86f39269b2e14346a74e1\",\"as_of\":\"2026-10-30\",\"precision_as_of\":\"publication_officielle\",\"age_jours\":14,\"etat\":\"servi\",\"couverture\":{\"etat\":\"complete\",\"mesure\":\"index Egapro entier ingéré (entreprises de 50 salariés et plus) / full Egapro index ingested (50+ employees)\"}},{\"bloc\":\"certifications_rge\",\"source_code\":\"rge\",\"registre\":\"Annuaire des professionnels RGE (Reconnu Garant de l'Environnement)\",\"mode\":\"stock\",\"licence\":\"etalab-2.0\",\"version\":\"2026-11-02\",\"as_of\":\"2026-11-02\",\"precision_as_of\":\"ingestion\",\"age_jours\":11,\"etat\":\"absence_mesuree\",\"couverture\":{\"etat\":\"complete\",\"mesure\":\"annuaire RGE entier ingéré / full RGE directory ingested\"}},{\"bloc\":\"groupe_lei\",\"source_code\":\"gleif_rr\",\"registre\":\"GLEIF : relations de niveau 2 (Relationship Records, RR-CDF 2.1) et exceptions de déclaration\",\"mode\":\"stock\",\"licence\":\"cc0\",\"version\":\"2026-11-12\",\"empreinte_sha256\":\"3026963954f3aaead67e68416ef0d269d344f2cf20239b0da4ab406b85850248\",\"as_of\":\"2026-11-12\",\"precision_as_of\":\"publication_officielle\",\"age_jours\":1,\"etat\":\"absence_mesuree\",\"couverture\":{\"etat\":\"complete\",\"mesure\":\"déclaration de niveau 2 au GLEIF (relation ou exception motivée) / level-2 declaration to GLEIF (relationship or reasoned exception)\"}},{\"bloc\":\"groupe_lei.lei\",\"source_code\":\"gleif_lei\",\"registre\":\"Global LEI Index (identifiants d'entité juridique)\",\"mode\":\"temps_reel\",\"licence\":\"cc0\",\"as_of\":\"2026-11-12T05:35:28.155Z\",\"precision_as_of\":\"consultation\",\"etat\":\"servi\"}]}",
+    "response_headers": {
+      "Access-Control-Allow-Headers": "Content-Type, Accept, PAYMENT-SIGNATURE, X-PAYMENT, X-Api-Key, Authorization, A2A-Version, A2A-Extensions, X-A2A-Extensions, api-key, X-Sirenic-Modele",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Expose-Headers": "PAYMENT-REQUIRED, PAYMENT-RESPONSE, X-PAYMENT-RESPONSE, X-Request-Id, Link, Vary, X-Credits-Charged, X-Credits-Remaining, X-Free-Quota-Remaining, X-Free-Quota-Refused, WWW-Authenticate, Retry-After, X-Sirenic-Key-Id, X-Sirenic-Timestamp, X-Sirenic-Signature, X-Sirenic-Verification-Id",
+      "Alt-Svc": "h3=\":443\"; ma=2592000",
+      "Cache-Control": "no-store, private",
+      "Content-Security-Policy": "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors 'none';img-src 'self' data:;object-src 'none';script-src 'none';script-src-attr 'none';style-src 'self' 'unsafe-inline';upgrade-insecure-requests",
+      "Content-Type": "application/json; charset=utf-8",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "same-origin",
+      "Date": "Fri, 13 Nov 2026 02:42:41 GMT",
+      "Etag": "W/\"1ad4-WY1pSP4r1Gt2jv9oBhwWuXbEfrQ\"",
+      "Origin-Agent-Cluster": "?1",
+      "Payment-Response": "eyJzdWNjZXNzIjp0cnVlLCJwYXllciI6IjB4NTExQkY1QTc4NzAyQjM5NmYzMzZhYTJmODMxRjc4OTlkYjE5ZTg4QiIsInRyYW5zYWN0aW9uIjoiMHg3ZDY1MDU4OGMxOGRhMjRhNzY4ZjFiODBkMjVhN2I4ZTEzYTllZTI5OTZjOWQ0YjFlNWZiNmM5MTE0ODJmYWQ4IiwibmV0d29yayI6ImVpcDE1NTo4NDUzIn0=",
+      "Ratelimit-Limit": "120",
+      "Ratelimit-Policy": "120;w=60",
+      "Ratelimit-Remaining": "119",
+      "Ratelimit-Reset": "60",
+      "Referrer-Policy": "no-referrer",
+      "Server": "Caddy",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Vary": "Accept",
+      "X-Content-Type-Options": "nosniff",
+      "X-Dns-Prefetch-Control": "off",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "SAMEORIGIN",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-Request-Id": "9b441b02-763e-409a-873a-033aaffaeeda",
+      "X-Sirenic-Key-Id": "d06c6006c5d560e9",
+      "X-Sirenic-Signature": "XdD2jvVR3n971TshRHICdeEWehnwwjfZIBZKe7EjaGe/9PNN9nfauWs+Rt2HAiMTOyQc1qxcBwsYGDiXMSP7BQ==",
+      "X-Sirenic-Timestamp": "2026-11-13T02:42:41.166Z",
+      "X-Sirenic-Verification-Id": "fd5e600bfe6d092f",
+      "X-Xss-Protection": "0"
+    },
+    "status_code": 200,
+    "url": "https://api.sirenic.eu/v1/entreprise/552032534",
+    "wallet_address": "0x511BF5A78702B396f336aa2f831F7899db19e88B",
+    "wallet_type": "agent_wallet"
+  }
+}

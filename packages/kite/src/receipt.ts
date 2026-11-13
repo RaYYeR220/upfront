@@ -84,11 +84,21 @@ export function parseExecute(
   }
 
   const x = obj(out.x402);
-  const status = typeof x.status_code === "number" ? x.status_code : null;
+  const pay = obj(out.payment);
+  const status = typeof x.status_code === "number" ? x.status_code : typeof pay.status_code === "number" ? pay.status_code : null;
   const body = x.parsed_response_body ?? x.response_body ?? null;
-  const network = typeof x.chain_id === "number" ? `eip155:${x.chain_id}` : "solana";
+  // The payment block names the settlement network and hash; x402.chain_id can be the agent's home chain.
+  const network =
+    typeof pay.network === "string"
+      ? pay.network
+      : typeof x.network === "string"
+        ? x.network
+        : typeof x.chain_id === "number"
+          ? `eip155:${x.chain_id}`
+          : "solana";
+  const txHash = typeof pay.transaction_hash === "string" && /^0x[0-9a-fA-F]{64}$/.test(pay.transaction_hash) ? pay.transaction_hash : null;
   if (status !== null && status >= 200 && status < 300) {
-    return { httpStatus: status, body, receipt: { ...base, status: "settled", amountUsd: amountOf(out), network } };
+    return { httpStatus: status, body, receipt: { ...base, status: "settled", amountUsd: amountOf(out), network, txHash } };
   }
   return { httpStatus: status, body, receipt: { ...base, status: "failed", network, refusalCode: `http_${status}` } };
 }

@@ -8,6 +8,21 @@ const fx = (n: string): unknown => JSON.parse(readFileSync(join(import.meta.dirn
 const req = { url: "https://api.sirenic.eu/v1/entreprise/552032534", idempotencyKey: "k1" };
 const meta = { payer: "house" as const, now: "2026-11-12T16:02:00Z" };
 
+describe("parseExecute on a real Passport payment", () => {
+  it("takes the settlement hash, network and amount from the payment block", () => {
+    const r = parseExecute(fx("real-execute-session-success"), 0, req, meta);
+    expect(r.httpStatus).toBe(200);
+    expect(r.body).toMatchObject({ denomination: "DANONE" });
+    expect(r.receipt).toMatchObject({
+      status: "settled",
+      amountUsd: 0.005,
+      network: "eip155:8453",
+      txHash: "0x7d650588c18da24a768f1b80d25a7b8e13a9ee2996c9d4b1e5fb6c911482fad8",
+      merchant: "api.sirenic.eu",
+    });
+  });
+});
+
 describe("parseExecute", () => {
   it("records a settled session payment with the merchant's response", () => {
     const r = parseExecute(fx("execute-session-success"), 0, req, meta);
