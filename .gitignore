@@ -9,7 +9,7 @@ coverage/
 *.db-*
 .kite-passport/
 .playwright-mcp/
-results/raw/
+**/results/raw/
 .vercel/
 .next/
 .DS_Store
