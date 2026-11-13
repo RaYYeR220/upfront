@@ -99,6 +99,8 @@ export function factSentence(f: Fact): string {
       return `Gazette notice ${fmtDate(f.observedAt)}: ${String(v.nature ?? v.family ?? "notice")}`;
     case "accounts.filed":
       return `Accounts for ${String(v.closingDate ?? "").slice(0, 4)} filed ${fmtDate(String(v.filedOn ?? f.observedAt))}`;
+    case "accounts.late_filing_months":
+      return Number(f.value) > 0 ? `Last accounts filed ${f.value} months after the deadline` : "Last accounts filed on time";
     case "accounts.overdue_months":
       return Number(f.value) > 0 ? `Accounts ${f.value} months overdue` : "Accounts filed on time";
     case "finance.year": {

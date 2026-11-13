@@ -59,6 +59,17 @@ export function deriveFacts(facts: Fact[], refDate: string, opts: { documentsFet
   const latest = filed[0];
   const createdOn = facts.find((f) => f.kind === "identity.created_on")?.value as string | undefined;
   if (latest) {
+    // How late the most recent filing itself was: months past the legal filing deadline (closing + 7 months).
+    const lastFiled = [...filed].sort((a, b) => b.filedOn.localeCompare(a.filedOn))[0]!;
+    const deadline = addMonths(lastFiled.closingDate, FILING_GRACE_MONTHS - 12);
+    out.push({
+      id: "drv:accounts.late_filing_months#0",
+      kind: "accounts.late_filing_months",
+      value: Math.max(0, monthsBetween(deadline, lastFiled.filedOn)),
+      observedAt: lastFiled.filedOn,
+      source: "derived",
+      receiptId: facts.find((f) => f.kind === "accounts.filed")?.receiptId ?? null,
+    });
     const due = addMonths(latest.closingDate, FILING_GRACE_MONTHS);
     out.push({
       id: "drv:accounts.overdue_months#0",

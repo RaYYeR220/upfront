@@ -10,8 +10,10 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import type { Decision, Fact, FloorResult, Terms } from "@upfront/core";
-import { type CheckResult, runCheck, servPort } from "@upfront/engine";
+import { computeFloor, type Decision, type Fact, type FloorResult, type Policy, type Terms, validateDecision } from "@upfront/core";
+import { type CheckOutcome, type CheckResult, runCheck, type ServPort, servPort, settle } from "@upfront/engine";
+import { deriveFacts, filterAsOf } from "@upfront/sources";
+import { publicFacts } from "./free-evidence.ts";
 import { createKpassExecutor } from "@upfront/kite";
 import { baseModel, loadPolicy, MODELS, servClient } from "@upfront/serv";
 import { ARMS, type Arm, decideArgs, net30Arm, rawArm, rawClient, ruleArm } from "./arms.ts";
@@ -25,6 +27,8 @@ const { values } = parseArgs({
     limit: { type: "string", default: "0" },
     concurrency: { type: "string", default: "3" },
     "raw-model": { type: "string", default: "" },
+    // "public": free gazette + register data (default). "kite": the production lookups, paid through Kite Passport.
+    source: { type: "string", default: "public" },
   },
 });
 
@@ -63,6 +67,54 @@ async function pool<T>(items: T[], n: number, fn: (x: T) => Promise<void>) {
   );
 }
 
+/**
+ * The same decision step as production (hard-fact floors, the policy through
+ * SERV, validation, fail-closed settling) on evidence from free public records.
+ */
+async function decideOnPublicRecords(siren: string, T: string, policy: Policy, serv: ServPort): Promise<CheckOutcome> {
+  const checkId = `bt-${siren}-${T}`;
+  const all = await publicFacts(siren);
+  if (!all.length) return { kind: "not_found", checkId };
+  const pit = filterAsOf(all, T);
+  const facts = [...pit, ...deriveFacts(pit, T, { documentsFetched: true })].map((f, i) => ({ ...f, id: `f_${i + 1}` }));
+  const floor = computeFloor(facts);
+  let proposed: Decision | null = null;
+  let servUsd = 0;
+  try {
+    const d = await serv.decide({ policy, facts, floor, amountEur: STANDARD_INVOICE_EUR, today: T });
+    servUsd = d.costUsd;
+    const v = validateDecision(d.raw, facts, floor);
+    if (v.ok) proposed = v.decision;
+  } catch {
+    proposed = null;
+  }
+  const { final, finalReasons } = settle(proposed, floor);
+  const name = String(facts.find((f) => f.kind === "identity.name")?.value ?? siren);
+  return {
+    kind: "done",
+    result: {
+      checkId,
+      entity: { jurisdiction: "FR", id: siren, name },
+      amountEur: STANDARD_INVOICE_EUR,
+      policy: { id: policy.id, version: policy.version, hash: policy.hash },
+      asOf: T,
+      facts,
+      receipts: [],
+      floor,
+      proposed,
+      decisionConfidence: proposed?.confidence ?? "low",
+      final,
+      finalReasons,
+      review: null,
+      reviewed: false,
+      notes: [],
+      issue: { summary: "", termsText: "" },
+      nodes: [],
+      costs: { evidenceUsd: 0, servUsd, reviewUsd: 0 },
+    },
+  };
+}
+
 async function main() {
   const servKey = process.env.SERV_API_KEY;
   if (!servKey) throw new Error("SERV_API_KEY is required");
@@ -92,10 +144,13 @@ async function main() {
       done++;
       return;
     }
-    const outcome = await runCheck(
-      { query: row.siren, amountEur: STANDARD_INVOICE_EUR, policy, asOf: row.T, planKeys: PLAN, review: "skip" },
-      { kite, payer, serv, reppo: null, now: () => new Date(), emit: () => {} },
-    );
+    const outcome =
+      values.source === "kite"
+        ? await runCheck(
+            { query: row.siren, amountEur: STANDARD_INVOICE_EUR, policy, asOf: row.T, planKeys: PLAN, review: "skip" },
+            { kite, payer, serv, reppo: null, now: () => new Date(), emit: () => {} },
+          )
+        : await decideOnPublicRecords(row.siren, row.T, policy, serv);
     const r: CheckResult | null = outcome.kind === "done" ? outcome.result : null;
     const saved: Saved = {
       siren: row.siren,
@@ -160,7 +215,8 @@ async function main() {
     setup: {
       invoiceEur: STANDARD_INVOICE_EUR,
       evaluatedOn: "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
-      evidence: PLAN,
+      evidence: values.source === "kite" ? PLAN : ["gazette (BODACC), every notice about the company", "national company register"],
+      source: values.source,
       pointInTime: "only facts published or filed on or before T; current-state facts dropped; fiscal years only once filed",
       policy: { id: policy.id, version: policy.version, hash: policy.hash },
       decideModel: MODELS.decide,

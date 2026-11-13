@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-11-13T02:25:19.616Z",
+  "setup": {
+    "invoiceEur": 5000,
+    "evaluatedOn": "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
+    "evidence": [
+      "gazette (BODACC), every notice about the company",
+      "national company register"
+    ],
+    "source": "public",
+    "pointInTime": "only facts published or filed on or before T; current-state facts dropped; fiscal years only once filed",
+    "policy": {
+      "id": "freelancer",
+      "version": 1,
+      "hash": "c72b9fedfe99d712d5491aa7a8e328d37ec9f0d491d328b264664b03a22fb732"
+    },
+    "decideModel": "gpt-5.4-mini-serv-kronos-multipath",
+    "rawModel": null
+  },
+  "counts": {
+    "companies": 6,
+    "unavailable": 0,
+    "upfrontDecisionsFailedValidation": 0,
+    "rawDecisionsFailedValidation": 0
+  },
+  "costs": {
+    "evidenceUsd": 0,
+    "servUsd": 0.0161
+  },
+  "metrics": {
+    "upfront": {
+      "nFailing": 3,
+      "nControls": 3,
+      "caughtFailing": 0.3333,
+      "falseAlarmControls": 0,
+      "avgLossPerInvoiceEur": 4167
+    },
+    "raw": {
+      "nFailing": 0,
+      "nControls": 0,
+      "caughtFailing": 0,
+      "falseAlarmControls": 0,
+      "avgLossPerInvoiceEur": 0
+    },
+    "rule": {
+      "nFailing": 3,
+      "nControls": 3,
+      "caughtFailing": 0.3333,
+      "falseAlarmControls": 0,
+      "avgLossPerInvoiceEur": 4167
+    },
+    "net30": {
+      "nFailing": 3,
+      "nControls": 3,
+      "caughtFailing": 0,
+      "falseAlarmControls": 0,
+      "avgLossPerInvoiceEur": 5000
+    }
+  },
+  "rows": [
+    {
+      "siren": "810041467",
+      "group": "failing",
+      "T": "2025-03-16",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "451927248",
+      "group": "failing",
+      "T": "2025-12-17",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911209864",
+      "group": "failing",
+      "T": "2026-03-08",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "848895520",
+      "group": "control",
+      "T": "2025-03-16",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "500410162",
+      "group": "control",
+      "T": "2025-12-17",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "978485878",
+      "group": "control",
+      "T": "2026-03-08",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    }
+  ]
+}

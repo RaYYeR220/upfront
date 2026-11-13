@@ -152,6 +152,19 @@ describe("deriveFacts", () => {
     expect(overdue?.value).toBe(15);
     expect(deriveFacts([filed], "2025-05-01").find((f) => f.kind === "accounts.overdue_months")?.value).toBe(0);
   });
+
+  it("measures how late the most recent filing was", () => {
+    const late: Fact = {
+      id: "d2",
+      kind: "accounts.filed",
+      value: { closingDate: "2023-12-31", filedOn: "2025-04-06" },
+      observedAt: "2025-04-06",
+      source: "sirenic/documents",
+      receiptId: null,
+    };
+    // Deadline 2024-07-31; filed 2025-04-06: 8 whole months late.
+    expect(deriveFacts([late], "2025-12-17").find((f) => f.kind === "accounts.late_filing_months")?.value).toBe(8);
+  });
 });
 
 describe("filterAsOf", () => {
