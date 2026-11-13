@@ -85,8 +85,10 @@ async function decideOnPublicRecords(siren: string, T: string, policy: Policy, s
     servUsd = d.costUsd;
     const v = validateDecision(d.raw, facts, floor);
     if (v.ok) proposed = v.decision;
-  } catch {
-    proposed = null;
+  } catch (e) {
+    // In production a failed call falls back to safe terms. In a measurement it must not pass for a
+    // decision: the row is reported as unavailable and re-run, never scored.
+    return { kind: "unavailable", checkId, reason: String((e as Error).message ?? e).slice(0, 200), receipts: [] };
   }
   const { final, finalReasons } = settle(proposed, floor);
   const name = String(facts.find((f) => f.kind === "identity.name")?.value ?? siren);
@@ -152,6 +154,10 @@ async function main() {
           )
         : await decideOnPublicRecords(row.siren, row.T, policy, serv);
     const r: CheckResult | null = outcome.kind === "done" ? outcome.result : null;
+    if (outcome.kind === "unavailable" && values.source !== "kite") {
+      log(`${row.group} ${row.siren} T=${row.T} → not scored: ${outcome.reason}`);
+      return;
+    }
     const saved: Saved = {
       siren: row.siren,
       group: row.group,
