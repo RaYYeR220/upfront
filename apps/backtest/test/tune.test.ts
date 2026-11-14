@@ -14,8 +14,15 @@ describe("accept", () => {
   it("keeps a revision that catches more without crossing the false-alarm cap", () => {
     expect(accept(m(0.5, 0.05), m(0.6, 0.08)).accepted).toBe(true);
   });
-  it("rejects a revision with no gain", () => {
-    expect(accept(m(0.5, 0.05), m(0.5, 0.02)).accepted).toBe(false);
+  it("keeps a revision that cuts false alarms at the same catch rate", () => {
+    expect(accept(m(0.5, 0.05), m(0.5, 0.02)).accepted).toBe(true);
+  });
+  it("rejects a revision with no net gain", () => {
+    expect(accept(m(0.5, 0.05), m(0.55, 0.1)).accepted).toBe(false);
+  });
+  it("from a noisy start, trades a few catches for far fewer false alarms", () => {
+    expect(accept(m(0.6, 0.47), m(0.5, 0.2)).accepted).toBe(true);
+    expect(accept(m(0.6, 0.47), m(0.3, 0.2)).accepted).toBe(false);
   });
   it("rejects a revision that buys catches with false alarms", () => {
     expect(accept(m(0.5, 0.05), m(0.8, 0.2))).toMatchObject({ accepted: false });

@@ -4,20 +4,23 @@ import type { ArmMetrics } from "./metrics.ts";
 /** A revised policy must not raise false alarms above this on held-out companies. */
 export const FALSE_ALARM_CAP = 0.1;
 
+/** Caught minus false alarms (Youden's J): 0 for Net 30 to everyone, 1 for a perfect policy. */
+export const informedness = (m: ArmMetrics): number => Math.round((m.caughtFailing - m.falseAlarmControls) * 10_000) / 10_000;
+
 /**
- * A new policy version is kept only if, on companies it was NOT tuned on, it
- * catches more of the failing ones and does not push false alarms above the
- * cap (or above where they already were, if that was higher).
+ * A new policy version is kept only if, on the training companies, caught minus
+ * false alarms goes up and false alarms stay under the cap (or under where they
+ * already were, if that was higher). Held-out companies never decide anything.
  */
 export function accept(old: ArmMetrics, next: ArmMetrics): { accepted: boolean; why: string } {
-  if (next.caughtFailing <= old.caughtFailing) {
-    return { accepted: false, why: `caught ${pct(next.caughtFailing)} vs ${pct(old.caughtFailing)}: no gain` };
-  }
   const ceiling = Math.max(FALSE_ALARM_CAP, old.falseAlarmControls);
   if (next.falseAlarmControls > ceiling) {
     return { accepted: false, why: `false alarms ${pct(next.falseAlarmControls)} above ${pct(ceiling)}` };
   }
-  return { accepted: true, why: `caught ${pct(old.caughtFailing)} → ${pct(next.caughtFailing)}, false alarms ${pct(next.falseAlarmControls)}` };
+  const [a, b] = [informedness(old), informedness(next)];
+  const line = `caught ${pct(old.caughtFailing)} → ${pct(next.caughtFailing)}, false alarms ${pct(old.falseAlarmControls)} → ${pct(next.falseAlarmControls)}`;
+  if (b <= a) return { accepted: false, why: `${line}: no net gain` };
+  return { accepted: true, why: line };
 }
 
 const pct = (x: number) => `${Math.round(x * 100)}%`;
