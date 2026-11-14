@@ -1,4 +1,4 @@
-import { type HeroRunKey, RUNS, SOURCE_SHORT } from "./hero-runs";
+import { type HeroRunKey, RUNS, SOURCE_SHORT, shortTx } from "./hero-runs";
 
 /** Per-day company counts for the silent-gap strip, served from public/. */
 const GAP_URL = "/gap-field.json";
@@ -436,6 +436,7 @@ export function startLanding(root: HTMLElement): () => void {
     const d = D;
     if (!d) return "x";
     RUN = key;
+    for (const b of root.querySelectorAll<HTMLButtonElement>(".tab")) b.setAttribute("aria-selected", String(b.dataset.run === key));
     const R = RUNS[key];
     reset(R, d);
     syncTabs();
@@ -489,7 +490,7 @@ export function startLanding(root: HTMLElement): () => void {
           spent = +(spent + src.usd).toFixed(3);
           roll($("spent"), f3(spent), true);
           narr(
-            `<span class="st">buy</span>${src.name} · ${fmt(src.usd)} · tx pending`,
+            `<span class="st">buy</span>${src.name} · ${fmt(src.usd)}${src.tx ? ` · tx ${shortTx(src.tx)}` : ""}`,
             "paid through Kite Agent Passport, capped at $0.20 a lookup",
           );
           if (!L.mob) s.oc.textContent = `${src.facts.length} fact${src.facts.length === 1 ? "" : "s"}`;
@@ -564,7 +565,7 @@ export function startLanding(root: HTMLElement): () => void {
       narr(`<span class="st">floors</span>none`, "");
       await wait(500);
       if (!live()) return "x";
-      narr(`<span class="st">decide</span>your freelancer policy`, "illustrative until a live SERV run");
+      narr(`<span class="st">decide</span>SERV Reasoning applies your freelancer policy`, `${R.decideSec} s · every reason cites a fact`);
       await wait(450);
       if (!live()) return "x";
       d.hc.setAttribute("class", "hub-c set");
@@ -615,9 +616,18 @@ export function startLanding(root: HTMLElement): () => void {
     pk.remove();
     d.rg.setAttribute("class", "rv on");
     d.pend.classList.add("on");
-    d.rs.textContent = "Reppo panel · pending";
-    if (HOLD || RM) return "hold";
-    await wait(5600);
+    d.rs.textContent = "Reppo panel · reviewing";
+    const verdict = `Reppo · ${R.review.score}/100 · ${R.review.route === "ship" ? "ship" : "to a person"}`;
+    if (HOLD || RM) {
+      d.pend.classList.remove("on");
+      d.rs.textContent = verdict;
+      return "hold";
+    }
+    await wait(1500);
+    if (!live()) return "x";
+    d.pend.classList.remove("on");
+    d.rs.textContent = verdict;
+    await wait(4400);
     if (!live()) return "x";
     await tween(600, (t) => {
       d.dorb.setAttribute("opacity", String(1 - t));
@@ -675,7 +685,7 @@ export function startLanding(root: HTMLElement): () => void {
       ["status", st],
     ];
     if (d.st === "settled") {
-      rows.push(["tx", "pending"]);
+      if (d.tx) rows.push(["tx", `${shortTx(d.tx)} on Base`]);
       rows.push(["facts", d.facts.length ? d.facts.join(" · ") : "0 facts"]);
     }
     rc.innerHTML = `<div class="h"><b>${d.name}</b><span>${fmt(d.usd)}</span></div><dl>${rows

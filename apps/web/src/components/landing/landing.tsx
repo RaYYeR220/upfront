@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import silentGap from "@/data/silent-gap.json";
+import { RUNS } from "./hero-runs";
 import { LandingRoot } from "./landing-root";
 import "./landing.css";
 
@@ -97,7 +98,7 @@ export function Landing() {
             <Link className="btn pri" href="/check">
               Check a client
             </Link>
-            <Link className="btn ghost" href="/check">
+            <Link className="btn ghost" href={`/c/${RUNS.kd.checkId}`}>
               See a real check <span className="arr" aria-hidden="true">&rarr;</span>
             </Link>
           </div>
@@ -138,8 +139,8 @@ export function Landing() {
             <div className="rcpt" id="rcpt" role="tooltip" />
           </div>
           <div className="runs-row rv-in" style={delay(".34s")}>
-            <div className="runs" role="tablist" aria-label="Recorded checks">
-              <span className="lbl">Recorded checks</span>
+            <div className="runs" role="tablist" aria-label="Live checks">
+              <span className="lbl">Live checks</span>
               <button className="tab" type="button" role="tab" data-run="kd" aria-selected="true">
                 KD SOCCER CONSULTING<span className="m">€6,800</span>
               </button>
@@ -147,7 +148,7 @@ export function Landing() {
                 DANONE<span className="m">€4,000</span>
               </button>
             </div>
-            <div className="cap">Replayed from the run log, slowed down · hover a source for its receipt · tx pending</div>
+            <div className="cap">Replayed from live checks on 14 Nov, slowed down · hover a source for its receipt</div>
           </div>
         </div>
       </section>
@@ -440,7 +441,7 @@ export function Landing() {
               <Link className="btn pri" href="/check">
                 Check a client
               </Link>
-              <Link className="btn ghost" href="/check">
+              <Link className="btn ghost" href={`/c/${RUNS.kd.checkId}`}>
                 See a real check <span className="arr" aria-hidden="true">&rarr;</span>
               </Link>
             </div>
