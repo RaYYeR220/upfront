@@ -193,7 +193,14 @@ async function main() {
   let invalid = 0;
   const rawInvalid: string[] = [];
   for (const row of rows) {
-    const s = JSON.parse(await readFile(join(RAW, `${row.group}-${row.siren}-${row.T}.json`), "utf8")) as Saved;
+    const path = join(RAW, `${row.group}-${row.siren}-${row.T}.json`);
+    if (!existsSync(path)) {
+      // Not scored this run (the reasoning call failed); rerun to fill it in.
+      unavailable++;
+      evalRows.push({ siren: row.siren, group: row.group, T: row.T, arms: {} });
+      continue;
+    }
+    const s = JSON.parse(await readFile(path, "utf8")) as Saved;
     evidenceUsd += s.evidenceUsd;
     servUsd += s.servUsd;
     if (s.outcome !== "done") {

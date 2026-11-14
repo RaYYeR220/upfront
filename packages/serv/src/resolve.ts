@@ -23,6 +23,8 @@ export async function pickCandidate(
 ): Promise<{ siren: string | null; yesProb: number; usage: Usage; costUsd: number; model: string }> {
   const r = await c.chat.completions.create({
     model,
+    // Set explicitly: left unset, the server derives a ceiling from the account balance that can exceed the model limit.
+    max_completion_tokens: 8_000,
     messages: [
       { role: "system", content: RESOLVE_SYSTEM },
       {
