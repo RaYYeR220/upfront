@@ -5,7 +5,8 @@ export const eur = (n: number) =>
 
 export function usd(n: number): string {
   if (n === 0) return "$0";
-  const digits = n < 0.01 ? 3 : 2;
+  // Lookups are priced in half-cents: keep the third digit whenever it carries one.
+  const digits = n < 0.01 || Math.round(n * 1000) % 10 !== 0 ? 3 : 2;
   return `$${n.toFixed(digits)}`;
 }
 
@@ -83,7 +84,7 @@ export function factSentence(f: Fact): string {
     case "identity.vat":
       return `VAT number ${String(f.value)}`;
     case "identity.workforce_band":
-      return `Workforce band ${String(f.value)}`;
+      return String(f.value) === "NN" ? "No employees declared" : `Workforce band ${String(f.value)} (INSEE code)`;
     case "status.active":
       return "Active in the register";
     case "status.ceased_on":
