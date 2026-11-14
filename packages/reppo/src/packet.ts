@@ -34,6 +34,7 @@ const ALLOW: Partial<Record<FactKind, Shape | ((v: unknown) => unknown)>> = {
   "accounts.filed": { closingDate: month, filedOn: month },
   "accounts.overdue_months": keep,
   "accounts.late_filing_months": keep,
+  "accounts.never_filed": keep,
   "finance.year": {
     closingDate: month,
     revenue: sig2,

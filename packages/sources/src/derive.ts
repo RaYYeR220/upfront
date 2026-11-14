@@ -80,15 +80,33 @@ export function deriveFacts(facts: Fact[], refDate: string, opts: { documentsFet
       receiptId: facts.find((f) => f.kind === "accounts.filed")?.receiptId ?? null,
     });
   } else if (opts.documentsFetched && createdOn) {
+    // Never filed is a different signal from stopped filing: many small companies never publish.
     const due = addMonths(createdOn, FIRST_FILING_MONTHS);
     out.push({
-      id: "drv:accounts.overdue_months#0",
-      kind: "accounts.overdue_months",
+      id: "drv:accounts.never_filed#0",
+      kind: "accounts.never_filed",
       value: Math.max(0, monthsBetween(due, refDate)),
       observedAt: refDate,
-      source: "derived (no accounts ever filed)",
+      source: "derived",
       receiptId: null,
     });
+  }
+
+  // A gazette strike-off closes the company only while nothing is filed or published after it;
+  // a strike-off followed by later filings is a move to another court registry.
+  const strikes = facts
+    .filter((f) => f.kind === "bodacc.event" && (f.value as Notice)?.family === "radiation")
+    .sort((a, b) => a.observedAt.localeCompare(b.observedAt));
+  const lastStrike = strikes.at(-1);
+  if (lastStrike) {
+    const after = facts.some(
+      (f) =>
+        f.observedAt > lastStrike.observedAt &&
+        (f.kind === "accounts.filed" || (f.kind === "bodacc.event" && (f.value as Notice)?.family !== "radiation")),
+    );
+    if (!after) {
+      out.push({ ...lastStrike, id: "drv:status.ceased_on#0", kind: "status.ceased_on", value: lastStrike.observedAt });
+    }
   }
 
   return out;

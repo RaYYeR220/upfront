@@ -24,6 +24,7 @@ export type FactKind =
   | "accounts.filed"
   | "accounts.overdue_months"
   | "accounts.late_filing_months"
+  | "accounts.never_filed"
   | "finance.year"
   | "court.decision"
   | "bodacc.event"

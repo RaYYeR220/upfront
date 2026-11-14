@@ -27,7 +27,7 @@ export function net30Arm(): Terms {
 export function ruleArm(facts: Fact[], refDate: string): { terms: Terms; why: string } {
   const floor = computeFloor(facts);
   if (floor.floor) return { terms: floorDefault(floor.floor), why: `floor: ${floor.because.map((b) => b.rule).join(", ")}` };
-  const overdue = facts.find((f) => f.kind === "accounts.overdue_months")?.value;
+  const overdue = facts.find((f) => f.kind === "accounts.overdue_months" || f.kind === "accounts.never_filed")?.value;
   if (typeof overdue === "number" && overdue >= 18) return { terms: floorDefault("deposit"), why: `accounts ${overdue} months overdue` };
   const pastProceeding = facts.find(
     (f) => f.kind === "proceeding.past" && monthsBetween(f.observedAt, refDate) < 36,

@@ -153,6 +153,22 @@ describe("deriveFacts", () => {
     expect(deriveFacts([filed], "2025-05-01").find((f) => f.kind === "accounts.overdue_months")?.value).toBe(0);
   });
 
+  it("tells accounts that were never filed apart from accounts that stopped", () => {
+    const created: Fact = { id: "c", kind: "identity.created_on", value: "2020-01-01", observedAt: "2020-01-01", source: "s", receiptId: null };
+    const out = deriveFacts([created], "2026-01-01", { documentsFetched: true });
+    // First accounts due 31 months after creation (2022-08-01); 41 months before 2026-01-01.
+    expect(out.find((f) => f.kind === "accounts.never_filed")?.value).toBe(41);
+    expect(out.some((f) => f.kind === "accounts.overdue_months")).toBe(false);
+  });
+
+  it("reads a strike-off as a closure only while nothing follows it", () => {
+    const strike: Fact = { id: "r", kind: "bodacc.event", value: { family: "radiation", publishedOn: "2010-03-09" }, observedAt: "2010-03-09", source: "gazette", receiptId: null };
+    const later: Fact = { id: "a", kind: "accounts.filed", value: { closingDate: "2024-12-31", filedOn: "2025-05-20" }, observedAt: "2025-05-20", source: "gazette", receiptId: null };
+    expect(deriveFacts([strike], "2011-01-01").find((f) => f.kind === "status.ceased_on")?.value).toBe("2010-03-09");
+    // Filings after a strike-off: the company moved to another registry, it did not close.
+    expect(deriveFacts([strike, later], "2025-12-15").some((f) => f.kind === "status.ceased_on")).toBe(false);
+  });
+
   it("measures how late the most recent filing was", () => {
     const late: Fact = {
       id: "d2",

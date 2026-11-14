@@ -82,7 +82,8 @@ export function factsFromPublicRecords(siren: string, notices: Raw[], register: 
         break;
       }
       case "radiation":
-        add("status.ceased_on", published, published, "gazette");
+        // Read by deriveFacts: a closure only if nothing follows it.
+        add("bodacc.event", { family: "radiation", publishedOn: published }, published, "gazette");
         break;
       case "vente":
         add("bodacc.event", { family: "sale", publishedOn: published }, published, "gazette");

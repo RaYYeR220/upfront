@@ -13,6 +13,7 @@ describe("ruleArm", () => {
   it("asks a deposit for 18+ months of overdue accounts", () => {
     expect(ruleArm([f("a", "accounts.overdue_months", 18, "2026-02-01")], "2026-02-01").terms.mode).toBe("deposit");
     expect(ruleArm([f("a", "accounts.overdue_months", 17, "2026-02-01")], "2026-02-01").terms.mode).toBe("net");
+    expect(ruleArm([f("a", "accounts.never_filed", 18, "2026-02-01")], "2026-02-01").terms.mode).toBe("deposit");
   });
   it("asks a deposit after a recent proceeding or court order to pay", () => {
     expect(ruleArm([f("a", "proceeding.past", { category: "plan_redressement" }, "2024-06-01")], "2026-02-01").terms.mode).toBe("deposit");
