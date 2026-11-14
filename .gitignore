@@ -13,3 +13,5 @@ coverage/
 .vercel/
 .next/
 .DS_Store
+
+.vercel

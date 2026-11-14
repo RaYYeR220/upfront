@@ -255,14 +255,12 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
         return { value: "individual", receiptIds: [first.receipt.id], status: "error", error: "individual" };
       }
       const out: Bought[] = [{ spec: profileSpec, status: first.httpStatus, body: first.body, receipt: first.receipt }];
-      const rest = specs.filter((s) => s !== profileSpec);
-      const results = await Promise.all(
-        rest.map(async (spec) => {
-          const r = await pay(spec.key, spec.url(siren, opts));
-          return { spec, status: r.httpStatus, body: r.body, receipt: r.receipt };
-        }),
-      );
-      out.push(...results);
+      // One payment at a time: the Passport reserves the balance for each payment in flight,
+      // and a second one started meanwhile can be refused for "insufficient balance".
+      for (const spec of specs.filter((s) => s !== profileSpec)) {
+        const r = await pay(spec.key, spec.url(siren, opts));
+        out.push({ spec, status: r.httpStatus, body: r.body, receipt: r.receipt });
+      }
       const spent = out.reduce((s, b) => s + b.receipt.amountUsd, 0);
       return {
         value: out,
