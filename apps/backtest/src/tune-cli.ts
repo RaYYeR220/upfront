@@ -6,11 +6,12 @@
 //
 //   SERV_API_KEY=... REPPO_API_KEY=... pnpm --filter @upfront/backtest tune -- --iterations 3
 import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import type { Fact, Policy, Terms } from "@upfront/core";
+import { computeSignals, type Fact, type Policy, type SignalName, type Terms } from "@upfront/core";
 import { awaitReview, type ReviewResult, reppoClient } from "@upfront/reppo";
 import { type Compiled, compilePolicy, loadPolicy, makePolicy, type Mistake, PROGRAMS_DIR, programFileName, proposeAmendment, servClient } from "@upfront/serv";
 import { monthsBetween } from "@upfront/sources";
@@ -116,7 +117,8 @@ async function main() {
   // Decisions are the compiled program applied by code: free and identical on every replay.
   const decideAll = (c: Compiled, set: Row[]): Map<string, Terms> => new Map(set.map((r) => [`${r.group}-${r.siren}`, decideWith(c, r.facts, r.T)]));
   const keep = async (policy: Policy, c: Compiled) => {
-    const { usage: _u, costUsd: _c, ms: _m, ...stored } = c as Compiled & { usage?: unknown; costUsd?: number; ms?: number };
+    const { usage: _u, costUsd: _c, ms: _m, ...rest } = c as Compiled & { usage?: unknown; costUsd?: number; ms?: number };
+    const stored = { ...rest, policyText: policy.text };
     await writeFile(join(PROGRAMS_DIR, programFileName(policy)), `${JSON.stringify(stored, null, 2)}
 `);
   };
@@ -146,11 +148,52 @@ async function main() {
       }
       t.set(k, e);
     }
-    return [...t.entries()]
+    const combos = [...t.entries()]
       .sort((a, b) => b[1].f + b[1].c - (a[1].f + a[1].c))
-      .slice(0, 25)
+      .slice(0, 15)
       .map(([k, e]) => `${k}: ${e.f} stopped paying (${e.ff} flagged), ${e.c} kept paying (${e.cf} flagged)`);
+    return [...signalTable(set, terms), ...combos];
   };
+
+  // Each warning sign on its own, at the thresholds a policy would use: how many of the clients it
+  // marks went on to stop paying, and how many kept paying.
+  const THRESHOLDS: [string, SignalName, (v: number) => boolean][] = [
+    ["accounts 1+ months overdue", "accounts_overdue_months", (v) => v >= 1],
+    ["accounts 6+ months overdue", "accounts_overdue_months", (v) => v >= 6],
+    ["accounts 12+ months overdue", "accounts_overdue_months", (v) => v >= 12],
+    ["accounts 18+ months overdue", "accounts_overdue_months", (v) => v >= 18],
+    ["never filed accounts", "accounts_never_filed_months", () => true],
+    ["last accounts filed 1+ months late", "last_filing_late_months", (v) => v >= 1],
+    ["last accounts filed 6+ months late", "last_filing_late_months", (v) => v >= 6],
+    ["last accounts filed 12+ months late", "last_filing_late_months", (v) => v >= 12],
+    ["under 2 years old", "age_months", (v) => v < 24],
+    ["under 5 years old", "age_months", (v) => v < 60],
+    ["last filed year a loss", "last_year_net_margin_pct", (v) => v < 0],
+    ["last filed year lost 20%+ of revenue", "last_year_net_margin_pct", (v) => v < -20],
+    ["negative equity", "last_year_equity_ratio_pct", (v) => v < 0],
+    ["no financial results on file", "finances_known", (v) => v === 0],
+    ["court decision in the last 12 months", "court_decision_months", (v) => v <= 12],
+  ];
+  const signalTable = (set: Row[], terms: Map<string, Terms>): string[] =>
+    THRESHOLDS.map(([label, name, test]) => {
+      let f = 0;
+      let ff = 0;
+      let c = 0;
+      let cf = 0;
+      for (const r of set) {
+        const s = computeSignals(r.facts, r.T, STANDARD_INVOICE_EUR)[name];
+        if (!s || !test(s.value)) continue;
+        const fl = terms.get(`${r.group}-${r.siren}`);
+        if (r.group === "failing") {
+          f++;
+          if (fl && flagged(fl)) ff++;
+        } else {
+          c++;
+          if (fl && flagged(fl)) cf++;
+        }
+      }
+      return `sign "${label}" alone: ${f} stopped paying (${ff} flagged), ${c} kept paying (${cf} flagged)`;
+    });
 
   let current = loadPolicy("freelancer");
   let program = await programFor(current);
@@ -171,7 +214,21 @@ async function main() {
       why: "baseline",
     },
   ];
-  log(`v1 train ${record(train, trainTerms)}`);
+  // Runs add to the record: earlier candidates stay, and the newest kept version is the starting point.
+  if (existsSync(join(RESULTS, "tuning.json"))) {
+    const prev = JSON.parse(await readFile(join(RESULTS, "tuning.json"), "utf8")) as { history: Array<Record<string, unknown>> };
+    if (prev.history[0]?.hash === current.hash) {
+      history.splice(0, history.length, ...prev.history);
+      const lastKept = [...history].reverse().find((h) => h.accepted && typeof h.text === "string");
+      if (lastKept && lastKept.version !== 1) {
+        current = makePolicy("freelancer", current.name, String(lastKept.text), Number(lastKept.version));
+        program = await programFor(current);
+        trainTerms = decideAll(program, train);
+      }
+    }
+  }
+  const nextVersion = () => Math.max(...history.map((h) => Number(h.version))) + 1;
+  log(`v${current.version} train ${record(train, trainTerms)}`);
 
   for (let i = 0; i < Number(values.iterations); i++) {
     if (spent > budget) {
@@ -194,7 +251,7 @@ async function main() {
     const pats = patterns(train, trainTerms);
     const amendment = await proposeAmendment(client, { policy: current, mistakes, critiques: [], record: rec, patterns: pats });
     spent += amendment.costUsd;
-    const candidate = makePolicy("freelancer", current.name, amendment.text, current.version + 1);
+    const candidate = makePolicy("freelancer", current.name, amendment.text, nextVersion());
     log(`v${candidate.version} proposed: ${amendment.rationale}`);
 
     let review: ReviewResult | null = null;
@@ -248,8 +305,9 @@ async function main() {
       why: verdict.why,
     };
     log(`v${candidate.version} train: ${verdict.why} (${verdict.accepted ? "kept" : "dropped"})`);
+    // Reported for every measured version; it never decides whether one is kept.
+    entry.holdout = metricsOf(holdout, decideAll(candProgram, holdout));
     if (verdict.accepted) {
-      entry.holdout = metricsOf(holdout, decideAll(candProgram, holdout));
       current = candidate;
       program = candProgram;
       trainTerms = candTrain;

@@ -21,12 +21,6 @@ import { armMetrics, type EvalRow, STANDARD_INVOICE_EUR } from "./metrics.ts";
 const RESULTS = fileURLToPath(new URL("../results/", import.meta.url));
 const RAW = join(RESULTS, "raw");
 
-const { values } = parseArgs({
-  options: {
-    limit: { type: "string", default: "0" },
-    concurrency: { type: "string", default: "4" },
-  },
-});
 
 interface CohortRow {
   siren: string;
@@ -78,6 +72,12 @@ export async function programFor(policy: Policy): Promise<Compiled> {
 }
 
 async function main() {
+  const { values } = parseArgs({
+    options: {
+      limit: { type: "string", default: "0" },
+      concurrency: { type: "string", default: "4" },
+    },
+  });
   const cohort = JSON.parse(await readFile(join(RESULTS, "cohort.json"), "utf8")) as { failing: CohortRow[]; controls: CohortRow[] };
   let rows = [
     ...cohort.failing.map((r) => ({ ...r, group: "failing" as const })),
