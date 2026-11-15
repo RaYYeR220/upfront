@@ -81,15 +81,19 @@ export function deriveFacts(facts: Fact[], refDate: string, opts: { documentsFet
     });
   } else if (opts.documentsFetched && createdOn) {
     // Never filed is a different signal from stopped filing: many small companies never publish.
+    // A company whose first accounts are not due yet has filed nothing and is late with nothing.
     const due = addMonths(createdOn, FIRST_FILING_MONTHS);
-    out.push({
-      id: "drv:accounts.never_filed#0",
-      kind: "accounts.never_filed",
-      value: Math.max(0, monthsBetween(due, refDate)),
-      observedAt: refDate,
-      source: "derived",
-      receiptId: null,
-    });
+    const late = monthsBetween(due, refDate);
+    if (late > 0) {
+      out.push({
+        id: "drv:accounts.never_filed#0",
+        kind: "accounts.never_filed",
+        value: late,
+        observedAt: refDate,
+        source: "derived",
+        receiptId: null,
+      });
+    }
   }
 
   // A gazette strike-off closes the company only while nothing is filed or published after it;

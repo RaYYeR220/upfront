@@ -108,7 +108,7 @@ async function main() {
   const rows: Row[] = [];
   for (const f of await readdir(join(RESULTS, "raw"))) {
     const s = JSON.parse(await readFile(join(RESULTS, "raw", f), "utf8")) as Saved;
-    if (s.outcome === "done") rows.push({ ...s, pairedWith: pair.get(s.siren) });
+    if (s.outcome === "done") rows.push({ ...s, pairedWith: s.group === "control" ? pair.get(s.siren) : undefined });
   }
   const { train, holdout } = splitPairs(rows);
   log(`${rows.length} companies: ${train.length} train, ${holdout.length} holdout`);

@@ -21,7 +21,7 @@ Open **[/policy](https://upfront-terms.vercel.app/policy)**. Next to the freelan
 Open **[/backtest](https://upfront-terms.vercel.app/backtest)**:
 
 - French companies stop paying a median of <!-- num:gap.company.median -->144<!-- /num --> days before the gazette publishes their insolvency (<!-- num:gap.company.n -->43,438<!-- /num --> companies in 2026).
-- On the day they stopped paying, the freelancer policy asks a deposit or more from <!-- num:bt.upfront.caught -->58%<!-- /num --> of 150 failing companies and <!-- num:bt.upfront.falseAlarm -->41%<!-- /num --> of their healthy twins; a rule of thumb, <!-- num:bt.rule.caught -->27%<!-- /num --> and <!-- num:bt.rule.falseAlarm -->17%<!-- /num -->.
+- On the day they stopped paying, the freelancer policy asks a deposit or more from <!-- num:bt.upfront.caught -->53%<!-- /num --> of 150 failing companies and <!-- num:bt.upfront.falseAlarm -->38%<!-- /num --> of their healthy twins; a rule of thumb, <!-- num:bt.rule.caught -->27%<!-- /num --> and <!-- num:bt.rule.falseAlarm -->17%<!-- /num -->.
 - Which public signs separate the two groups at all (only late or missing accounts do).
 - Every policy revision SERV proposed, Reppo's review of it, and why it was not kept.
 

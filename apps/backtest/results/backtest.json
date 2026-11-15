@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T02:13:20.475Z",
+  "generatedAt": "2026-11-15T02:32:29.759Z",
   "setup": {
     "invoiceEur": 5000,
     "evaluatedOn": "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
@@ -31,9 +31,9 @@
     "upfront": {
       "nFailing": 150,
       "nControls": 150,
-      "caughtFailing": 0.58,
-      "falseAlarmControls": 0.4133,
-      "avgLossPerInvoiceEur": 3180
+      "caughtFailing": 0.5267,
+      "falseAlarmControls": 0.38,
+      "avgLossPerInvoiceEur": 3453
     },
     "rule": {
       "nFailing": 150,
@@ -77,9 +77,9 @@
     },
     {
       "sign": "never filed accounts",
-      "failing": 45,
-      "controls": 34,
-      "separation": 0.073
+      "failing": 31,
+      "controls": 23,
+      "separation": 0.053
     },
     {
       "sign": "last accounts filed 1+ months late",
@@ -324,8 +324,9 @@
       "T": "2025-07-01",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -614,8 +615,9 @@
       "T": "2025-06-04",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1035,8 +1037,9 @@
       "T": "2024-10-22",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1248,8 +1251,9 @@
       "T": "2026-02-19",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1287,8 +1291,9 @@
       "T": "2024-07-31",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1306,8 +1311,9 @@
       "T": "2024-11-01",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1438,8 +1444,9 @@
       "T": "2024-10-30",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1457,7 +1464,8 @@
       "T": "2024-11-22",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -1494,7 +1502,8 @@
       "T": "2025-06-01",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -1512,7 +1521,8 @@
       "T": "2025-10-30",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -1568,8 +1578,9 @@
       "T": "2024-09-26",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -1896,7 +1907,8 @@
       "T": "2026-03-23",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -2029,7 +2041,8 @@
       "T": "2026-08-01",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -2199,7 +2212,8 @@
       "T": "2026-08-19",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -3165,8 +3179,9 @@
       "T": "2024-06-17",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -3222,7 +3237,8 @@
       "T": "2026-01-27",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -3415,8 +3431,9 @@
       "T": "2024-11-11",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -4208,8 +4225,9 @@
       "T": "2024-07-28",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -4327,7 +4345,8 @@
       "T": "2024-10-30",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -4403,8 +4422,9 @@
       "T": "2025-10-30",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -4462,7 +4482,8 @@
       "T": "2024-09-26",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -4948,7 +4969,8 @@
       "T": "2024-04-04",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -5043,8 +5065,9 @@
       "T": "2025-06-15",
       "arms": {
         "upfront": {
-          "mode": "deposit",
-          "depositPct": 50
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
         },
         "rule": {
           "mode": "net",
@@ -5102,7 +5125,8 @@
       "T": "2026-08-19",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",
@@ -5782,7 +5806,8 @@
       "T": "2026-01-15",
       "arms": {
         "upfront": {
-          "mode": "prepay"
+          "mode": "deposit",
+          "depositPct": 30
         },
         "rule": {
           "mode": "net",

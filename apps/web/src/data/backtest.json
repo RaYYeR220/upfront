@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T02:13:20.475Z",
+  "generatedAt": "2026-11-15T02:32:29.759Z",
   "setup": {
     "invoiceEur": 5000,
     "evaluatedOn": "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
@@ -31,9 +31,9 @@
     "upfront": {
       "nFailing": 150,
       "nControls": 150,
-      "caughtFailing": 0.58,
-      "falseAlarmControls": 0.4133,
-      "avgLossPerInvoiceEur": 3180
+      "caughtFailing": 0.5267,
+      "falseAlarmControls": 0.38,
+      "avgLossPerInvoiceEur": 3453
     },
     "rule": {
       "nFailing": 150,
@@ -77,9 +77,9 @@
     },
     {
       "sign": "never filed accounts",
-      "failing": 45,
-      "controls": 34,
-      "separation": 0.073
+      "failing": 31,
+      "controls": 23,
+      "separation": 0.053
     },
     {
       "sign": "last accounts filed 1+ months late",

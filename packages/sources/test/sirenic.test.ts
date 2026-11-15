@@ -161,6 +161,12 @@ describe("deriveFacts", () => {
     expect(out.some((f) => f.kind === "accounts.overdue_months")).toBe(false);
   });
 
+  it("says nothing about filing for a company whose first accounts are not due yet", () => {
+    const created: Fact = { id: "c", kind: "identity.created_on", value: "2025-06-01", observedAt: "2025-06-01", source: "s", receiptId: null };
+    const out = deriveFacts([created], "2026-11-12", { documentsFetched: true });
+    expect(out.some((f) => f.kind === "accounts.never_filed" || f.kind === "accounts.overdue_months")).toBe(false);
+  });
+
   it("reads a strike-off as a closure only while nothing follows it", () => {
     const strike: Fact = { id: "r", kind: "bodacc.event", value: { family: "radiation", publishedOn: "2010-03-09" }, observedAt: "2010-03-09", source: "gazette", receiptId: null };
     const later: Fact = { id: "a", kind: "accounts.filed", value: { closingDate: "2024-12-31", filedOn: "2025-05-20" }, observedAt: "2025-05-20", source: "gazette", receiptId: null };

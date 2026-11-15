@@ -21,8 +21,6 @@ export interface AppCtx {
   extraRoutes?: (app: Hono) => void;
   /** Compiled policies, shared with the checks. */
   programs?: ProgramCache;
-  /** Compiling a new policy calls SERV; this caps how many a day the service pays for. */
-  compilesPerDay?: number;
 }
 
 const CheckBody = z.object({
@@ -160,7 +158,6 @@ export function createApp(ctx: AppCtx): Hono {
   });
 
   // The policy as SERV compiled it: its rules, what they give ten sample clients, and anything it couldn't express.
-  let compiles = { day: "", n: 0 };
   app.post("/api/policies/:id/compile", async (c) => {
     if (!ctx.programs) return c.json({ error: "unavailable" }, 503);
     const id = c.req.param("id");
@@ -172,13 +169,10 @@ export function createApp(ctx: AppCtx): Hono {
       // Compiling calls SERV: only the policy's owner can ask, and the service pays for a fixed number a day.
       const preset = (PRESETS as readonly string[]).includes(id);
       if (!preset && !(await policyTokenOk(ctx.db, id, c.req.header("x-policy-token")))) return c.json({ error: "forbidden" }, 403);
-      const day = new Date().toISOString().slice(0, 10);
-      if (compiles.day !== day) compiles = { day, n: 0 };
-      if (compiles.n >= (ctx.compilesPerDay ?? 20)) return c.json({ error: "compile_quota" }, 429);
-      compiles.n++; // kept even if the compile fails
       try {
         compiled = (await ctx.programs.get(policy)).compiled;
-      } catch {
+      } catch (e) {
+        if (String((e as Error).message) === "compile_quota") return c.json({ error: "compile_quota" }, 429);
         return c.json({ error: "compile_failed" }, 502);
       }
     }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-15T01:52:10.102Z",
+  "generatedAt": "2026-11-15T02:34:58.133Z",
   "goal": "caught minus false alarms on the training half; false alarms may not rise above max(10%, where they were)",
   "split": {
     "train": 180,
@@ -13,19 +13,19 @@
       "before": {
         "nFailing": 60,
         "nControls": 60,
-        "caughtFailing": 0.5667,
-        "falseAlarmControls": 0.3833,
-        "avgLossPerInvoiceEur": 3100
+        "caughtFailing": 0.4833,
+        "falseAlarmControls": 0.3667,
+        "avgLossPerInvoiceEur": 3425
       },
       "after": {
         "nFailing": 60,
         "nControls": 60,
-        "caughtFailing": 0.5667,
-        "falseAlarmControls": 0.3833,
-        "avgLossPerInvoiceEur": 3100
+        "caughtFailing": 0.4833,
+        "falseAlarmControls": 0.3667,
+        "avgLossPerInvoiceEur": 3425
       },
-      "informednessBefore": 0.1834,
-      "informednessAfter": 0.1834
+      "informednessBefore": 0.1166,
+      "informednessAfter": 0.1166
     }
   },
   "history": [
@@ -43,16 +43,16 @@
       "train": {
         "nFailing": 90,
         "nControls": 90,
-        "caughtFailing": 0.5889,
-        "falseAlarmControls": 0.4333,
-        "avgLossPerInvoiceEur": 3233
+        "caughtFailing": 0.5556,
+        "falseAlarmControls": 0.3889,
+        "avgLossPerInvoiceEur": 3472
       },
       "holdout": {
         "nFailing": 60,
         "nControls": 60,
-        "caughtFailing": 0.5667,
-        "falseAlarmControls": 0.3833,
-        "avgLossPerInvoiceEur": 3100
+        "caughtFailing": 0.4833,
+        "falseAlarmControls": 0.3667,
+        "avgLossPerInvoiceEur": 3425
       },
       "accepted": true,
       "why": "baseline"
@@ -87,7 +87,7 @@
         "avgLossPerInvoiceEur": 3425
       },
       "accepted": false,
-      "why": "caught 59% → 44%, false alarms 43% → 32%: no net gain"
+      "why": "caught 56% → 44%, false alarms 39% → 32%: no net gain"
     },
     {
       "version": 3,

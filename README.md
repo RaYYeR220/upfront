@@ -42,16 +42,16 @@ A policy is the business owner's own rules: "a 30% deposit when the accounts are
 | | |
 |---|---|
 | Silent gap, companies, 2026 | median <!-- num:gap.company.median -->144<!-- /num --> days over <!-- num:gap.company.n -->43,438<!-- /num --> liquidations and reorganisations; <!-- num:gap.company.over180 -->46%<!-- /num --> longer than six months |
-| Backtest, Upfront (freelancer policy v1) | asks a deposit or more from <!-- num:bt.upfront.caught -->58%<!-- /num --> of companies on the day they stopped paying, and from <!-- num:bt.upfront.falseAlarm -->41%<!-- /num --> of their healthy twins |
+| Backtest, Upfront (freelancer policy v1) | asks a deposit or more from <!-- num:bt.upfront.caught -->53%<!-- /num --> of companies on the day they stopped paying, and from <!-- num:bt.upfront.falseAlarm -->38%<!-- /num --> of their healthy twins |
 | Backtest, a credit controller's rule of thumb | <!-- num:bt.rule.caught -->27%<!-- /num --> and <!-- num:bt.rule.falseAlarm -->17%<!-- /num --> |
 | Backtest, Net 30 for everyone | 0% and 0%; loses the whole invoice every time |
-| Average loss on a €5,000 invoice to a company that stopped paying | Upfront <!-- num:bt.upfront.loss -->€3,180<!-- /num -->, rule <!-- num:bt.rule.loss -->€4,233<!-- /num -->, Net 30 <!-- num:bt.net30.loss -->€5,000<!-- /num --> |
+| Average loss on a €5,000 invoice to a company that stopped paying | Upfront <!-- num:bt.upfront.loss -->€3,453<!-- /num -->, rule <!-- num:bt.rule.loss -->€4,233<!-- /num -->, Net 30 <!-- num:bt.net30.loss -->€5,000<!-- /num --> |
 
 The backtest takes <!-- num:bt.companies -->300<!-- /num --> companies: 150 that went into liquidation or reorganisation and 150 healthy twins matched on legal form, region, sector and age. Each is checked on the day the court says it stopped paying, with only the records that were public that day (every gazette notice and the national register, free open data). The decision is the freelancer policy as SERV compiled it (<!-- num:bt.rules -->10<!-- /num --> rules), so the whole table replays from the stored program without a key: `pnpm --filter @upfront/backtest run`.
 
-Honest reading: the public record is a weak signal on the day payments stop. Late or missing accounts are the only signs more common among the failing companies; age, losses and missing financials are as common among healthy ones (the [evidence page](https://upfront-terms.vercel.app/backtest) lists every sign). Upfront catches twice as many failing clients as the rule of thumb, at the price of asking many healthy clients for a deposit, which is why its strict answer is a deposit rather than a refusal.
+Honest reading: the public record is a weak signal on the day payments stop. Late or missing accounts are the only signs more common among the failing companies; age, losses and missing financials are as common among healthy ones (the [evidence page](https://upfront-terms.vercel.app/backtest) lists every sign). Upfront catches almost twice as many failing clients as the rule of thumb, at the price of asking many healthy clients for a deposit, which is why its strict answer is a deposit rather than a refusal.
 
-**Policy revisions.** SERV proposes revisions from the policy's record on <!-- num:tune.train -->180<!-- /num --> of the companies, Reppo reviews each revision, and a revision is kept only if caught-minus-false-alarms improves on those companies; the other <!-- num:tune.holdout -->120<!-- /num --> never decide anything and are reported for every version. So far <!-- num:tune.candidates -->2<!-- /num --> revisions were proposed and none was kept: one caught fewer failing companies than it saved in false alarms (the held-out companies agree), one did not compile. See [`apps/backtest/results/tuning.json`](apps/backtest/results/tuning.json).
+**Policy revisions.** SERV proposes revisions from the policy's record on <!-- num:tune.train -->180<!-- /num --> of the companies, Reppo reviews each revision, and a revision is kept only if caught-minus-false-alarms improves on those companies; the other <!-- num:tune.holdout -->120<!-- /num --> never decide anything and are reported for every version. So far <!-- num:tune.candidates -->2<!-- /num --> revisions were proposed and none was kept. The one that compiled caught fewer failing companies than it saved in false alarms on the training companies, but did better than the starting policy on the held-out ones; with 60 failing and 60 healthy companies on each side, neither difference is clear of chance. The other did not compile. See [`apps/backtest/results/tuning.json`](apps/backtest/results/tuning.json).
 
 Numbers in this file are rendered from [`apps/backtest/results`](apps/backtest/results) by `pnpm --filter @upfront/backtest render`. None is typed by hand. Proof of live payments and reviews: [PROOF.md](PROOF.md). Every claim and its evidence tier: [CLAIMS.md](CLAIMS.md).
 
@@ -80,7 +80,7 @@ Production needs `SERV_API_KEY`, a Kite Agent Passport login for the paying agen
 
 - France is covered in depth. Other countries are not yet wired.
 - Upfront checks companies, not people. Sole traders are refused before anything is bought.
-- On public records alone, the backtest's false-alarm rate is high (<!-- num:bt.upfront.falseAlarm -->41%<!-- /num -->). Your own payment history with a client is the obvious missing signal.
+- On public records alone, the backtest's false-alarm rate is high (<!-- num:bt.upfront.falseAlarm -->38%<!-- /num -->). Your own payment history with a client is the obvious missing signal.
 - A compiled policy is only as good as its rules. The policy page shows them, with the sample clients and any disagreement, before you rely on them.
 - Reppo's evaluation feed is public, so reviews are redacted: the panel judges the reasoning without knowing who the client is.
 - The free demo pays from our own Passport with a daily cap.

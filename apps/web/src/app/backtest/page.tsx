@@ -152,7 +152,9 @@ export default function Evidence() {
           </h2>
           <p className="mt-3 max-w-3xl text-[15px] text-ink2">
             The record is {tuning.split.train} of the companies; the other {tuning.split.holdout} never influence a decision and
-            are shown for every version. So far no revision has beaten the starting policy, and the held-out companies agree.
+            are shown for every version. No revision has been kept so far. The one that was measured did worse than the starting
+            policy on the training companies and better on the held-out ones; with 60 failing and 60 healthy companies on each side,
+            neither difference is clear of chance, which is why the rule decides on one half and only reports the other.
           </p>
           <ol className="mt-8 flex flex-col">
             {tuning.history.map((h: Json) => (

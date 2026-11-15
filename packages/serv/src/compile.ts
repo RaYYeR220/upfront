@@ -204,8 +204,12 @@ export function storedProgram(hash: string, dir = PROGRAMS_DIR): Compiled | null
   if (!existsSync(dir)) return null;
   const file = readdirSync(dir).find((f) => f.endsWith(`${hash.slice(0, 16)}.json`));
   if (!file) return null;
-  const c = JSON.parse(readFileSync(join(dir, file), "utf8")) as Compiled;
-  return c.policyHash === hash && parseProgram(c.program).ok ? c : null;
+  try {
+    const c = JSON.parse(readFileSync(join(dir, file), "utf8")) as Compiled;
+    return c.policyHash === hash && parseProgram(c.program).ok ? c : null;
+  } catch {
+    return null; // a file being written or damaged is the same as no file
+  }
 }
 
 export const programFileName = (policy: Policy) => `${policy.id}-v${policy.version}-${policy.hash.slice(0, 16)}.json`;
