@@ -49,7 +49,7 @@ export function engineDeps(cfg: Config): Omit<EngineDeps, "emit"> {
   return {
     kite: createKpassExecutor({ bin: cfg.kpassBin }),
     payer: { payer: "house", home: cfg.kiteHome },
-    serv: servPort(servClient(cfg.servApiKey)),
+    serv: servPort(servClient(cfg.servApiKey), { programsDir: process.env.PROGRAMS_DIR ?? "/data/programs" }),
     reppo: cfg.reppoApiKey ? reppoClient(cfg.reppoApiKey) : null,
     now: () => new Date(),
   };

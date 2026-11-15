@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T02:25:19.616Z",
+  "generatedAt": "2026-11-15T01:44:09.867Z",
   "setup": {
     "invoiceEur": 5000,
     "evaluatedOn": "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
@@ -7,51 +7,44 @@
       "gazette (BODACC), every notice about the company",
       "national company register"
     ],
-    "source": "public",
     "pointInTime": "only facts published or filed on or before T; current-state facts dropped; fiscal years only once filed",
     "policy": {
       "id": "freelancer",
       "version": 1,
       "hash": "c72b9fedfe99d712d5491aa7a8e328d37ec9f0d491d328b264664b03a22fb732"
     },
-    "decideModel": "gpt-5.4-mini-serv-kronos-multipath",
-    "rawModel": null
+    "program": {
+      "model": "gpt-5.4-mini",
+      "compiledAt": "2026-11-15T01:39:50.105Z",
+      "rules": 10,
+      "warnings": [
+        "For a client whose accounts are 24 months overdue, the policy gives a 50% deposit, but the program gives prepay (rules deposit_30_accounts_6_plus_months_overdue, deposit_50_accounts_18_plus_months_overdue, prepay_two_or_more_deposit_triggers fire). Fix the rules so they agree with the policy.",
+        "For a healthy client with a €40,000 invoice, the policy gives a 30% deposit, but the program gives Net 30 (no rule fires). Fix the rules so they agree with the policy."
+      ]
+    }
   },
   "counts": {
-    "companies": 6,
-    "unavailable": 0,
-    "upfrontDecisionsFailedValidation": 0,
-    "rawDecisionsFailedValidation": 0
-  },
-  "costs": {
-    "evidenceUsd": 0,
-    "servUsd": 0.0161
+    "companies": 300,
+    "unavailable": 0
   },
   "metrics": {
     "upfront": {
-      "nFailing": 3,
-      "nControls": 3,
-      "caughtFailing": 0.3333,
-      "falseAlarmControls": 0,
-      "avgLossPerInvoiceEur": 4167
-    },
-    "raw": {
-      "nFailing": 0,
-      "nControls": 0,
-      "caughtFailing": 0,
-      "falseAlarmControls": 0,
-      "avgLossPerInvoiceEur": 0
+      "nFailing": 150,
+      "nControls": 150,
+      "caughtFailing": 0.58,
+      "falseAlarmControls": 0.4133,
+      "avgLossPerInvoiceEur": 3180
     },
     "rule": {
-      "nFailing": 3,
-      "nControls": 3,
-      "caughtFailing": 0.3333,
-      "falseAlarmControls": 0,
-      "avgLossPerInvoiceEur": 4167
+      "nFailing": 150,
+      "nControls": 150,
+      "caughtFailing": 0.2733,
+      "falseAlarmControls": 0.1667,
+      "avgLossPerInvoiceEur": 4233
     },
     "net30": {
-      "nFailing": 3,
-      "nControls": 3,
+      "nFailing": 150,
+      "nControls": 150,
       "caughtFailing": 0,
       "falseAlarmControls": 0,
       "avgLossPerInvoiceEur": 5000
@@ -118,6 +111,2826 @@
       }
     },
     {
+      "siren": "904885886",
+      "group": "failing",
+      "T": "2026-01-05",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "804585495",
+      "group": "failing",
+      "T": "2026-02-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "918811589",
+      "group": "failing",
+      "T": "2025-10-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "888216637",
+      "group": "failing",
+      "T": "2026-08-20",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "878880400",
+      "group": "failing",
+      "T": "2024-06-17",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "834422339",
+      "group": "failing",
+      "T": "2026-09-23",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "952205391",
+      "group": "failing",
+      "T": "2025-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "953718020",
+      "group": "failing",
+      "T": "2026-01-27",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "849494422",
+      "group": "failing",
+      "T": "2025-12-12",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "877907543",
+      "group": "failing",
+      "T": "2025-04-14",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "881603278",
+      "group": "failing",
+      "T": "2026-05-14",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "915111918",
+      "group": "failing",
+      "T": "2026-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "539141267",
+      "group": "failing",
+      "T": "2025-12-28",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "883106221",
+      "group": "failing",
+      "T": "2024-11-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "537707259",
+      "group": "failing",
+      "T": "2025-06-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "420758468",
+      "group": "failing",
+      "T": "2024-12-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "790516876",
+      "group": "failing",
+      "T": "2026-02-02",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900138249",
+      "group": "failing",
+      "T": "2024-11-11",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "932868508",
+      "group": "failing",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "522686666",
+      "group": "failing",
+      "T": "2026-07-31",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "prepay"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "808977847",
+      "group": "failing",
+      "T": "2024-07-21",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "952319994",
+      "group": "failing",
+      "T": "2025-06-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "833968944",
+      "group": "failing",
+      "T": "2026-03-23",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "478566128",
+      "group": "failing",
+      "T": "2025-09-19",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "828063784",
+      "group": "failing",
+      "T": "2025-05-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "928149962",
+      "group": "failing",
+      "T": "2026-07-23",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "821768850",
+      "group": "failing",
+      "T": "2024-11-12",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "509837910",
+      "group": "failing",
+      "T": "2024-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "803182112",
+      "group": "failing",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "449456730",
+      "group": "failing",
+      "T": "2026-05-25",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "prepay"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "838801538",
+      "group": "failing",
+      "T": "2025-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "807812110",
+      "group": "failing",
+      "T": "2025-03-16",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "838386423",
+      "group": "failing",
+      "T": "2026-03-19",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "898563028",
+      "group": "failing",
+      "T": "2024-11-27",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "851102103",
+      "group": "failing",
+      "T": "2025-04-14",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "527876304",
+      "group": "failing",
+      "T": "2024-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "883353153",
+      "group": "failing",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "878343250",
+      "group": "failing",
+      "T": "2025-01-07",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "882056757",
+      "group": "failing",
+      "T": "2024-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "852598267",
+      "group": "failing",
+      "T": "2024-01-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "483991857",
+      "group": "failing",
+      "T": "2024-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "828691501",
+      "group": "failing",
+      "T": "2025-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "908633563",
+      "group": "failing",
+      "T": "2024-09-26",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "918727165",
+      "group": "failing",
+      "T": "2024-10-22",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "879142560",
+      "group": "failing",
+      "T": "2025-05-14",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900666066",
+      "group": "failing",
+      "T": "2025-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "832951941",
+      "group": "failing",
+      "T": "2024-10-20",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "831515986",
+      "group": "failing",
+      "T": "2024-08-04",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "842867350",
+      "group": "failing",
+      "T": "2024-11-13",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "802000778",
+      "group": "failing",
+      "T": "2025-05-26",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "480711043",
+      "group": "failing",
+      "T": "2026-03-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "979644317",
+      "group": "failing",
+      "T": "2026-03-20",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902175173",
+      "group": "failing",
+      "T": "2024-07-07",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "797679834",
+      "group": "failing",
+      "T": "2026-05-06",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "984183061",
+      "group": "failing",
+      "T": "2026-02-19",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "513344150",
+      "group": "failing",
+      "T": "2025-12-20",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913758611",
+      "group": "failing",
+      "T": "2024-07-31",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913916912",
+      "group": "failing",
+      "T": "2024-11-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "887715183",
+      "group": "failing",
+      "T": "2024-07-28",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "880981154",
+      "group": "failing",
+      "T": "2026-07-07",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900662073",
+      "group": "failing",
+      "T": "2026-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "447534405",
+      "group": "failing",
+      "T": "2025-01-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900119736",
+      "group": "failing",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "492464748",
+      "group": "failing",
+      "T": "2024-11-28",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "920465085",
+      "group": "failing",
+      "T": "2024-10-30",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "922067541",
+      "group": "failing",
+      "T": "2024-11-22",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "814479077",
+      "group": "failing",
+      "T": "2026-03-30",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "981438047",
+      "group": "failing",
+      "T": "2025-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "985035104",
+      "group": "failing",
+      "T": "2025-10-30",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "921845756",
+      "group": "failing",
+      "T": "2026-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "947889069",
+      "group": "failing",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911687564",
+      "group": "failing",
+      "T": "2024-09-26",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "818725582",
+      "group": "failing",
+      "T": "2025-03-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "891146532",
+      "group": "failing",
+      "T": "2025-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "888403433",
+      "group": "failing",
+      "T": "2025-03-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "487669715",
+      "group": "failing",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "879850220",
+      "group": "failing",
+      "T": "2026-04-20",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "897511895",
+      "group": "failing",
+      "T": "2026-06-10",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "501115141",
+      "group": "failing",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "850247032",
+      "group": "failing",
+      "T": "2026-03-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "839657350",
+      "group": "failing",
+      "T": "2024-10-03",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "904103041",
+      "group": "failing",
+      "T": "2026-02-05",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "888619129",
+      "group": "failing",
+      "T": "2024-11-28",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "837603356",
+      "group": "failing",
+      "T": "2025-12-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "852548825",
+      "group": "failing",
+      "T": "2024-09-24",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "803050400",
+      "group": "failing",
+      "T": "2026-08-31",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "449233402",
+      "group": "failing",
+      "T": "2025-10-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "888012523",
+      "group": "failing",
+      "T": "2025-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "929299683",
+      "group": "failing",
+      "T": "2026-03-23",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "832380497",
+      "group": "failing",
+      "T": "2025-05-23",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "519828040",
+      "group": "failing",
+      "T": "2025-10-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "921029864",
+      "group": "failing",
+      "T": "2025-08-12",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913375218",
+      "group": "failing",
+      "T": "2025-11-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "814021275",
+      "group": "failing",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "831176987",
+      "group": "failing",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "942017062",
+      "group": "failing",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "852083716",
+      "group": "failing",
+      "T": "2024-04-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900128026",
+      "group": "failing",
+      "T": "2024-10-28",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "922527213",
+      "group": "failing",
+      "T": "2026-03-12",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "820984110",
+      "group": "failing",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "822135018",
+      "group": "failing",
+      "T": "2026-03-30",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "851587766",
+      "group": "failing",
+      "T": "2025-06-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "918688847",
+      "group": "failing",
+      "T": "2025-10-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "879261584",
+      "group": "failing",
+      "T": "2025-06-24",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "932927379",
+      "group": "failing",
+      "T": "2026-08-19",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "882807506",
+      "group": "failing",
+      "T": "2025-05-02",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "811816727",
+      "group": "failing",
+      "T": "2025-01-10",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "511720146",
+      "group": "failing",
+      "T": "2026-06-05",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "903546158",
+      "group": "failing",
+      "T": "2024-12-09",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "850858309",
+      "group": "failing",
+      "T": "2025-10-11",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "814296315",
+      "group": "failing",
+      "T": "2025-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "889263273",
+      "group": "failing",
+      "T": "2026-04-29",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "423436336",
+      "group": "failing",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "888562188",
+      "group": "failing",
+      "T": "2026-02-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "850085689",
+      "group": "failing",
+      "T": "2026-02-03",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "492298252",
+      "group": "failing",
+      "T": "2025-11-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "919573402",
+      "group": "failing",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "535151575",
+      "group": "failing",
+      "T": "2025-01-21",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "494100910",
+      "group": "failing",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "877991257",
+      "group": "failing",
+      "T": "2025-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "813536935",
+      "group": "failing",
+      "T": "2024-11-27",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "953871670",
+      "group": "failing",
+      "T": "2025-08-26",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "853354660",
+      "group": "failing",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911685121",
+      "group": "failing",
+      "T": "2025-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "808813893",
+      "group": "failing",
+      "T": "2024-06-18",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "903882439",
+      "group": "failing",
+      "T": "2026-01-16",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "899259709",
+      "group": "failing",
+      "T": "2024-08-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "977832369",
+      "group": "failing",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "882195878",
+      "group": "failing",
+      "T": "2025-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "878200229",
+      "group": "failing",
+      "T": "2025-04-02",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "838878361",
+      "group": "failing",
+      "T": "2024-11-20",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "917508889",
+      "group": "failing",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "804073112",
+      "group": "failing",
+      "T": "2025-03-04",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "890796394",
+      "group": "failing",
+      "T": "2025-11-05",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "419128657",
+      "group": "failing",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "880147244",
+      "group": "failing",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "849648274",
+      "group": "failing",
+      "T": "2025-07-11",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "788563880",
+      "group": "failing",
+      "T": "2026-02-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "802280438",
+      "group": "failing",
+      "T": "2024-09-11",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "904759669",
+      "group": "failing",
+      "T": "2026-01-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "910205442",
+      "group": "failing",
+      "T": "2026-03-10",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "843172818",
+      "group": "failing",
+      "T": "2026-05-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "489491621",
+      "group": "failing",
+      "T": "2025-11-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "833882004",
+      "group": "failing",
+      "T": "2026-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "794449215",
+      "group": "failing",
+      "T": "2025-04-22",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "852140565",
+      "group": "failing",
+      "T": "2025-09-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "500282801",
+      "group": "failing",
+      "T": "2024-07-22",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
       "siren": "848895520",
       "group": "control",
       "T": "2025-03-16",
@@ -161,6 +2974,2858 @@
       "siren": "978485878",
       "group": "control",
       "T": "2026-03-08",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "982293490",
+      "group": "control",
+      "T": "2026-01-05",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "827730888",
+      "group": "control",
+      "T": "2026-02-25",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "898361035",
+      "group": "control",
+      "T": "2025-10-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "848818613",
+      "group": "control",
+      "T": "2026-08-20",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "909566408",
+      "group": "control",
+      "T": "2024-06-17",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "818996563",
+      "group": "control",
+      "T": "2026-09-23",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "952913556",
+      "group": "control",
+      "T": "2025-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "930068911",
+      "group": "control",
+      "T": "2026-01-27",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "904502952",
+      "group": "control",
+      "T": "2025-12-12",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "834500845",
+      "group": "control",
+      "T": "2025-04-14",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "884606237",
+      "group": "control",
+      "T": "2026-05-14",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "889780938",
+      "group": "control",
+      "T": "2026-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "807632856",
+      "group": "control",
+      "T": "2025-12-28",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "832633150",
+      "group": "control",
+      "T": "2024-11-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "531962736",
+      "group": "control",
+      "T": "2025-06-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "417493228",
+      "group": "control",
+      "T": "2024-12-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "520496837",
+      "group": "control",
+      "T": "2026-02-02",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911990521",
+      "group": "control",
+      "T": "2024-11-11",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "984861427",
+      "group": "control",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "528132954",
+      "group": "control",
+      "T": "2026-07-31",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "839323110",
+      "group": "control",
+      "T": "2024-07-21",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "908502131",
+      "group": "control",
+      "T": "2025-06-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "849114343",
+      "group": "control",
+      "T": "2026-03-23",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "479452880",
+      "group": "control",
+      "T": "2025-09-19",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "887882769",
+      "group": "control",
+      "T": "2025-05-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911159077",
+      "group": "control",
+      "T": "2026-07-23",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "877774687",
+      "group": "control",
+      "T": "2024-11-12",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "510192990",
+      "group": "control",
+      "T": "2024-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "817763279",
+      "group": "control",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "491112587",
+      "group": "control",
+      "T": "2026-05-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "849608864",
+      "group": "control",
+      "T": "2025-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "834503765",
+      "group": "control",
+      "T": "2025-03-16",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "901534438",
+      "group": "control",
+      "T": "2026-03-19",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "851965681",
+      "group": "control",
+      "T": "2024-11-27",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "892108820",
+      "group": "control",
+      "T": "2025-04-14",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "789385242",
+      "group": "control",
+      "T": "2024-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902771328",
+      "group": "control",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "850662982",
+      "group": "control",
+      "T": "2025-01-07",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "904679511",
+      "group": "control",
+      "T": "2024-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "883541153",
+      "group": "control",
+      "T": "2024-01-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "441242278",
+      "group": "control",
+      "T": "2024-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "838200459",
+      "group": "control",
+      "T": "2025-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "912785672",
+      "group": "control",
+      "T": "2024-09-26",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "918284670",
+      "group": "control",
+      "T": "2024-10-22",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "881669519",
+      "group": "control",
+      "T": "2025-05-14",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "835362195",
+      "group": "control",
+      "T": "2025-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "890249816",
+      "group": "control",
+      "T": "2024-10-20",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "882102817",
+      "group": "control",
+      "T": "2024-08-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902341379",
+      "group": "control",
+      "T": "2024-11-13",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "822483210",
+      "group": "control",
+      "T": "2025-05-26",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "481606143",
+      "group": "control",
+      "T": "2026-03-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "921961298",
+      "group": "control",
+      "T": "2026-03-20",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "893993709",
+      "group": "control",
+      "T": "2024-07-07",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "789427994",
+      "group": "control",
+      "T": "2026-05-06",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "895304707",
+      "group": "control",
+      "T": "2026-02-19",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "512763814",
+      "group": "control",
+      "T": "2025-12-20",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "921774865",
+      "group": "control",
+      "T": "2024-07-31",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913172342",
+      "group": "control",
+      "T": "2024-11-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913142147",
+      "group": "control",
+      "T": "2024-07-28",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "847798147",
+      "group": "control",
+      "T": "2026-07-07",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "887935559",
+      "group": "control",
+      "T": "2026-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "431661982",
+      "group": "control",
+      "T": "2025-01-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "917542441",
+      "group": "control",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "447758178",
+      "group": "control",
+      "T": "2024-11-28",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "951039981",
+      "group": "control",
+      "T": "2024-10-30",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "912970399",
+      "group": "control",
+      "T": "2024-11-22",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "841401870",
+      "group": "control",
+      "T": "2026-03-30",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "913820361",
+      "group": "control",
+      "T": "2025-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "952437523",
+      "group": "control",
+      "T": "2025-10-30",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "979629706",
+      "group": "control",
+      "T": "2026-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "883678500",
+      "group": "control",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "948796966",
+      "group": "control",
+      "T": "2024-09-26",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "878449081",
+      "group": "control",
+      "T": "2025-03-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "908511835",
+      "group": "control",
+      "T": "2025-06-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "878261957",
+      "group": "control",
+      "T": "2025-03-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "443792957",
+      "group": "control",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "879916799",
+      "group": "control",
+      "T": "2026-04-20",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902716695",
+      "group": "control",
+      "T": "2026-06-10",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "479479115",
+      "group": "control",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "827746975",
+      "group": "control",
+      "T": "2026-03-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "827779224",
+      "group": "control",
+      "T": "2024-10-03",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "882086994",
+      "group": "control",
+      "T": "2026-02-05",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "917897100",
+      "group": "control",
+      "T": "2024-11-28",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "848387320",
+      "group": "control",
+      "T": "2025-12-01",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "834499824",
+      "group": "control",
+      "T": "2024-09-24",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "803014638",
+      "group": "control",
+      "T": "2026-08-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "442958310",
+      "group": "control",
+      "T": "2025-10-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "850183559",
+      "group": "control",
+      "T": "2025-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "925235590",
+      "group": "control",
+      "T": "2026-03-23",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "828305771",
+      "group": "control",
+      "T": "2025-05-23",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "791747553",
+      "group": "control",
+      "T": "2025-10-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902401249",
+      "group": "control",
+      "T": "2025-08-12",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "914623657",
+      "group": "control",
+      "T": "2025-11-25",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "750804288",
+      "group": "control",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "799482229",
+      "group": "control",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911528735",
+      "group": "control",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "919794388",
+      "group": "control",
+      "T": "2024-04-04",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "910836071",
+      "group": "control",
+      "T": "2024-10-28",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "891164873",
+      "group": "control",
+      "T": "2026-03-12",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "879067924",
+      "group": "control",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "828776989",
+      "group": "control",
+      "T": "2026-03-30",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "921734067",
+      "group": "control",
+      "T": "2025-06-15",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "907824817",
+      "group": "control",
+      "T": "2025-10-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "821936838",
+      "group": "control",
+      "T": "2025-06-24",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "933995771",
+      "group": "control",
+      "T": "2026-08-19",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "908676448",
+      "group": "control",
+      "T": "2025-05-02",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "822159281",
+      "group": "control",
+      "T": "2025-01-10",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "503101180",
+      "group": "control",
+      "T": "2026-06-05",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "887634483",
+      "group": "control",
+      "T": "2024-12-09",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "880785621",
+      "group": "control",
+      "T": "2025-10-11",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "832689061",
+      "group": "control",
+      "T": "2025-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "844565861",
+      "group": "control",
+      "T": "2026-04-29",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "428130488",
+      "group": "control",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "900555418",
+      "group": "control",
+      "T": "2026-02-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "894081058",
+      "group": "control",
+      "T": "2026-02-03",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "444904486",
+      "group": "control",
+      "T": "2025-11-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "949024822",
+      "group": "control",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "799586383",
+      "group": "control",
+      "T": "2025-01-21",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "501143150",
+      "group": "control",
+      "T": "2025-12-31",
+      "arms": {
+        "upfront": {
+          "mode": "decline"
+        },
+        "rule": {
+          "mode": "decline"
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911882686",
+      "group": "control",
+      "T": "2025-09-04",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "834677858",
+      "group": "control",
+      "T": "2024-11-27",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "912578879",
+      "group": "control",
+      "T": "2025-08-26",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "852598762",
+      "group": "control",
+      "T": "2025-12-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "849084314",
+      "group": "control",
+      "T": "2025-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "539389817",
+      "group": "control",
+      "T": "2024-06-18",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "909290371",
+      "group": "control",
+      "T": "2026-01-16",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "901187419",
+      "group": "control",
+      "T": "2024-08-25",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "905141842",
+      "group": "control",
+      "T": "2026-04-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "907567838",
+      "group": "control",
+      "T": "2025-09-30",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "917591794",
+      "group": "control",
+      "T": "2025-04-02",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "848188314",
+      "group": "control",
+      "T": "2024-11-20",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 30
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "908258114",
+      "group": "control",
+      "T": "2025-09-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "801363227",
+      "group": "control",
+      "T": "2025-03-04",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "981780646",
+      "group": "control",
+      "T": "2025-11-05",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "400919023",
+      "group": "control",
+      "T": "2026-01-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "911666790",
+      "group": "control",
+      "T": "2026-08-01",
+      "arms": {
+        "upfront": {
+          "mode": "deposit",
+          "depositPct": 50
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "819333733",
+      "group": "control",
+      "T": "2025-07-11",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "811424373",
+      "group": "control",
+      "T": "2026-02-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "821825361",
+      "group": "control",
+      "T": "2024-09-11",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "928582980",
+      "group": "control",
+      "T": "2026-01-15",
+      "arms": {
+        "upfront": {
+          "mode": "prepay"
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "949418883",
+      "group": "control",
+      "T": "2026-03-10",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "902133651",
+      "group": "control",
+      "T": "2026-05-31",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "507565117",
+      "group": "control",
+      "T": "2025-11-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "877813303",
+      "group": "control",
+      "T": "2026-07-01",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "529580854",
+      "group": "control",
+      "T": "2025-04-22",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "853201960",
+      "group": "control",
+      "T": "2025-09-15",
+      "arms": {
+        "upfront": {
+          "mode": "net",
+          "netDays": 30,
+          "creditLimitEur": 5000
+        },
+        "rule": {
+          "mode": "net",
+          "netDays": 30
+        },
+        "net30": {
+          "mode": "net",
+          "netDays": 30
+        }
+      }
+    },
+    {
+      "siren": "523462489",
+      "group": "control",
+      "T": "2024-07-22",
       "arms": {
         "upfront": {
           "mode": "net",

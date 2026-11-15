@@ -10,12 +10,12 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { computeFloor, type Fact, type Policy, type Terms, validateDecision } from "@upfront/core";
-import { settle } from "@upfront/engine";
+import type { Fact, Policy, Terms } from "@upfront/core";
 import { awaitReview, type ReviewResult, reppoClient } from "@upfront/reppo";
-import { decide, loadPolicy, makePolicy, type Mistake, proposeAmendment, servClient } from "@upfront/serv";
+import { type Compiled, compilePolicy, loadPolicy, makePolicy, type Mistake, PROGRAMS_DIR, programFileName, proposeAmendment, servClient } from "@upfront/serv";
 import { monthsBetween } from "@upfront/sources";
 import { type ArmMetrics, armMetrics, type EvalRow, flagged, STANDARD_INVOICE_EUR } from "./metrics.ts";
+import { decideWith, programFor } from "./run.ts";
 import { accept, informedness, splitPairs } from "./tune.ts";
 
 const RESULTS = fileURLToPath(new URL("../results/", import.meta.url));
@@ -113,35 +113,12 @@ async function main() {
 
   let spent = 0;
   const budget = Number(values["max-usd"]);
-  const decideAll = async (policy: Policy, set: Row[], reuse: boolean): Promise<Map<string, Terms>> => {
-    const out = new Map<string, Terms>();
-    const queue = [...set];
-    await Promise.all(
-      Array.from({ length: Number(values.concurrency) }, async () => {
-        while (queue.length) {
-          const r = queue.shift()!;
-          const id = `${r.group}-${r.siren}`;
-          if (reuse && r.upfront) {
-            out.set(id, r.upfront);
-            continue;
-          }
-          const floor = computeFloor(r.facts);
-          for (let attempt = 0; attempt < 3; attempt++) {
-            try {
-              const d = await decide(client, { policy, facts: r.facts, floor, amountEur: STANDARD_INVOICE_EUR, today: r.T });
-              spent += d.costUsd;
-              const v = validateDecision(d.raw, r.facts, floor);
-              out.set(id, settle(v.ok ? v.decision : null, floor).final);
-              break;
-            } catch (e) {
-              if (attempt === 2) log(`  ${id}: ${String((e as Error).message).slice(0, 120)} (not scored)`);
-              else await new Promise((res) => setTimeout(res, 2000 * (attempt + 1)));
-            }
-          }
-        }
-      }),
-    );
-    return out;
+  // Decisions are the compiled program applied by code: free and identical on every replay.
+  const decideAll = (c: Compiled, set: Row[]): Map<string, Terms> => new Map(set.map((r) => [`${r.group}-${r.siren}`, decideWith(c, r.facts, r.T)]));
+  const keep = async (policy: Policy, c: Compiled) => {
+    const { usage: _u, costUsd: _c, ms: _m, ...stored } = c as Compiled & { usage?: unknown; costUsd?: number; ms?: number };
+    await writeFile(join(PROGRAMS_DIR, programFileName(policy)), `${JSON.stringify(stored, null, 2)}
+`);
   };
   // Only companies every compared version decided are scored, so a failed call never counts as a decision.
   const metricsOf = (set: Row[], terms: Map<string, Terms>): ArmMetrics =>
@@ -176,14 +153,17 @@ async function main() {
   };
 
   let current = loadPolicy("freelancer");
-  let trainTerms = await decideAll(current, train, true);
-  const holdTerms1 = await decideAll(current, holdout, true);
+  let program = await programFor(current);
+  let trainTerms = decideAll(program, train);
+  const holdTerms1 = decideAll(program, holdout);
   const history: Array<Record<string, unknown>> = [
     {
       version: 1,
       hash: current.hash,
       text: current.text,
       rationale: "starting preset",
+      rules: program.program.rules.length,
+      warnings: program.warnings,
       review: null,
       train: metricsOf(train, trainTerms),
       holdout: metricsOf(holdout, holdTerms1),
@@ -241,13 +221,26 @@ async function main() {
       }
     }
 
-    const candTrain = await decideAll(candidate, train, false);
+    let candProgram: Compiled;
+    try {
+      const c = await compilePolicy(client, candidate);
+      spent += c.costUsd;
+      candProgram = c;
+      await keep(candidate, c);
+    } catch (e) {
+      history.push({ version: candidate.version, hash: candidate.hash, text: candidate.text, rationale: amendment.rationale, review, train: null, holdout: null, accepted: false, why: `did not compile: ${String((e as Error).message)}` });
+      log(`v${candidate.version} did not compile`);
+      continue;
+    }
+    const candTrain = decideAll(candProgram, train);
     const verdict = accept(metricsOf(train, trainTerms), metricsOf(train, candTrain));
     const entry: Record<string, unknown> = {
       version: candidate.version,
       hash: candidate.hash,
       text: candidate.text,
       rationale: amendment.rationale,
+      rules: candProgram.program.rules.length,
+      warnings: candProgram.warnings,
       review,
       train: metricsOf(train, candTrain),
       holdout: null,
@@ -256,8 +249,9 @@ async function main() {
     };
     log(`v${candidate.version} train: ${verdict.why} (${verdict.accepted ? "kept" : "dropped"})`);
     if (verdict.accepted) {
-      entry.holdout = metricsOf(holdout, await decideAll(candidate, holdout, false));
+      entry.holdout = metricsOf(holdout, decideAll(candProgram, holdout));
       current = candidate;
+      program = candProgram;
       trainTerms = candTrain;
     }
     history.push(entry);

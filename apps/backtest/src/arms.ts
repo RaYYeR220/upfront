@@ -1,18 +1,8 @@
-import {
-  computeFloor,
-  type Fact,
-  floorDefault,
-  type Policy,
-  type Terms,
-  validateDecision,
-} from "@upfront/core";
-import { settle } from "@upfront/engine";
-import { type DecideArgs, decide } from "@upfront/serv";
+import { computeFloor, type Fact, floorDefault, type Terms } from "@upfront/core";
 import { monthsBetween } from "@upfront/sources";
-import OpenAI from "openai";
 
-export type Arm = "upfront" | "raw" | "rule" | "net30";
-export const ARMS: readonly Arm[] = ["upfront", "raw", "rule", "net30"];
+export type Arm = "upfront" | "rule" | "net30";
+export const ARMS: readonly Arm[] = ["upfront", "rule", "net30"];
 
 /** The status quo: everyone gets Net 30. */
 export function net30Arm(): Terms {
@@ -40,32 +30,4 @@ export function ruleArm(facts: Fact[], refDate: string): { terms: Terms; why: st
   });
   if (orderToPay) return { terms: floorDefault("deposit"), why: "court order to pay in the last 12 months" };
   return { terms: floorDefault("net"), why: "no warning signs" };
-}
-
-/**
- * The same model and the same prompt, called directly without SERV's
- * reasoning graph, then held to the same validation and floors. The only
- * difference from Upfront's decision step is SERV.
- */
-export function rawClient(apiKey: string): OpenAI {
-  return new OpenAI({ apiKey, baseURL: "https://openrouter.ai/api/v1", timeout: 120_000, maxRetries: 1 });
-}
-
-export async function rawArm(client: OpenAI, model: string, args: DecideArgs): Promise<{ terms: Terms; valid: boolean; errors: string[] }> {
-  const floor = args.floor;
-  let raw: unknown = null;
-  try {
-    const out = await decide(client, args, model);
-    raw = out.raw;
-  } catch (e) {
-    return { terms: settle(null, floor).final, valid: false, errors: [String(e)] };
-  }
-  const v = validateDecision(raw, args.facts, floor);
-  return v.ok
-    ? { terms: settle(v.decision, floor).final, valid: true, errors: [] }
-    : { terms: settle(null, floor).final, valid: false, errors: v.errors };
-}
-
-export function decideArgs(policy: Policy, facts: Fact[], amountEur: number, asOf: string): DecideArgs {
-  return { policy, facts, floor: computeFloor(facts), amountEur, today: asOf };
 }

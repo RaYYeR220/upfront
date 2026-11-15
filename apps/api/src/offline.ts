@@ -1,12 +1,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { computeFloor, floorDefault } from "@upfront/core";
 import type { EngineDeps, ServPort } from "@upfront/engine";
 import { FakeKite, type FakeRoute } from "@upfront/kite";
+import { decide, programCache } from "@upfront/serv";
 
 /**
  * Local development only: Kite answers from recorded Sirenic responses and the
- * decision is a fixed rule, so the web app can be built without keys or money.
+ * decision uses the committed compiled presets, so the web app can be built without keys or money.
  * Refuses to start in production.
  */
 export function offlineEngine(): Omit<EngineDeps, "emit"> {
@@ -14,6 +14,7 @@ export function offlineEngine(): Omit<EngineDeps, "emit"> {
   const dir = join(import.meta.dirname, "../../../packages/sources/test/fixtures/sirenic");
   const fx = (n: string): unknown => JSON.parse(readFileSync(join(dir, `${n}.json`), "utf8"));
   const api = "https://api.sirenic.eu/v1";
+  const programs = programCache(null);
   const danone: Record<string, FakeRoute> = {
     [`${api}/entreprise/552032534`]: { status: 200, body: fx("entreprise-siren"), priceUsd: 0.005 },
     [`${api}/entreprise/552032534/alertes`]: { status: 200, body: { procedures_collectives: [] }, priceUsd: 0.01 },
@@ -54,17 +55,7 @@ export function offlineEngine(): Omit<EngineDeps, "emit"> {
       costUsd: 0,
       model: "offline",
     }),
-    decide: async ({ facts }) => {
-      const floor = computeFloor(facts);
-      const terms = floor.floor ? floorDefault(floor.floor) : { mode: "net" as const, netDays: 30 };
-      const cite = floor.because[0]?.factId ?? facts[0]?.id ?? "f_1";
-      return {
-        raw: { terms, reasons: [{ factIds: [cite], text: floor.floor ? "An insolvency proceeding is open." : "Established company with accounts on file." }], confidence: "medium" },
-        costUsd: 0,
-        ms: 1,
-        model: "offline",
-      };
-    },
+    decide: (a) => decide(programs, a),
     pick: async () => ({ siren: null, yesProb: 0, costUsd: 0, model: "offline" }),
   };
   return { kite, payer: { payer: "house", home: "offline" }, serv, reppo: null, now: () => new Date() };

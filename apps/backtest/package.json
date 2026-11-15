@@ -9,7 +9,8 @@
     "run": "tsx src/run.ts",
     "render": "tsx src/render-cli.ts",
     "tune": "tsx src/tune-cli.ts",
-    "review": "tsx src/review-cli.ts"
+    "review": "tsx src/review-cli.ts",
+    "compile": "tsx src/compile-cli.ts"
   },
   "devDependencies": {
     "tsx": "^4.23.15"
