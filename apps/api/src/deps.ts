@@ -1,7 +1,7 @@
 import { type EngineDeps, servPort } from "@upfront/engine";
 import { createKpassExecutor } from "@upfront/kite";
 import { reppoClient } from "@upfront/reppo";
-import { servClient } from "@upfront/serv";
+import { type ProgramCache, programCache, servClient } from "@upfront/serv";
 
 export interface Config {
   port: number;
@@ -45,11 +45,14 @@ export function loadConfig(): Config {
   };
 }
 
-export function engineDeps(cfg: Config): Omit<EngineDeps, "emit"> {
+export function engineDeps(cfg: Config): Omit<EngineDeps, "emit"> & { programs: ProgramCache } {
+  const client = servClient(cfg.servApiKey);
+  const programs = programCache(client, { dir: process.env.PROGRAMS_DIR ?? "/data/programs" });
   return {
+    programs,
     kite: createKpassExecutor({ bin: cfg.kpassBin }),
     payer: { payer: "house", home: cfg.kiteHome },
-    serv: servPort(servClient(cfg.servApiKey), { programsDir: process.env.PROGRAMS_DIR ?? "/data/programs" }),
+    serv: servPort(client, { programs }),
     reppo: cfg.reppoApiKey ? reppoClient(cfg.reppoApiKey) : null,
     now: () => new Date(),
   };

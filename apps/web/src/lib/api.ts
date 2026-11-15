@@ -38,6 +38,8 @@ export const api = {
       headers: { "x-policy-token": token },
       body: JSON.stringify({ name, text }),
     }),
+  compilePolicy: (id: string, version: number) =>
+    call<import("@/components/compiled-policy").CompiledView>(`/api/policies/${encodeURIComponent(id)}/compile?version=${version}`, { method: "POST" }),
   createWatch: (b: { checkId?: string; siren?: string; invoiceAmountEur: number; dueOn?: string; label?: string }) =>
     call<{ token: string; watchUrl: string; telegramLink: string | null }>("/api/watch", { method: "POST", body: JSON.stringify(b) }),
   getWatch: (token: string) => call<Record<string, unknown>>(`/api/watch/${encodeURIComponent(token)}`),
@@ -51,4 +53,6 @@ export const ERROR_TEXT: Record<string, string> = {
   busy: "A few checks are running right now. Try again in a minute.",
   unknown_policy: "That policy doesn't exist any more.",
   invalid_request: "Check the company and the amount.",
+  compile_quota: "Today's policy compiles are used up. Your policy is saved; it compiles the first time you check a client with it.",
+  compile_failed: "SERV couldn't compile this policy right now. It is saved; try again later or make each rule a single condition.",
 };

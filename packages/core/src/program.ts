@@ -179,7 +179,7 @@ function fires(r: Rule, s: Signals, fired: Map<string, Condition[]>): Condition[
 }
 
 const LABEL: Record<SignalName, (v: number) => string> = {
-  age_months: (v) => `${v} months old`,
+  age_months: (v) => (v < 24 ? `${v} months old` : `${Math.floor(v / 12)} years old`),
   accounts_overdue_months: (v) => (v > 0 ? `accounts ${v} months overdue` : "accounts up to date"),
   accounts_never_filed_months: (v) => `no accounts ever filed, the first were due ${v} months ago`,
   last_filing_late_months: (v) => (v > 0 ? `last accounts filed ${v} months late` : "last accounts filed on time"),
@@ -188,7 +188,7 @@ const LABEL: Record<SignalName, (v: number) => string> = {
   court_decision_months: (v) => `court decision ${v} months ago`,
   last_year_net_margin_pct: (v) => `net result ${v}% of revenue`,
   last_year_equity_ratio_pct: (v) => `equity ${v}% of the balance sheet`,
-  finances_known: (v) => (v ? "financial results on file" : "no financial results on file"),
+  finances_known: (v) => (v ? "financial results on file" : "no financial results among the records checked"),
   invoice_eur: (v) => `invoice €${v.toLocaleString("en-IE")}`,
 };
 

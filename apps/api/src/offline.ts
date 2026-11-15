@@ -2,14 +2,14 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { EngineDeps, ServPort } from "@upfront/engine";
 import { FakeKite, type FakeRoute } from "@upfront/kite";
-import { decide, programCache } from "@upfront/serv";
+import { decide, type ProgramCache, programCache } from "@upfront/serv";
 
 /**
  * Local development only: Kite answers from recorded Sirenic responses and the
  * decision uses the committed compiled presets, so the web app can be built without keys or money.
  * Refuses to start in production.
  */
-export function offlineEngine(): Omit<EngineDeps, "emit"> {
+export function offlineEngine(): Omit<EngineDeps, "emit"> & { programs: ProgramCache } {
   if (process.env.NODE_ENV === "production") throw new Error("Offline mode is for local development only");
   const dir = join(import.meta.dirname, "../../../packages/sources/test/fixtures/sirenic");
   const fx = (n: string): unknown => JSON.parse(readFileSync(join(dir, `${n}.json`), "utf8"));
@@ -58,5 +58,5 @@ export function offlineEngine(): Omit<EngineDeps, "emit"> {
     decide: (a) => decide(programs, a),
     pick: async () => ({ siren: null, yesProb: 0, costUsd: 0, model: "offline" }),
   };
-  return { kite, payer: { payer: "house", home: "offline" }, serv, reppo: null, now: () => new Date() };
+  return { programs, kite, payer: { payer: "house", home: "offline" }, serv, reppo: null, now: () => new Date() };
 }

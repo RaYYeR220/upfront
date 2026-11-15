@@ -128,7 +128,7 @@ export const NODE_COPY: Record<NodeName, { title: string; who?: string; what: st
   buy: { title: "Buy", who: "Kite", what: "Pay for each record within the spending cap." },
   extract: { title: "Extract", what: "Turn the records into dated facts." },
   floors: { title: "Floors", what: "Hard rules the decision can never go below." },
-  decide: { title: "Decide", who: "SERV", what: "Apply your policy to the facts." },
+  decide: { title: "Decide", who: "SERV", what: "Your policy, compiled by SERV into rules, applied to the facts." },
   review: { title: "Review", who: "Reppo", what: "An independent panel checks the decision." },
   issue: { title: "Terms", what: "The terms, ready for your quote." },
 };

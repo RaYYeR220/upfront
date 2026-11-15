@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "@/lib/api";
+import { ApiError, api, ERROR_TEXT } from "@/lib/api";
 import { CheckForm } from "./check-form";
+import { CompiledPolicy, type CompiledView } from "./compiled-policy";
 
 type Saved = { id: string; version: number; hash: string; name: string };
 
@@ -30,6 +31,20 @@ export function PolicyEditor({ starter }: { starter: string }) {
   const [saved, setSaved] = useState<(Saved & { editToken?: string }) | null>(() => (typeof window === "undefined" ? null : recall()));
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [compiled, setCompiled] = useState<CompiledView | null>(null);
+  const [compiling, setCompiling] = useState(false);
+
+  async function compile(id: string, version: number) {
+    setCompiling(true);
+    setCompiled(null);
+    try {
+      setCompiled(await api.compilePolicy(id, version));
+    } catch (e) {
+      setErr(ERROR_TEXT[e instanceof ApiError ? e.code : ""] ?? ERROR_TEXT.compile_failed!);
+    } finally {
+      setCompiling(false);
+    }
+  }
 
   async function save() {
     setBusy(true);
@@ -40,11 +55,13 @@ export function PolicyEditor({ starter }: { starter: string }) {
         const next = { ...saved, ...v, name };
         remember(next);
         setSaved(next);
+        void compile(next.id, next.version);
       } else {
         const p = await api.createPolicy(name, text);
         const next = { id: p.id, version: p.version, hash: p.hash, name, editToken: p.editToken };
         remember(next);
         setSaved(next);
+        void compile(next.id, next.version);
       }
     } catch {
       setErr("Couldn't save. A policy needs at least a sentence or two.");
@@ -74,10 +91,16 @@ export function PolicyEditor({ starter }: { starter: string }) {
           {saved ? `Save as v${saved.version + 1}` : "Save policy"}
         </button>
         <span className="text-[13px] text-ink3">
-          Every version gets its own fingerprint. SERV compiles each one into the reasoning graph that decides your checks.
+          Every version gets its own fingerprint. SERV compiles each one into rules, tried on ten sample clients before use.
         </span>
       </div>
       {err && <p className="mt-2 text-[13px] text-rose2">{err}</p>}
+      {compiling && <p className="mt-6 text-[13px] text-ink3">SERV is compiling your policy and trying it on sample clients…</p>}
+      {compiled && (
+        <div className="mt-8 border-t border-line pt-6">
+          <CompiledPolicy view={compiled} />
+        </div>
+      )}
       {saved && (
         <div className="mt-8 border-t border-line pt-6">
           <div className="eyebrow mb-3">Check a client with “{saved.name}” v{saved.version}</div>

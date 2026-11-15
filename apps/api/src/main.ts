@@ -55,6 +55,7 @@ const app = createApp({
   corsOrigins: cfg.corsOrigins,
   trustProxy,
   socketIp,
+  programs: engine.programs,
   extraRoutes: (a) => {
     registerAgentRoutes(a, { db, checks, payTo: process.env.X402_PAY_TO ?? null, webUrl: cfg.publicWebUrl });
     registerWatchRoutes(a, {

@@ -6,7 +6,8 @@ import { z } from "zod";
 import type { Hub } from "./hub.ts";
 import { createPolicy, getPolicy, listChecks, listPolicyVersions, listReceipts, meta, policyTokenOk, savePolicyVersion } from "./repo.ts";
 import type { CheckService } from "./service.ts";
-import { PRESETS, loadPolicy } from "@upfront/serv";
+import { probeProgram } from "@upfront/core";
+import { PRESETS, type ProgramCache, loadPolicy } from "@upfront/serv";
 
 export interface AppCtx {
   db: Client;
@@ -18,6 +19,10 @@ export interface AppCtx {
   /** Socket address of the request, when the server exposes it. */
   socketIp?: (c: Context) => string | null;
   extraRoutes?: (app: Hono) => void;
+  /** Compiled policies, shared with the checks. */
+  programs?: ProgramCache;
+  /** Compiling a new policy calls SERV; this caps how many a day the service pays for. */
+  compilesPerDay?: number;
 }
 
 const CheckBody = z.object({
@@ -152,6 +157,40 @@ export function createApp(ctx: AppCtx): Hono {
     const parsed = PolicyBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
     return c.json(await savePolicyVersion(ctx.db, id, parsed.data.name, parsed.data.text), 201);
+  });
+
+  // The policy as SERV compiled it: its rules, what they give ten sample clients, and anything it couldn't express.
+  let compiles = { day: "", n: 0 };
+  app.post("/api/policies/:id/compile", async (c) => {
+    if (!ctx.programs) return c.json({ error: "unavailable" }, 503);
+    const version = Number(c.req.query("version") ?? 0) || undefined;
+    const policy = await getPolicy(ctx.db, c.req.param("id"), version);
+    if (!policy) return c.json({ error: "not_found" }, 404);
+    const day = new Date().toISOString().slice(0, 10);
+    if (compiles.day !== day) compiles = { day, n: 0 };
+    try {
+      const before = compiles.n;
+      if (before >= (ctx.compilesPerDay ?? 20)) {
+        // Already-compiled policies are still served from the cache.
+        const r = await Promise.race([ctx.programs.get(policy), new Promise<null>((res) => setTimeout(() => res(null), 50))]);
+        if (!r || !r.cached) return c.json({ error: "compile_quota" }, 429);
+      }
+      const r = await ctx.programs.get(policy);
+      if (!r.cached) compiles.n++;
+      const p = r.compiled.program;
+      return c.json({
+        policy: { id: policy.id, version: policy.version, hash: policy.hash },
+        compiledBy: r.compiled.model,
+        compiledAt: r.compiled.compiledAt,
+        rules: p.rules.map((x) => ({ id: x.id, why: x.why, then: x.then })),
+        default: p.default,
+        untranslated: p.untranslated,
+        warnings: r.compiled.warnings,
+        samples: probeProgram(p),
+      });
+    } catch {
+      return c.json({ error: "compile_failed" }, 502);
+    }
   });
 
   app.get("/api/receipts", async (c) => {
