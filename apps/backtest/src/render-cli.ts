@@ -48,6 +48,8 @@ if (existsSync(join(RESULTS, "tuning.json"))) {
   const t = read("tuning.json");
   const measured = t.history.filter((h: { train: unknown }) => h.train);
   values["tune.candidates"] = fmt.int(t.history.length - 1);
+  values["tune.train"] = fmt.int(t.split.train);
+  values["tune.holdout"] = fmt.int(t.split.holdout);
   values["tune.measured"] = fmt.int(measured.length - 1);
   values["tune.v1.holdout.j"] = (t.history[0].holdout.caughtFailing - t.history[0].holdout.falseAlarmControls).toFixed(2);
 }
