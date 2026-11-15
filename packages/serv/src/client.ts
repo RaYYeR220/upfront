@@ -13,15 +13,15 @@ export function servClient(apiKey: string, opts: { fetch?: typeof fetch; timeout
 }
 
 /**
- * Models per job. The decision runs on a small model through SERV's reasoning
- * graph with Kronos (audits the compiled graph) and Multipath (branching rule
- * sets); cheap models handle planning and disambiguation.
+ * Models per job. A policy is compiled once into a rule program (with Prompt
+ * Guard screening the user's text); small models plan lookups, pick between
+ * companies with similar names, and a larger one proposes policy revisions.
  */
 export const MODELS = {
-  decide: process.env.UPFRONT_MODEL_DECIDE ?? "gpt-5.4-mini-serv-kronos-multipath",
+  compile: process.env.UPFRONT_MODEL_COMPILE ?? "gpt-5.4-mini",
   plan: process.env.UPFRONT_MODEL_PLAN ?? "gpt-6-luna",
   resolve: process.env.UPFRONT_MODEL_RESOLVE ?? "gpt-6-luna",
-  tune: process.env.UPFRONT_MODEL_TUNE ?? "gpt-6.1-sol",
+  tune: process.env.UPFRONT_MODEL_TUNE ?? "gpt-5.4-mini",
 };
 
 /** USD per 1M tokens, SERV included (docs.openserv.ai models page, Nov 2026). */

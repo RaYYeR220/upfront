@@ -314,7 +314,7 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
   );
   notes.push(...floor.notes);
 
-  // 6. decide: the user's policy, compiled by SERV, applied to the facts. Fails closed.
+  // 6. decide: the user's policy, compiled by SERV into rules (once per policy), applied to the facts by code. Fails closed.
   const decideArgs: DecideArgs = {
     policy: input.policy,
     facts,
@@ -324,7 +324,7 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
     today: refDate,
   };
   const decided = await runNode<{ proposed: Decision | null; errors: string[] }>(
-    { checkId, name: "decide", type: "agent", input: { policyHash: input.policy.hash, factIds: facts.map((f) => f.id), floor: floor.floor } },
+    { checkId, name: "decide", type: "script", input: { policyHash: input.policy.hash, factIds: facts.map((f) => f.id), floor: floor.floor } },
     emitNode,
     nodes,
     async () => {

@@ -1,0 +1,312 @@
+{
+  "policyHash": "c72b9fedfe99d712d5491aa7a8e328d37ec9f0d491d328b264664b03a22fb732",
+  "program": {
+    "default": {
+      "mode": "net",
+      "netDays": 30,
+      "depositPct": null,
+      "creditLimitEur": null
+    },
+    "creditLimitIsInvoice": true,
+    "maxNetDays": 45,
+    "rules": [
+      {
+        "id": "deposit_30_under_2_years_old",
+        "when": {
+          "all": [
+            {
+              "signal": "age_months",
+              "op": "<",
+              "value": 24
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 30,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 30% deposit when the company is under 2 years old."
+      },
+      {
+        "id": "deposit_30_accounts_6_plus_months_overdue",
+        "when": {
+          "all": [
+            {
+              "signal": "accounts_overdue_months",
+              "op": ">=",
+              "value": 6
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 30,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 30% deposit when its latest accounts are 6+ months overdue."
+      },
+      {
+        "id": "deposit_30_commercial_court_ruled_against_last_12_months",
+        "when": {
+          "all": [
+            {
+              "signal": "court_decision_months",
+              "op": "<=",
+              "value": 12
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 30,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 30% deposit when a commercial court ruled against it in the last 12 months."
+      },
+      {
+        "id": "deposit_30_invoice_over_10000_and_finances_unknown",
+        "when": {
+          "all": [
+            {
+              "signal": "invoice_eur",
+              "op": ">",
+              "value": 10000
+            },
+            {
+              "signal": "finances_known",
+              "op": "==",
+              "value": 0
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 30,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 30% deposit when the invoice is above 10,000 EUR and nothing is known about its finances."
+      },
+      {
+        "id": "deposit_50_accounts_18_plus_months_overdue",
+        "when": {
+          "all": [
+            {
+              "signal": "accounts_overdue_months",
+              "op": ">=",
+              "value": 18
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 50,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 50% deposit when its accounts are 18+ months overdue."
+      },
+      {
+        "id": "deposit_50_never_filed_accounts",
+        "when": {
+          "all": [
+            {
+              "signal": "accounts_never_filed_months",
+              "op": "present",
+              "value": 0
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 50,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 50% deposit when its accounts were never filed."
+      },
+      {
+        "id": "deposit_50_loss_over_20pct_revenue",
+        "when": {
+          "all": [
+            {
+              "signal": "last_year_net_margin_pct",
+              "op": "<",
+              "value": -20
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 50,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 50% deposit when the last filed year shows a loss above 20% of revenue."
+      },
+      {
+        "id": "deposit_50_negative_equity",
+        "when": {
+          "all": [
+            {
+              "signal": "last_year_equity_ratio_pct",
+              "op": "<",
+              "value": 0
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "deposit",
+          "netDays": null,
+          "depositPct": 50,
+          "creditLimitEur": null
+        },
+        "why": "Ask a 50% deposit when there is negative equity."
+      },
+      {
+        "id": "prepay_past_insolvency_continuation_plan",
+        "when": {
+          "all": [
+            {
+              "signal": "past_proceeding_months",
+              "op": "<",
+              "value": 36
+            }
+          ],
+          "any": [],
+          "atLeast": null
+        },
+        "then": {
+          "mode": "prepay",
+          "netDays": null,
+          "depositPct": null,
+          "creditLimitEur": null
+        },
+        "why": "Prepay only when a past insolvency proceeding ended less than 3 years ago under a continuation plan."
+      },
+      {
+        "id": "prepay_two_or_more_deposit_triggers",
+        "when": {
+          "all": [],
+          "any": [],
+          "atLeast": {
+            "n": 2,
+            "rules": [
+              "deposit_30_under_2_years_old",
+              "deposit_30_accounts_6_plus_months_overdue",
+              "deposit_30_commercial_court_ruled_against_last_12_months",
+              "deposit_30_invoice_over_10000_and_finances_unknown",
+              "deposit_50_accounts_18_plus_months_overdue",
+              "deposit_50_never_filed_accounts",
+              "deposit_50_loss_over_20pct_revenue",
+              "deposit_50_negative_equity"
+            ]
+          }
+        },
+        "then": {
+          "mode": "prepay",
+          "netDays": null,
+          "depositPct": null,
+          "creditLimitEur": null
+        },
+        "why": "Prepay only when two or more deposit triggers fire together."
+      }
+    ],
+    "untranslated": [
+      "most recent dated fact wins",
+      "a hard fact beats a soft one",
+      "Never offer more than 45 days",
+      "Decline when the company is in liquidation.",
+      "Decline when the company has ceased trading.",
+      "Decline when the company is sanctioned."
+    ],
+    "expected": [
+      {
+        "probe": "clean",
+        "mode": "net",
+        "depositPct": null,
+        "netDays": 30
+      },
+      {
+        "probe": "young",
+        "mode": "deposit",
+        "depositPct": 30,
+        "netDays": null
+      },
+      {
+        "probe": "late",
+        "mode": "deposit",
+        "depositPct": 30,
+        "netDays": null
+      },
+      {
+        "probe": "very_late",
+        "mode": "deposit",
+        "depositPct": 50,
+        "netDays": null
+      },
+      {
+        "probe": "never",
+        "mode": "deposit",
+        "depositPct": 50,
+        "netDays": null
+      },
+      {
+        "probe": "loss",
+        "mode": "deposit",
+        "depositPct": 50,
+        "netDays": null
+      },
+      {
+        "probe": "negative_equity",
+        "mode": "deposit",
+        "depositPct": 50,
+        "netDays": null
+      },
+      {
+        "probe": "court",
+        "mode": "deposit",
+        "depositPct": 30,
+        "netDays": null
+      },
+      {
+        "probe": "past_proceeding",
+        "mode": "prepay",
+        "depositPct": null,
+        "netDays": null
+      },
+      {
+        "probe": "big_invoice",
+        "mode": "deposit",
+        "depositPct": 30,
+        "netDays": null
+      }
+    ]
+  },
+  "warnings": [
+    "For a client whose accounts are 24 months overdue, the policy gives a 50% deposit, but the program gives prepay (rules deposit_30_accounts_6_plus_months_overdue, deposit_50_accounts_18_plus_months_overdue, prepay_two_or_more_deposit_triggers fire). Fix the rules so they agree with the policy.",
+    "For a healthy client with a €40,000 invoice, the policy gives a 30% deposit, but the program gives Net 30 (no rule fires). Fix the rules so they agree with the policy."
+  ],
+  "model": "gpt-5.4-mini",
+  "compiledAt": "2026-11-15T01:39:50.105Z"
+}
