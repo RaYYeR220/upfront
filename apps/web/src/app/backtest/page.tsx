@@ -16,8 +16,7 @@ const eur = (x: number) => `€${int(Math.round(x))}`;
 const ARM_LABEL: Record<string, string> = {
   net30: "Net 30 for everyone (what most freelancers do)",
   rule: "A credit controller's rule of thumb",
-  raw: "The same model and policy, without SERV",
-  upfront: "Upfront",
+  upfront: "Upfront, freelancer policy v1",
 };
 
 export default function Evidence() {
@@ -76,11 +75,12 @@ export default function Evidence() {
                   <th className="py-3 font-normal">How you decide</th>
                   <th className="py-3 font-normal">Failing companies asked for a deposit or more</th>
                   <th className="py-3 font-normal">Healthy companies asked the same</th>
+                  <th className="py-3 font-normal">Caught minus false alarms</th>
                   <th className="py-3 font-normal">Average loss per €5,000 invoice to a failing company</th>
                 </tr>
               </thead>
               <tbody>
-                {(["net30", "rule", "raw", "upfront"] as const)
+                {(["net30", "rule", "upfront"] as const)
                   .filter((a) => bt.metrics[a]?.nFailing)
                   .map((a) => {
                     const m = bt.metrics[a];
@@ -89,15 +89,18 @@ export default function Evidence() {
                         <td className="py-3">{ARM_LABEL[a]}</td>
                         <td className={`mono py-3 ${a === "upfront" ? "text-rose" : ""}`}>{pct(m.caughtFailing)}</td>
                         <td className="mono py-3">{pct(m.falseAlarmControls)}</td>
+                        <td className="mono py-3">{(m.caughtFailing - m.falseAlarmControls).toFixed(2)}</td>
                         <td className="mono py-3">{eur(m.avgLossPerInvoiceEur)}</td>
                       </tr>
                     );
                   })}
               </tbody>
             </table>
-            <p className="mt-3 text-[12.5px] text-ink4">
-              {int(bt.counts.companies)} companies checked, {bt.counts.unavailable} not available in the register. Evidence bought
-              for the whole backtest: ${bt.costs.evidenceUsd.toFixed(2)} in USDC through Kite Agent Passport.
+            <p className="mt-3 max-w-3xl text-[12.5px] text-ink4">
+              {int(bt.counts.companies)} companies, {bt.counts.unavailable} not found. Evidence: every gazette notice and the national
+              register, free public data, cut to what was public on the day. Decisions: the freelancer policy as SERV compiled it (
+              {bt.setup.program.rules} rules), applied by code, so the table replays exactly with{" "}
+              <span className="mono">pnpm --filter @upfront/backtest run</span> and no key.
             </p>
           </div>
         ) : (
@@ -105,19 +108,67 @@ export default function Evidence() {
         )}
       </section>
 
+      {bt?.signs && (
+        <section className="mt-16 border-t border-line pt-10">
+          <div className="eyebrow">What the public record can tell you</div>
+          <h2 className="mt-2 max-w-3xl text-[28px] font-medium tracking-[-0.02em]">
+            On the day they stop paying, only one kind of sign sets failing companies apart: late accounts.
+          </h2>
+          <p className="mt-3 max-w-3xl text-[15px] text-ink2">
+            Each sign on its own, among the 150 companies that stopped paying and their 150 healthy twins. Age, losses and missing
+            financials are as common in healthy companies. That is why no policy built on public records alone can catch every
+            failure without flagging good clients, and why the terms are a deposit, not a refusal.
+          </p>
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full min-w-[560px] text-left text-[14px]">
+              <thead className="text-[12.5px] text-ink3">
+                <tr className="border-b border-line">
+                  <th className="py-2 font-normal">Sign</th>
+                  <th className="py-2 font-normal">Stopped paying</th>
+                  <th className="py-2 font-normal">Kept paying</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bt.signs
+                  .filter((x: Json) => x.failing + x.controls > 0)
+                  .map((x: Json) => (
+                    <tr key={x.sign} className={`border-b border-line ${x.separation >= 0.06 ? "text-ink" : "text-ink3"}`}>
+                      <td className="py-2">{x.sign}</td>
+                      <td className={`mono py-2 ${x.separation >= 0.06 ? "text-rose" : ""}`}>{x.failing}</td>
+                      <td className="mono py-2">{x.controls}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
       {tuning && (
         <section className="mt-16 border-t border-line pt-10">
           <div className="eyebrow">Feedback that changes the policy</div>
           <h2 className="mt-2 max-w-3xl text-[28px] font-medium tracking-[-0.02em]">
-            Mistakes and independent reviews rewrite the policy. A revision stays only if it does better on companies it never saw.
+            SERV proposes a revision from the policy's record, Reppo reviews it, and it stays only if it does better.
           </h2>
+          <p className="mt-3 max-w-3xl text-[15px] text-ink2">
+            The record is {tuning.split.train} of the companies; the other {tuning.split.holdout} never influence a decision and
+            are shown for every version. So far no revision has beaten the starting policy, and the held-out companies agree.
+          </p>
           <ol className="mt-8 flex flex-col">
             {tuning.history.map((h: Json) => (
-              <li key={h.version} className="grid gap-2 border-t border-line py-4 md:grid-cols-[80px_1fr_220px]">
+              <li key={h.version} className="grid gap-2 border-t border-line py-4 md:grid-cols-[60px_1fr_260px]">
                 <span className="mono text-ink3">v{h.version}</span>
-                <span className="text-[14.5px] text-ink2">{h.rationale}</span>
-                <span className={`mono text-[13px] ${h.accepted ? "text-ink" : "text-ink4 line-through"}`}>
-                  caught {pct(h.holdout.caughtFailing)} · false alarms {pct(h.holdout.falseAlarmControls)}
+                <span className="text-[14.5px] text-ink2">
+                  {h.rationale}
+                  <span className="mt-1 block text-[12.5px] text-ink4">
+                    {h.review ? `Reppo ${h.review.score}/100, ${h.review.route}. ` : ""}
+                    {h.why === "baseline" ? "Starting policy." : h.why}
+                  </span>
+                </span>
+                <span className={`mono text-[13px] ${h.accepted ? "text-ink" : "text-ink4"}`}>
+                  {h.train
+                    ? `held out: caught ${pct(h.holdout.caughtFailing)} · false alarms ${pct(h.holdout.falseAlarmControls)}`
+                    : "not measured"}
                 </span>
               </li>
             ))}

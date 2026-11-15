@@ -1,7 +1,7 @@
 /**
  * The two live checks replayed by the landing hero.
  *
- * Distilled from production checks run on 14 Nov 2026 for KD SOCCER CONSULTING (841936560) and
+ * Distilled from production checks run on 15 Nov 2026 for KD SOCCER CONSULTING (841936560) and
  * DANONE (552032534): the lookups the plan chose, their prices and Base settlement hashes, the
  * facts each one returned, the terms, and the independent review's verdict. `checkId` opens the
  * full check at /c/<id>.
@@ -40,8 +40,10 @@ export interface HeroRun {
   total: number;
   /** True when a hard rule (a floor) set the terms rather than the policy. */
   floor: boolean;
-  /** Seconds the reasoning step took. */
-  decideSec: number;
+  /** Milliseconds the compiled policy took to decide. */
+  decideMs: number;
+  /** What the policy's compiled rules concluded, for the narration. */
+  decideNote: string;
   terms: string;
   l1: string;
   l2: string;
@@ -53,14 +55,15 @@ export type HeroRunKey = "kd" | "danone";
 
 export const RUNS: Record<HeroRunKey, HeroRun> = {
   kd: {
-    checkId: "80685737-d132-4ffd-8b45-5e83c6e7ba6f",
+    checkId: "ce94109b-39ca-4e62-b0fb-bb713e0014b7",
     name: "KD SOCCER CONSULTING",
     siren: "841936560",
     amount: "€6,800",
     budget: 0.3,
-    total: 0.025,
+    total: 0.175,
     floor: true,
-    decideSec: 5.3,
+    decideMs: 15,
+    decideNote: "the hard rule sets the terms",
     terms: "Decline",
     l1: '<s>Net 30</s> requested · <span class="why">set by a hard rule: open liquidation</span>',
     l2: '<span class="fin">Do not extend credit or take the work.</span>',
@@ -71,51 +74,73 @@ export const RUNS: Record<HeroRunKey, HeroRun> = {
         usd: 0.005,
         st: "settled",
         url: "api.sirenic.eu/v1/entreprise/841936560",
-        tx: "0xc5be567a037660f1a3bd897649e937f8858448afd192be6157635ed7014eb604",
-        facts: ["name", "legal form 5710 (SAS)", "created Aug 2018", "NAF 70.22Z", "VAT number", "active in the register"],
+        tx: "0x6e9ea7f38441908dc197324a3cac797a603d83233979f56f818ba2a6314e4c48",
+        facts: ["name", "legal form 5710 (SAS)", "created Aug 2018", "NAF 70.22Z", "no employees declared", "VAT number", "active in the register"],
       },
       {
         name: "gazette alerts",
         usd: 0.01,
         st: "settled",
         url: "…/entreprise/841936560/alertes",
-        tx: "0x0a57b8b71bfd6b1fe548149205caccf6ad507cb583f2d5f5d8a71de84b02e11c",
+        tx: "0xe50ac4da9a9a55f2fc146fa7a14aa1c95f2e978be7fdb65a44c8e59b946741c5",
         facts: ["liquidation published 14 Oct 2026; stopped paying 28 Mar 2025", "open proceeding"],
         hard: 1,
       },
-      { name: "filed accounts", usd: 0.02, st: "skipped", facts: [] },
+      {
+        name: "filed accounts",
+        usd: 0.02,
+        st: "settled",
+        url: "…/entreprise/841936560/documents",
+        tx: "0xb2b85e057800e5ac30aabcc3fe44d71a0d4a1f8839e959b32a30e0f77cbdf3cb",
+        facts: ["last accounts FY2019, filed Dec 2020", "filed 4 months late", "63 months overdue"],
+      },
       {
         name: "financials",
         usd: 0.01,
         st: "settled",
         url: "…/entreprise/841936560/finances",
-        tx: "0xe2716c712d7c1f9d83d15231cd9a84df3738b32b7c09d343220e581c571064ad",
+        tx: "0x59145fcc1b9a4e8b3f21e582c98e6f1d8f480a3dcf87f75bc227368f7124de1c",
         facts: ["FY2019: loss €226"],
       },
-      { name: "court decisions", usd: 0.01, st: "skipped", facts: [] },
-      { name: "vendor's credit limit", usd: 0.12, st: "skipped", facts: [] },
+      {
+        name: "court decisions",
+        usd: 0.01,
+        st: "settled",
+        url: "…/entreprise/841936560/contentieux",
+        tx: "0xcbfc4d231edf4cbb9b7bdcaaf4f59bb520bd838d8d9ca48f850b74e8ba710d69",
+        facts: [],
+      },
+      {
+        name: "vendor's credit limit",
+        usd: 0.12,
+        st: "settled",
+        url: "…/entreprise/841936560/encours",
+        tx: "0x49f7e1aaf06eaa0b775c66f87487de7cd7da96749c2397c96e59af69b68439c7",
+        facts: ["risk class: proven default"],
+      },
     ],
   },
   danone: {
-    checkId: "b3bbbf38-7748-4313-b8f0-ea4ce0ce460b",
+    checkId: "73903a1b-ab5c-4a76-9b07-b27cf06219ed",
     name: "DANONE",
     siren: "552032534",
     amount: "€4,000",
     budget: 0.15,
     total: 0.025,
     floor: false,
-    decideSec: 24,
+    decideMs: 15,
+    decideNote: "none of its 10 rules fires",
     terms: "Net 30",
-    l1: 'Net 30 kept · <span class="why">your freelancer policy, applied by SERV Reasoning</span>',
+    l1: 'Net 30 kept · <span class="why">no rule in your freelancer policy fires</span>',
     l2: '<span class="fin">Full amount due within 30 days · up to €4,000 on credit.</span>',
-    review: { score: 100, route: "review", note: "matches the policy; confidence medium, so a person takes a look" },
+    review: { score: 77, route: "review", note: "agrees with Net 30; flags the debt ratio for a second look" },
     src: [
       {
         name: "registry profile",
         usd: 0.005,
         st: "settled",
         url: "api.sirenic.eu/v1/entreprise/552032534",
-        tx: "0x2d9cc1e51e269dd1a9656d2995f43d94ca176fa44606de7152739534513adcb7",
+        tx: "0x716ad000fb4100bcd3d82cb401899c99f7a5697ab6528fdf54383824c11a4faa",
         facts: ["name", "legal form 5599 (SA)", "created 1955", "NAF 70.10Z", "workforce band", "VAT number", "active in the register"],
       },
       {
@@ -123,7 +148,7 @@ export const RUNS: Record<HeroRunKey, HeroRun> = {
         usd: 0.01,
         st: "settled",
         url: "…/entreprise/552032534/alertes",
-        tx: "0x37660e7ed2b925d6a30f168db078c31cf0893ca14f1c7a3844973bd27906caca",
+        tx: "0xa385f925bc53e5af17476f47e7bacf11b9267c3be851457c34d4c6fa55be735a",
         facts: [],
       },
       { name: "filed accounts", usd: 0.02, st: "skipped", facts: [] },
@@ -132,7 +157,7 @@ export const RUNS: Record<HeroRunKey, HeroRun> = {
         usd: 0.01,
         st: "settled",
         url: "…/entreprise/552032534/finances",
-        tx: "0x06ab67b29725ff6d094c25d1d93a6fff4e3dca27d4c5137964c354d92b80bc9c",
+        tx: "0x562cab88ebe8f3c59c91d11406fffd6746487d03c2e8840c8d3d73a1ff771c44",
         facts: [
           "FY2024: revenue €1.03bn, net €592m",
           "FY2023: revenue €699m, net €1.35bn",

@@ -33,14 +33,23 @@ if (existsSync(join(RESULTS, "backtest.json"))) {
   const b = read("backtest.json");
   values["bt.companies"] = fmt.int(b.counts.companies);
   values["bt.unavailable"] = fmt.int(b.counts.unavailable);
-  values["bt.evidenceUsd"] = `$${b.costs.evidenceUsd.toFixed(2)}`;
   for (const [arm, m] of Object.entries(b.metrics) as [string, { nFailing: number; caughtFailing: number; falseAlarmControls: number; avgLossPerInvoiceEur: number }][]) {
     if (!m.nFailing) continue;
     values[`bt.${arm}.caught`] = fmt.pct(m.caughtFailing);
     values[`bt.${arm}.falseAlarm`] = fmt.pct(m.falseAlarmControls);
     values[`bt.${arm}.loss`] = fmt.eur(m.avgLossPerInvoiceEur);
     values[`bt.${arm}.n`] = fmt.int(m.nFailing);
+    values[`bt.${arm}.j`] = (m.caughtFailing - m.falseAlarmControls).toFixed(2);
   }
+  values["bt.rules"] = fmt.int(b.setup.program.rules);
+}
+
+if (existsSync(join(RESULTS, "tuning.json"))) {
+  const t = read("tuning.json");
+  const measured = t.history.filter((h: { train: unknown }) => h.train);
+  values["tune.candidates"] = fmt.int(t.history.length - 1);
+  values["tune.measured"] = fmt.int(measured.length - 1);
+  values["tune.v1.holdout.j"] = (t.history[0].holdout.caughtFailing - t.history[0].holdout.falseAlarmControls).toFixed(2);
 }
 
 // The web app reads the same results, copied next to it (raw evidence never leaves results/raw).

@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-11-15T01:52:10.102Z",
+  "goal": "caught minus false alarms on the training half; false alarms may not rise above max(10%, where they were)",
+  "split": {
+    "train": 180,
+    "holdout": 120
+  },
+  "servUsd": 0.0093,
+  "result": {
+    "from": 1,
+    "to": 1,
+    "holdout": {
+      "before": {
+        "nFailing": 60,
+        "nControls": 60,
+        "caughtFailing": 0.5667,
+        "falseAlarmControls": 0.3833,
+        "avgLossPerInvoiceEur": 3100
+      },
+      "after": {
+        "nFailing": 60,
+        "nControls": 60,
+        "caughtFailing": 0.5667,
+        "falseAlarmControls": 0.3833,
+        "avgLossPerInvoiceEur": 3100
+      },
+      "informednessBefore": 0.1834,
+      "informednessAfter": 0.1834
+    }
+  },
+  "history": [
+    {
+      "version": 1,
+      "hash": "c72b9fedfe99d712d5491aa7a8e328d37ec9f0d491d328b264664b03a22fb732",
+      "text": "Who this is for: a freelancer or small studio invoicing other businesses for services.\n\nDefault: Net 30, credit limit equal to the invoice, when the client is active, has traded for 3+ years, has filed recent accounts and has no gazette or court trouble.\n\nAsk a 30% deposit when any of these is true: the company is under 2 years old; its latest accounts are 6+ months overdue; a commercial court ruled against it in the last 12 months; the invoice is above 10,000 EUR and nothing is known about its finances.\n\nAsk a 50% deposit when: its accounts are 18+ months overdue or were never filed; or its last filed year shows a loss above 20% of revenue, or negative equity.\n\nPrepay only when: a past insolvency proceeding ended less than 3 years ago under a continuation plan; or two or more deposit triggers fire together.\n\nDecline when: the company is in liquidation, has ceased trading, or is sanctioned.\n\nConflicting signals: the most recent dated fact wins, and a hard fact (gazette, court, filing date) beats a soft one. Never offer more than 45 days.",
+      "rationale": "starting preset",
+      "rules": 10,
+      "warnings": [
+        "For a client whose accounts are 24 months overdue, the policy gives a 50% deposit, but the program gives prepay (rules deposit_30_accounts_6_plus_months_overdue, deposit_50_accounts_18_plus_months_overdue, prepay_two_or_more_deposit_triggers fire). Fix the rules so they agree with the policy.",
+        "For a healthy client with a €40,000 invoice, the policy gives a 30% deposit, but the program gives Net 30 (no rule fires). Fix the rules so they agree with the policy."
+      ],
+      "review": null,
+      "train": {
+        "nFailing": 90,
+        "nControls": 90,
+        "caughtFailing": 0.5889,
+        "falseAlarmControls": 0.4333,
+        "avgLossPerInvoiceEur": 3233
+      },
+      "holdout": {
+        "nFailing": 60,
+        "nControls": 60,
+        "caughtFailing": 0.5667,
+        "falseAlarmControls": 0.3833,
+        "avgLossPerInvoiceEur": 3100
+      },
+      "accepted": true,
+      "why": "baseline"
+    },
+    {
+      "version": 2,
+      "hash": "c1663b1aa86e7bcf5d47a37358bd2eacaba31bedcad0b986ebcda624710a0ff7",
+      "text": null,
+      "rationale": "I tightened the 30% and 50% deposit thresholds around the late-filing and overdue patterns that were most often missed, while narrowing prepay to the combinations that showed stronger failure evidence and avoiding the false-alarm cases.",
+      "rules": 11,
+      "warnings": [
+        "For a healthy client whose accounts are 9 months overdue, the policy gives a 30% deposit, but the program gives a 50% deposit (rules deposit_50_accounts_6plus_months_overdue fire). Fix the rules so they agree with the policy.",
+        "For a healthy client with a €40,000 invoice, the policy gives a 30% deposit, but the program gives Net 30 (rules net_30_clean_client fire). Fix the rules so they agree with the policy."
+      ],
+      "review": {
+        "status": "done",
+        "score": 71,
+        "route": "review"
+      },
+      "train": {
+        "nFailing": 90,
+        "nControls": 90,
+        "caughtFailing": 0.4444,
+        "falseAlarmControls": 0.3222,
+        "avgLossPerInvoiceEur": 3861
+      },
+      "holdout": {
+        "nFailing": 60,
+        "nControls": 60,
+        "caughtFailing": 0.5,
+        "falseAlarmControls": 0.35,
+        "avgLossPerInvoiceEur": 3425
+      },
+      "accepted": false,
+      "why": "caught 59% → 44%, false alarms 43% → 32%: no net gain"
+    },
+    {
+      "version": 3,
+      "hash": "e8c95a8051cfe97302e11924478e5a8bb67adc41b90f70cf1e5ac5440eeb691d",
+      "text": "Who this is for: a freelancer or small studio invoicing other businesses for services.\n\nDefault: Net 30, credit limit equal to the invoice, when the client is active, has traded for 3+ years, has filed recent accounts and has no gazette or court trouble.\n\nAsk a 30% deposit when any of these is true: the company is under 2 years old; its latest accounts are 6+ months overdue; a commercial court ruled against it in the last 12 months; the invoice is above 10,000 EUR and nothing is known about its finances; or it has 1-5 months overdue accounts and its last filed accounts were 6+ months late.\n\nAsk a 50% deposit when: its accounts are 18+ months overdue or were never filed; or its last filed year shows a loss above 20% of revenue; or it has 6+ months overdue accounts and its last filed accounts were 1-5 months late.\n\nPrepay only when: a past insolvency proceeding ended less than 3 years ago under a continuation plan; or two or more deposit triggers fire together.\n\nDecline when: the company is in liquidation, has ceased trading, or is sanctioned.\n\nConflicting signals: the most recent dated fact wins, and a hard fact (gazette, court, filing date) beats a soft one. Never offer more than 45 days.",
+      "rationale": "I tightened the deposit and prepay thresholds using the strongest warning patterns in the mistakes, especially overdue + late-filing combinations, while keeping the decline rules unchanged.",
+      "review": {
+        "status": "done",
+        "evalId": "cmwh6etv5000008l9ilsaxgz9",
+        "score": 85,
+        "route": "review",
+        "reason": "The proposed policy is accepted for review with a score of 85, but evaluators had low confidence due to disagreement on correctness (56/100) - some felt the evidence didn't fully support the new deposit thresholds. The strongest evaluator (Cinder) approved it as an economically sound improvement.",
+        "creditsCharged": 440
+      },
+      "train": null,
+      "holdout": null,
+      "accepted": false,
+      "why": "did not compile: compile: no valid program for policy e8c95a8051cf"
+    }
+  ],
+  "note": "Version 2's policy text was not kept by the first run; its compiled program is in packages/serv/src/programs. Held-out numbers are reported for every measured version and never decide acceptance."
+}

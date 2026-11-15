@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-11-15T02:13:20.475Z",
+  "setup": {
+    "invoiceEur": 5000,
+    "evaluatedOn": "T = the court-fixed date the company stopped paying (its matched control is checked on the same date)",
+    "evidence": [
+      "gazette (BODACC), every notice about the company",
+      "national company register"
+    ],
+    "pointInTime": "only facts published or filed on or before T; current-state facts dropped; fiscal years only once filed",
+    "policy": {
+      "id": "freelancer",
+      "version": 1,
+      "hash": "c72b9fedfe99d712d5491aa7a8e328d37ec9f0d491d328b264664b03a22fb732"
+    },
+    "program": {
+      "model": "gpt-5.4-mini",
+      "compiledAt": "2026-11-15T01:39:50.105Z",
+      "rules": 10,
+      "warnings": [
+        "For a client whose accounts are 24 months overdue, the policy gives a 50% deposit, but the program gives prepay (rules deposit_30_accounts_6_plus_months_overdue, deposit_50_accounts_18_plus_months_overdue, prepay_two_or_more_deposit_triggers fire). Fix the rules so they agree with the policy.",
+        "For a healthy client with a €40,000 invoice, the policy gives a 30% deposit, but the program gives Net 30 (no rule fires). Fix the rules so they agree with the policy."
+      ]
+    }
+  },
+  "counts": {
+    "companies": 300,
+    "unavailable": 0
+  },
+  "metrics": {
+    "upfront": {
+      "nFailing": 150,
+      "nControls": 150,
+      "caughtFailing": 0.58,
+      "falseAlarmControls": 0.4133,
+      "avgLossPerInvoiceEur": 3180
+    },
+    "rule": {
+      "nFailing": 150,
+      "nControls": 150,
+      "caughtFailing": 0.2733,
+      "falseAlarmControls": 0.1667,
+      "avgLossPerInvoiceEur": 4233
+    },
+    "net30": {
+      "nFailing": 150,
+      "nControls": 150,
+      "caughtFailing": 0,
+      "falseAlarmControls": 0,
+      "avgLossPerInvoiceEur": 5000
+    }
+  },
+  "signs": [
+    {
+      "sign": "accounts 1+ months overdue",
+      "failing": 54,
+      "controls": 35,
+      "separation": 0.127
+    },
+    {
+      "sign": "accounts 6+ months overdue",
+      "failing": 38,
+      "controls": 22,
+      "separation": 0.107
+    },
+    {
+      "sign": "accounts 12+ months overdue",
+      "failing": 26,
+      "controls": 16,
+      "separation": 0.067
+    },
+    {
+      "sign": "accounts 18+ months overdue",
+      "failing": 22,
+      "controls": 13,
+      "separation": 0.06
+    },
+    {
+      "sign": "never filed accounts",
+      "failing": 45,
+      "controls": 34,
+      "separation": 0.073
+    },
+    {
+      "sign": "last accounts filed 1+ months late",
+      "failing": 62,
+      "controls": 56,
+      "separation": 0.04
+    },
+    {
+      "sign": "last accounts filed 6+ months late",
+      "failing": 30,
+      "controls": 18,
+      "separation": 0.08
+    },
+    {
+      "sign": "last accounts filed 12+ months late",
+      "failing": 10,
+      "controls": 7,
+      "separation": 0.02
+    },
+    {
+      "sign": "under 2 years old",
+      "failing": 7,
+      "controls": 8,
+      "separation": -0.007
+    },
+    {
+      "sign": "under 5 years old",
+      "failing": 56,
+      "controls": 65,
+      "separation": -0.06
+    },
+    {
+      "sign": "last filed year a loss",
+      "failing": 7,
+      "controls": 11,
+      "separation": -0.027
+    },
+    {
+      "sign": "last filed year lost 20%+ of revenue",
+      "failing": 4,
+      "controls": 4,
+      "separation": 0
+    },
+    {
+      "sign": "negative equity",
+      "failing": 0,
+      "controls": 0,
+      "separation": 0
+    },
+    {
+      "sign": "no financial results on file",
+      "failing": 108,
+      "controls": 107,
+      "separation": 0.007
+    },
+    {
+      "sign": "court decision in the last 12 months",
+      "failing": 0,
+      "controls": 0,
+      "separation": 0
+    }
+  ]
+}

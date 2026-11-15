@@ -11,12 +11,13 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { computeSignals, type Fact, type Policy, type SignalName, type Terms } from "@upfront/core";
+import { computeSignals, type Fact, type Policy, type Terms } from "@upfront/core";
 import { awaitReview, type ReviewResult, reppoClient } from "@upfront/reppo";
 import { type Compiled, compilePolicy, loadPolicy, makePolicy, type Mistake, PROGRAMS_DIR, programFileName, proposeAmendment, servClient } from "@upfront/serv";
 import { monthsBetween } from "@upfront/sources";
 import { type ArmMetrics, armMetrics, type EvalRow, flagged, STANDARD_INVOICE_EUR } from "./metrics.ts";
 import { decideWith, programFor } from "./run.ts";
+import { THRESHOLDS } from "./signs.ts";
 import { accept, informedness, splitPairs } from "./tune.ts";
 
 const RESULTS = fileURLToPath(new URL("../results/", import.meta.url));
@@ -157,23 +158,6 @@ async function main() {
 
   // Each warning sign on its own, at the thresholds a policy would use: how many of the clients it
   // marks went on to stop paying, and how many kept paying.
-  const THRESHOLDS: [string, SignalName, (v: number) => boolean][] = [
-    ["accounts 1+ months overdue", "accounts_overdue_months", (v) => v >= 1],
-    ["accounts 6+ months overdue", "accounts_overdue_months", (v) => v >= 6],
-    ["accounts 12+ months overdue", "accounts_overdue_months", (v) => v >= 12],
-    ["accounts 18+ months overdue", "accounts_overdue_months", (v) => v >= 18],
-    ["never filed accounts", "accounts_never_filed_months", () => true],
-    ["last accounts filed 1+ months late", "last_filing_late_months", (v) => v >= 1],
-    ["last accounts filed 6+ months late", "last_filing_late_months", (v) => v >= 6],
-    ["last accounts filed 12+ months late", "last_filing_late_months", (v) => v >= 12],
-    ["under 2 years old", "age_months", (v) => v < 24],
-    ["under 5 years old", "age_months", (v) => v < 60],
-    ["last filed year a loss", "last_year_net_margin_pct", (v) => v < 0],
-    ["last filed year lost 20%+ of revenue", "last_year_net_margin_pct", (v) => v < -20],
-    ["negative equity", "last_year_equity_ratio_pct", (v) => v < 0],
-    ["no financial results on file", "finances_known", (v) => v === 0],
-    ["court decision in the last 12 months", "court_decision_months", (v) => v <= 12],
-  ];
   const signalTable = (set: Row[], terms: Map<string, Terms>): string[] =>
     THRESHOLDS.map(([label, name, test]) => {
       let f = 0;

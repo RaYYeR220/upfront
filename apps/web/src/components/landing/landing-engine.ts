@@ -540,7 +540,7 @@ export function startLanding(root: HTMLElement): () => void {
     if (!told) return "x";
     if (R.floor) {
       // floors: the hard fact strikes the requested terms; the real terms slide up
-      narr(`<span class="st">floors</span>open liquidation`, "a hard rule, not the model");
+      narr(`<span class="st">floors</span>open liquidation`, "a hard rule under every policy");
       const hd = d.discs.find((c) => hard.has(c));
       if (hd) {
         const cx = +(hd.getAttribute("cx") ?? 0);
@@ -565,7 +565,7 @@ export function startLanding(root: HTMLElement): () => void {
       narr(`<span class="st">floors</span>none`, "");
       await wait(500);
       if (!live()) return "x";
-      narr(`<span class="st">decide</span>SERV Reasoning applies your freelancer policy`, `${R.decideSec} s · every reason cites a fact`);
+      narr(`<span class="st">decide</span>your policy, compiled by SERV into rules`, `${R.decideNote} · ${R.decideMs} ms`);
       await wait(450);
       if (!live()) return "x";
       d.hc.setAttribute("class", "hub-c set");

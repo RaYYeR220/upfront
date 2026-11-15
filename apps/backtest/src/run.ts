@@ -16,6 +16,7 @@ import { type Compiled, compilePolicy, loadPolicy, servClient, storedProgram } f
 import { deriveFacts, filterAsOf } from "@upfront/sources";
 import { ARMS, type Arm, net30Arm, ruleArm } from "./arms.ts";
 import { publicFacts } from "./free-evidence.ts";
+import { signCounts } from "./signs.ts";
 import { armMetrics, type EvalRow, STANDARD_INVOICE_EUR } from "./metrics.ts";
 
 const RESULTS = fileURLToPath(new URL("../results/", import.meta.url));
@@ -109,6 +110,7 @@ async function main() {
   const policy = loadPolicy("freelancer");
   const compiled = await programFor(policy);
   const evalRows: EvalRow[] = [];
+  const evidence: Saved[] = [];
   let unavailable = 0;
   for (const row of rows) {
     const s = JSON.parse(await readFile(join(RAW, `${row.group}-${row.siren}-${row.T}.json`), "utf8")) as Saved;
@@ -117,6 +119,7 @@ async function main() {
       evalRows.push({ siren: s.siren, group: s.group, T: s.T, arms: {} });
       continue;
     }
+    evidence.push(s);
     const arms: Partial<Record<Arm, Terms | null>> = {
       upfront: decideWith(compiled, s.facts, s.T),
       rule: ruleArm(s.facts, s.T).terms,
@@ -138,6 +141,8 @@ async function main() {
     },
     counts: { companies: rows.length, unavailable },
     metrics,
+    // Which public signs separate the companies that stopped paying from their healthy twins at all.
+    signs: signCounts(evidence),
     rows: evalRows,
   };
   await writeFile(join(RESULTS, "backtest.json"), `${JSON.stringify(out, null, 2)}\n`);

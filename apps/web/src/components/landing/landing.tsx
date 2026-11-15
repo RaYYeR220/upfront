@@ -74,7 +74,7 @@ const STEPS: { glyph: "diamond" | "ring" | "rings" | "square"; name: string; kin
   { glyph: "rings", name: "buy", kind: "external · Kite", partner: true, text: "Kite Agent Passport pays each record in USDC on Base, capped at $0.20 a lookup. A lookup over the cap is refused and shown, never hidden." },
   { glyph: "square", name: "extract", kind: "script", text: "Typed facts with the date each became public: open and past proceedings, the day payments stopped, accounts on file, court decisions." },
   { glyph: "square", name: "floors", kind: "script", text: "Hard rules the model can never go below: an open liquidation means decline, a reorganisation means prepay." },
-  { glyph: "ring", name: "decide", kind: "agent · SERV", partner: true, text: "Your policy, compiled by SERV Reasoning, applied to the facts. Every reason must cite a fact, or the safe default applies." },
+  { glyph: "ring", name: "decide", kind: "compiled · SERV", partner: true, text: "Your policy, compiled once by SERV Reasoning into rules, applied to the facts by code. Every reason names the rule and the fact behind it." },
   { glyph: "rings", name: "review", kind: "external · Reppo", partner: true, text: 'An independent panel judges the decision against your policy and the facts. It sees "Company A", never the name or number.' },
   { glyph: "square", name: "terms", kind: "script", text: "The terms, as a sentence for you and as a clause for the invoice." },
 ];
@@ -148,7 +148,7 @@ export function Landing() {
                 DANONE<span className="m">€4,000</span>
               </button>
             </div>
-            <div className="cap">Replayed from live checks on 14 Nov, slowed down · hover a source for its receipt</div>
+            <div className="cap">Replayed from live checks on 15 Nov, slowed down · hover a source for its receipt</div>
           </div>
         </div>
       </section>
@@ -230,7 +230,7 @@ export function Landing() {
             </p>
             <ul className="partners">
               <li>
-                <b>SERV Reasoning</b> <span className="who">(OpenServ)</span> compiles your policy and decides.
+                <b>SERV Reasoning</b> <span className="who">(OpenServ)</span> compiles your policy into rules and plans what to buy.
               </li>
               <li>
                 <b>Kite Agent Passport</b> pays each lookup within a spending cap.
@@ -266,8 +266,8 @@ export function Landing() {
             </p>
             <h2>Your credit policy, in plain English.</h2>
             <p className="lede">
-              Start from a preset (freelancer, agency, wholesaler) or write your own. SERV Reasoning compiles it into the graph
-              that decides every check the same way.
+              Start from a preset (freelancer, agency, wholesaler) or write your own. SERV Reasoning compiles it into rules, tried
+              on ten sample clients, that decide every check the same way.
             </p>
             <p className="bigline">
               Change a rule, <span>the terms change.</span>
