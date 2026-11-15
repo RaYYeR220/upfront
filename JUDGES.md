@@ -2,6 +2,8 @@
 
 Upfront tells a freelancer or small supplier how to bill a client company: Net 30, a deposit, prepayment or decline. An agent buys the client's public records one lookup at a time (paid through Kite Agent Passport), applies the user's own credit policy (compiled by SERV Reasoning), and has the decision reviewed by an independent panel (Reppo).
 
+Demo video (2:30): https://youtu.be/1mU8PU8KvGU · launch post: https://x.com/BazydloMis57623/status/2121970324866556045
+
 ## 1. Watch a real check (1 minute)
 
 Open **https://upfront-terms.vercel.app**. The hero replays two production checks from 15 Nov. Hover a source to see its price and Base transaction.

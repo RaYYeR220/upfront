@@ -12,7 +12,7 @@ Upfront is a counterparty check for freelancers, agencies and small suppliers. Y
 - **A second opinion on every decision.** An independent evaluation panel (Reppo) reviews each decision against your policy and the facts. If it blocks the decision, the terms get stricter, never looser.
 - **It keeps watching.** Clients with open invoices are re-checked for €0.01 a week. You hear from Upfront only when something changes, and if a client enters insolvency you get the deadline to declare your claim and a filled-in declaration.
 
-Try it: **https://upfront-terms.vercel.app** · a real check: [KD Soccer Consulting, €6,800](https://upfront-terms.vercel.app/c/ce94109b-39ca-4e62-b0fb-bb713e0014b7) · reviewer guide: [JUDGES.md](JUDGES.md)
+Try it: **https://upfront-terms.vercel.app** · a real check: [KD Soccer Consulting, €6,800](https://upfront-terms.vercel.app/c/ce94109b-39ca-4e62-b0fb-bb713e0014b7) · demo video (2:30): https://youtu.be/1mU8PU8KvGU · reviewer guide: [JUDGES.md](JUDGES.md)
 
 ## How a check works
 
