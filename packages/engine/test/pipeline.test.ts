@@ -106,9 +106,12 @@ describe("runCheck", () => {
     const { d } = deps({ serv: port });
     const r = done(await runCheck({ query: KD, amountEur: 6800, policy, review: "skip" }, d));
     expect(r.floor.floor).toBe("decline");
-    expect(r.proposed).toBeNull();
+    // The policy's own rules gave credit; the hard rule lifts the decision to the floor and cites the fact.
+    expect(r.proposed?.terms).toEqual({ mode: "decline" });
     expect(r.final).toEqual({ mode: "decline" });
-    expect(r.nodes.find((n) => n.name === "decide")?.status).toBe("error");
+    expect(r.finalReasons[0]!.text).toMatch(/Hard rule: a liquidation is open/);
+    expect(r.finalReasons[0]!.factIds).toEqual(r.floor.because.map((b) => b.factId));
+    expect(r.nodes.find((n) => n.name === "decide")?.status).toBe("ok");
     expect(r.notes.join(" ")).toMatch(/claim/i);
   });
 

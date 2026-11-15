@@ -126,6 +126,29 @@ function isIndividual(profile: unknown): boolean {
   return false;
 }
 
+const FLOOR_TEXT: Record<string, string> = {
+  liquidation_open: "a liquidation is open",
+  reorganisation_open: "a court-supervised reorganisation is open",
+  ceased: "the company has ceased trading",
+  sanctioned: "the company is on a sanctions list",
+};
+
+/**
+ * Compiled policies leave liquidation, reorganisation, ceased trading and sanctions
+ * to the floor. A decision looser than the floor is lifted to it, citing the fact.
+ */
+export function liftToFloor(raw: unknown, floor: FloorResult): unknown {
+  const d = raw as { terms?: Terms; reasons?: Reason[] } | null;
+  if (!floor.floor || !d?.terms || typeof d.terms.mode !== "string") return raw;
+  if (clampToFloor(d.terms, floor.floor) === d.terms) return raw;
+  const why = [...new Set(floor.because.map((b) => FLOOR_TEXT[b.rule] ?? b.rule.replace(/_/g, " ")))].join("; ");
+  return {
+    ...d,
+    terms: floorDefault(floor.floor),
+    reasons: [{ factIds: floor.because.map((b) => b.factId), text: `Hard rule: ${why}. This sets the terms whatever the policy's other rules say.` }],
+  };
+}
+
 /**
  * Turns a (validated) model decision and the hard-fact floor into the terms we
  * actually offer. No decision, or one that failed validation, falls back to the
@@ -330,7 +353,7 @@ export async function runCheck(input: CheckInput, deps: EngineDeps): Promise<Che
     async () => {
       try {
         const d = await deps.serv.decide(decideArgs);
-        const v = validateDecision(d.raw, facts, floor);
+        const v = validateDecision(liftToFloor(d.raw, floor), facts, floor);
         if (v.ok) return { value: { proposed: v.decision, errors: [] }, output: { raw: d.raw }, costUsd: d.costUsd, model: d.model };
         return {
           value: { proposed: null, errors: v.errors },

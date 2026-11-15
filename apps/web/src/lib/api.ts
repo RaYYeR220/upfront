@@ -38,8 +38,11 @@ export const api = {
       headers: { "x-policy-token": token },
       body: JSON.stringify({ name, text }),
     }),
-  compilePolicy: (id: string, version: number) =>
-    call<import("@/components/compiled-policy").CompiledView>(`/api/policies/${encodeURIComponent(id)}/compile?version=${version}`, { method: "POST" }),
+  compilePolicy: (id: string, version: number, token: string) =>
+    call<import("@/components/compiled-policy").CompiledView>(`/api/policies/${encodeURIComponent(id)}/compile?version=${version}`, {
+      method: "POST",
+      headers: { "x-policy-token": token },
+    }),
   createWatch: (b: { checkId?: string; siren?: string; invoiceAmountEur: number; dueOn?: string; label?: string }) =>
     call<{ token: string; watchUrl: string; telegramLink: string | null }>("/api/watch", { method: "POST", body: JSON.stringify(b) }),
   getWatch: (token: string) => call<Record<string, unknown>>(`/api/watch/${encodeURIComponent(token)}`),

@@ -163,34 +163,36 @@ export function createApp(ctx: AppCtx): Hono {
   let compiles = { day: "", n: 0 };
   app.post("/api/policies/:id/compile", async (c) => {
     if (!ctx.programs) return c.json({ error: "unavailable" }, 503);
+    const id = c.req.param("id");
     const version = Number(c.req.query("version") ?? 0) || undefined;
-    const policy = await getPolicy(ctx.db, c.req.param("id"), version);
+    const policy = await getPolicy(ctx.db, id, version);
     if (!policy) return c.json({ error: "not_found" }, 404);
-    const day = new Date().toISOString().slice(0, 10);
-    if (compiles.day !== day) compiles = { day, n: 0 };
-    try {
-      const before = compiles.n;
-      if (before >= (ctx.compilesPerDay ?? 20)) {
-        // Already-compiled policies are still served from the cache.
-        const r = await Promise.race([ctx.programs.get(policy), new Promise<null>((res) => setTimeout(() => res(null), 50))]);
-        if (!r || !r.cached) return c.json({ error: "compile_quota" }, 429);
+    let compiled = ctx.programs.peek(policy);
+    if (!compiled) {
+      // Compiling calls SERV: only the policy's owner can ask, and the service pays for a fixed number a day.
+      const preset = (PRESETS as readonly string[]).includes(id);
+      if (!preset && !(await policyTokenOk(ctx.db, id, c.req.header("x-policy-token")))) return c.json({ error: "forbidden" }, 403);
+      const day = new Date().toISOString().slice(0, 10);
+      if (compiles.day !== day) compiles = { day, n: 0 };
+      if (compiles.n >= (ctx.compilesPerDay ?? 20)) return c.json({ error: "compile_quota" }, 429);
+      compiles.n++; // kept even if the compile fails
+      try {
+        compiled = (await ctx.programs.get(policy)).compiled;
+      } catch {
+        return c.json({ error: "compile_failed" }, 502);
       }
-      const r = await ctx.programs.get(policy);
-      if (!r.cached) compiles.n++;
-      const p = r.compiled.program;
-      return c.json({
-        policy: { id: policy.id, version: policy.version, hash: policy.hash },
-        compiledBy: r.compiled.model,
-        compiledAt: r.compiled.compiledAt,
-        rules: p.rules.map((x) => ({ id: x.id, why: x.why, then: x.then })),
-        default: p.default,
-        untranslated: p.untranslated,
-        warnings: r.compiled.warnings,
-        samples: probeProgram(p),
-      });
-    } catch {
-      return c.json({ error: "compile_failed" }, 502);
     }
+    const p = compiled.program;
+    return c.json({
+      policy: { id: policy.id, version: policy.version, hash: policy.hash },
+      compiledBy: compiled.model,
+      compiledAt: compiled.compiledAt,
+      rules: p.rules.map((x) => ({ id: x.id, why: x.why, then: x.then })),
+      default: p.default,
+      untranslated: p.untranslated,
+      warnings: compiled.warnings,
+      samples: probeProgram(p),
+    });
   });
 
   app.get("/api/receipts", async (c) => {

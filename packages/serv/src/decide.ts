@@ -22,7 +22,12 @@ export interface DecideOutput {
 
 export interface ProgramCache {
   get(policy: Policy): Promise<{ compiled: Compiled; costUsd: number; cached: boolean }>;
+  /** A program already compiled for this policy, without calling SERV. */
+  peek(policy: Policy): Compiled | null;
 }
+
+/** A policy that failed to compile is not sent to SERV again for this long. */
+const RETRY_FAILED_AFTER_MS = 60 * 60 * 1000;
 
 /**
  * Compiled programs by policy hash: the committed presets first, then a cache
@@ -30,20 +35,32 @@ export interface ProgramCache {
  */
 export function programCache(client: OpenAI | null, opts: { dir?: string } = {}): ProgramCache {
   const pending = new Map<string, Promise<{ compiled: Compiled; costUsd: number; cached: boolean }>>();
+  const done = new Map<string, Compiled>();
+  const failed = new Map<string, number>();
+  const stored = (hash: string) => storedProgram(hash) ?? (opts.dir ? storedProgram(hash, opts.dir) : null);
   return {
+    peek(policy) {
+      return done.get(policy.hash) ?? stored(policy.hash);
+    },
     get(policy) {
       let p = pending.get(policy.hash);
       if (!p) {
         p = (async () => {
-          const hit = storedProgram(policy.hash) ?? (opts.dir ? storedProgram(policy.hash, opts.dir) : null);
+          const hit = stored(policy.hash);
           if (hit) return { compiled: hit, costUsd: 0, cached: true };
           if (!client) throw new Error("this policy has not been compiled yet");
-          const c = await compilePolicy(client, policy);
+          const lastFail = failed.get(policy.hash);
+          if (lastFail && Date.now() - lastFail < RETRY_FAILED_AFTER_MS) throw new Error("this policy failed to compile recently");
+          const c = await compilePolicy(client, policy).catch((e: unknown) => {
+            failed.set(policy.hash, Date.now());
+            throw e;
+          });
           const compiled: Compiled = { policyHash: c.policyHash, program: c.program, warnings: c.warnings, model: c.model, compiledAt: c.compiledAt };
           if (opts.dir) {
             mkdirSync(opts.dir, { recursive: true });
             writeFileSync(join(opts.dir, programFileName(policy)), `${JSON.stringify(compiled, null, 2)}\n`);
           }
+          done.set(policy.hash, compiled);
           return { compiled, costUsd: c.costUsd, cached: false };
         })();
         pending.set(policy.hash, p);

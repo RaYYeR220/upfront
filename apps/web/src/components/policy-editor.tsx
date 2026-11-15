@@ -34,11 +34,11 @@ export function PolicyEditor({ starter }: { starter: string }) {
   const [compiled, setCompiled] = useState<CompiledView | null>(null);
   const [compiling, setCompiling] = useState(false);
 
-  async function compile(id: string, version: number) {
+  async function compile(id: string, version: number, token: string) {
     setCompiling(true);
     setCompiled(null);
     try {
-      setCompiled(await api.compilePolicy(id, version));
+      setCompiled(await api.compilePolicy(id, version, token));
     } catch (e) {
       setErr(ERROR_TEXT[e instanceof ApiError ? e.code : ""] ?? ERROR_TEXT.compile_failed!);
     } finally {
@@ -55,13 +55,13 @@ export function PolicyEditor({ starter }: { starter: string }) {
         const next = { ...saved, ...v, name };
         remember(next);
         setSaved(next);
-        void compile(next.id, next.version);
+        void compile(next.id, next.version, next.editToken ?? "");
       } else {
         const p = await api.createPolicy(name, text);
         const next = { id: p.id, version: p.version, hash: p.hash, name, editToken: p.editToken };
         remember(next);
         setSaved(next);
-        void compile(next.id, next.version);
+        void compile(next.id, next.version, next.editToken ?? "");
       }
     } catch {
       setErr("Couldn't save. A policy needs at least a sentence or two.");
